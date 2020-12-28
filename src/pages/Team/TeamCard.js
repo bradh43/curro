@@ -9,6 +9,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+import { ME_QUERY } from '../../utils/graphql'
 
 export const TeamCard = props => {
 
@@ -40,7 +41,6 @@ export const TeamCard = props => {
   }));
 
   const [joined, setJoined] = useState(false);
-  // TODO for when we hook up requests
   const [requestPending, setRequestPending] = useState(false);
 
   const ME_QUERY = gql`
@@ -48,6 +48,9 @@ export const TeamCard = props => {
       me {
         id
         teamList {
+          id
+        }
+        requestedTeamList {
           id
         }
       }
@@ -59,6 +62,7 @@ export const TeamCard = props => {
       joinTeam(input: $input) {
         message
         success
+        pending
       }
     }
   `;
@@ -78,28 +82,67 @@ export const TeamCard = props => {
   if(!meLoading && data && props.data && props.data.team){
     
     var foundTeamFlag = false
-
+    var requestedTeamFlag = false
     // loop through all of their teams and check for team id
     for(var i=0; i<data.me.teamList.length; i++){
       if(data.me.teamList[i].id === props.data.team.id){
         foundTeamFlag = true
+
         break;
       }
     }
+    //if already in team list, don't need to check requestedTeamList as well
+    if(!foundTeamFlag) {
+      for(var i=0; i<data.me.requestedTeamList.length; i++){
+        if(data.me.requestedTeamList[i].id === props.data.team.id){
+          requestedTeamFlag = true
+          break;
+        }
+      }
+    }
+
 
     // prevent the page from doing too many re-renders
     if(joined !== foundTeamFlag){
       setJoined(foundTeamFlag) 
     }
+
+    if(requestPending !== requestedTeamFlag){
+      setRequestPending(requestedTeamFlag)
+    }
   } 
 
   const [joinTeamMutation, {loading: joinLoading}] = useMutation(JOIN_TEAM, {
-    update(_, {data: result}) {
-      setJoined(result.joinTeam.success)
+    update(store, {data: result}) {
+      const data = store.readQuery({
+        query: ME_QUERY
+      })
+
       if(result.joinTeam.success){
-        // TODO update cache to add user to team member list
-        // this might nor be nessasary if we have requests and notfications tho
-        window.location.reload()
+        var updatedPendingList = data.me.requestedTeamList
+        var updatedTeamList =  data.me.teamList
+
+        if(result.joinTeam.pending){
+          setRequestPending(true)
+          updatedPendingList = [props.data.team, ...data.me.requestedTeamList]
+
+        } else {
+          setJoined(true)
+          updatedTeamList = [props.data.team, ...data.me.teamList]
+          //TODO update team list to have user on it, and the team member count          
+        }
+        store.writeQuery({
+          query: ME_QUERY,
+          data: {
+            me: {
+              ...data.me,
+              __typename: "User",
+              requestedTeamList: updatedPendingList,
+              teamList: updatedTeamList
+            }
+          }
+        }) 
+         
       }
     },
     onError(error) {
@@ -108,11 +151,32 @@ export const TeamCard = props => {
   })
 
   const [leaveTeamMutation, {loading: leaveLoading}] = useMutation(LEAVE_TEAM, {
-    update(_, {data: result}) {
-      setJoined(!result.leaveTeam.success)
+    update(store, {data: result}) {
+      const data = store.readQuery({
+        query: ME_QUERY
+      })
       if(result.leaveTeam.success){
-        // TODO update cache to remove user to team member list
-        window.location.reload()
+        const updatedTeamList = data.me.teamList.filter((team) => {
+          if(team.id !== props.data.team.id){
+            return team
+          }
+        })
+        //TODO update team list to have user not on it, and decrease the team member count          
+
+        setRequestPending(false)
+        setJoined(false)
+
+        store.writeQuery({
+          query: ME_QUERY,
+          data: {
+            me: {
+              ...data.me,
+              __typename: "User",
+              teamList: updatedTeamList
+            }
+          }
+        }) 
+        
       }
     },
     onError(error) {
@@ -189,7 +253,6 @@ export const TeamCard = props => {
                     {props.data.team.memberCount + " Member" + (props.data.team.memberCount > 1 ? "s" : "")}
                   </Typography>
                 </Box>
-                {/* TODO Create Team follow button */}
                 <Button 
                   variant={(joined || requestPending) ? "outlined" : "contained"} 
                   color="secondary" 

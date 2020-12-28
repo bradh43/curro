@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLazyQuery, gql, useMutation } from '@apollo/client';
 import { makeStyles } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
@@ -14,6 +14,7 @@ import Badge from '@material-ui/core/Badge';
 import { NotificationTile } from './NotificationTile'
 import { NoResults } from './NoResults'
 import { Waypoint } from 'react-waypoint';
+import { NOTIFICATION_QUERY } from '../../utils/graphql'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,39 +52,6 @@ const useStyles = makeStyles((theme) => ({
     
 }));
 
-const NOTIFICATION_QUERY = gql`
-  query {
-    me {
-      notificationList {
-        id
-        sender {
-          id
-          username
-          first
-          last
-          profilePictureURL
-        }
-        team {
-          id
-          name
-          profilePictureURL
-        }
-        message
-        responseRequired
-        type
-        read
-        post {
-          id
-          title
-        }
-        comment {
-          id
-          note
-        }
-      }
-    }
-  }
-`;
 
 const MARK_ALL_READ = gql`
   mutation {
@@ -93,7 +61,6 @@ const MARK_ALL_READ = gql`
   }
 `;
 
-var _fetchedMe = false
 var clickedBell = false
 export const NotificationBell = (props) => {
 
@@ -107,17 +74,15 @@ export const NotificationBell = (props) => {
     }
   });
 
-  if(!_fetchedMe && (data? false : true) && !loading){
-    _fetchedMe = true
-    console.log("IN LIEK SWIM")
+  useEffect(() => {
     getNotification()
-    // TODO Pagination
-    // TODO UPDATE READ ON ALL NOTIFCATION WHEN CLICKED
+    console.log("REQUESTED")
+  }, []);
+  if(data){
+    console.log(data)
   }
-
   const { history } = props;
   const notificationRef = useRef()
-//   const [searchUserQuery, {data: userSearchData, loading: userSearchLoading, error}] = useLazyQuery(USER_SEARCH_QUERY)
   const classes = useStyles();
   return (
     <div>

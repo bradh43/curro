@@ -8,7 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import { IconButton, ListItemSecondaryAction } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Hidden from '@material-ui/core/Hidden';
-
+import { gql, useMutation } from '@apollo/client';
+import { UPDATE_NOTIFICATION } from '../../utils/graphql'
 
 const useStyles = makeStyles((theme) => ({
   message: {
@@ -53,16 +54,39 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-
 export const NotificationTile = (props) => {
 
   const { history } = props;
-
+  const [updateNotificationMutation] = useMutation(UPDATE_NOTIFICATION, {
+    update(_) {
+      console.log("Updated noty")
+    },
+    onError(error) {
+      console.log(error)
+    }
+  });
   const accept = () => {
-    console.log('TODO ACCEPT')
+    const notificationInput = {
+      input: {
+        id: props.notification.id,
+        read: true,
+        deleted: false,
+        accept: true
+      }
+    }
+    console.log(notificationInput)
+    updateNotificationMutation({ variables: notificationInput })
   }
   const deny = () => {
-    console.log('TODO DENY')
+    const notificationInput = {
+      input: {
+        id: props.notification.id,
+        read: true,
+        deleted: false,
+        accept: false
+      }
+    }
+    updateNotificationMutation({ variables: notificationInput })
   }
   const navigateToUserProfile = () => {
     history.push('/profile/'+props.notification.sender.id)
@@ -77,30 +101,28 @@ export const NotificationTile = (props) => {
     }  
   }
   const navigateToProfile = () => {
-      if(props.team){
-          navigateToTeamProfile()
-      } else {
-          navigateToUserProfile()
-      }
-
-  }     
+    if(props.notification.team && props.notification.type !== "TEAM_REQUEST"){
+        navigateToTeamProfile()
+    } else {
+        navigateToUserProfile()
+    }
+  }    
 
   const classes = useStyles();
-
   return (
     <ListItem alignItems="flex-start" className={classes.resultItem} style={{backgroundColor: props.notification.read ? '#ffffff' : '#fffafc'}}divider>
         <ListItemAvatar>
           <Avatar 
             alt="Profile Picture" 
-            variant= {props.notification.team ? "square" : "circle"} 
-            src={props.notification.team ? props.notification.team.profilePictureURL : props.notification.sender.profilePictureURL}
+            variant= {(props.notification.team && props.notification.type !== "TEAM_REQUEST") ? "square" : "circle"} 
+            src={(props.notification.team && props.notification.type !== "TEAM_REQUEST") ? props.notification.team.profilePictureURL : props.notification.sender.profilePictureURL}
             onClick={navigateToProfile}
             className={classes.profilePicture}
            />
         </ListItemAvatar>
         <ListItemText 
           primary={<span onClick={navigateToProfile} className={classes.profileClick}>
-            {props.notification.team ? props.notification.team.name : props.notification.sender.first + " " + props.notification.sender.last}
+            {(props.notification.team&& props.notification.type !== "TEAM_REQUEST") ? props.notification.team.name : props.notification.sender.first + " " + props.notification.sender.last}
              </span>}
           secondary={
             <React.Fragment>

@@ -9,6 +9,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Toolbar from '@material-ui/core/Toolbar';
 import { useMutation } from '@apollo/client';
 import { CREATE_TEAM_MUTATION, ME_QUERY } from '../../utils/graphql';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -79,6 +81,7 @@ export const CreateTeamModal = (props) => {
       props.handleClose();
       setState({
         name: "",
+        private: false,
         description: "",
         profilePictureURL: ""
       });
@@ -92,6 +95,7 @@ export const CreateTeamModal = (props) => {
   const classes = useStyles();
   const [state, setState] = useState({
     name: "",
+    private: false,
     description: "",
     file: file,
   });
@@ -103,6 +107,7 @@ export const CreateTeamModal = (props) => {
       var userInput = {
         input: {
           name: state.name,
+          private: state.private,
           description: state.description,
           file: file
         }
@@ -115,6 +120,7 @@ export const CreateTeamModal = (props) => {
   const cancel = () => {
     setState({
         name: "",
+        private: false,
         description: "",
         profilePictureURL: ""
     });
@@ -123,6 +129,9 @@ export const CreateTeamModal = (props) => {
 
   const handleChange = (prop) => (event) => {
       setState({ ...state, [prop]: String(event.target.value) });
+  };
+  const handleCheckbox = (prop) => (event) => {
+    setState({ ...state, [prop]: event.target.checked });
   };
   const body = (
     <div className={classes.paper}>
@@ -146,6 +155,12 @@ export const CreateTeamModal = (props) => {
           label="Name"
           error={state.name.length <= 0}
           helperText={state.name.length <= 0 ? 'Name Required' : ' '}
+        />
+        <Typography variant="body2" color='textSecondary'>All teams are public by default. Anyone can join a public team and view the team page. Users must request to join a private team and be accepted by an admin or owner from that team in order to view the team page.</Typography>
+
+        <FormControlLabel
+          control={<Switch checked={state.private} onChange={handleCheckbox("private")} name="private" />}
+          label="Private"
         />
         <Typography variant="body2" color='textSecondary'>Team Image</Typography>
         <ImagePicker 

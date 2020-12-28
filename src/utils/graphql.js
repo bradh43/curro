@@ -117,6 +117,7 @@ const TEAM_FRAGMENT = gql`
   fragment TeamData on Team {
     id
     name
+    private
     description
     profilePictureURL
     memberCount
@@ -201,3 +202,55 @@ export const CREATE_EQUIPMENT_MUTATION = gql`
   }
   ${EQUIPMENT_FRAGMENT}
 `;
+
+const NOTIFICATION_FRAGMENT = gql`
+  fragment NotificationData on Notification {
+    id
+    sender {
+      id
+      username
+      first
+      last
+      profilePictureURL
+    }
+    team {
+      id
+      name
+      profilePictureURL
+    }
+    message
+    responseRequired
+    type
+    read
+    post {
+      id
+      title
+    }
+    comment {
+      id
+      note
+    }
+  }
+`;
+
+export const UPDATE_NOTIFICATION = gql`
+  mutation updateNotification($input: UpdateNotificationInput!){
+    updateNotification(input: $input){
+      ...NotificationData
+    }
+  }
+  ${NOTIFICATION_FRAGMENT}
+`;
+
+export const NOTIFICATION_QUERY = gql`
+  query {
+    me {
+      id
+      notificationList {
+        ...NotificationData
+      }
+    }
+  }
+  ${NOTIFICATION_FRAGMENT}
+`;
+

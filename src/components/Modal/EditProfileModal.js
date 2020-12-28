@@ -9,7 +9,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Toolbar from '@material-ui/core/Toolbar';
 import { useMutation } from '@apollo/client';
 import { UPDATE_USER_MUTATION } from "../../utils/graphql";
-
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -72,6 +73,7 @@ export const EditProfileModal = (props) => {
         first: user.first,
         last: user.last,
         username: user.username,
+        private: user.private,
         email: user.email,
         file: file,
         bio: user.bio,
@@ -89,6 +91,7 @@ export const EditProfileModal = (props) => {
     first: "",
     last: "",
     username: "",
+    private: false,
     email: "",
     bio: "",
   });
@@ -100,6 +103,7 @@ export const EditProfileModal = (props) => {
         first: props.data.me.first,
         last: props.data.me.last,
         username: props.data.me.username,
+        private: props.data.me.private,
         email: props.data.me.email,
         file: file,
         bio: props.data.me.bio,
@@ -122,6 +126,7 @@ export const EditProfileModal = (props) => {
           first: state.first,
           last: state.last,
           username: state.username,
+          private: state.private,
           bio: state.bio,
           file: file,
           private: false,
@@ -136,6 +141,7 @@ export const EditProfileModal = (props) => {
       first: props.data.me.first,
       last: props.data.me.last,
       username: props.data.me.username,
+      private: props.data.me.private,
       email: props.data.me.email,
       bio: props.data.me.bio,
     });
@@ -146,7 +152,9 @@ export const EditProfileModal = (props) => {
   const handleChange = (prop) => (event) => {
     setState({ ...state, [prop]: String(event.target.value) });
   };
-
+  const handleCheckbox = (prop) => (event) => {
+    setState({ ...state, [prop]: event.target.checked });
+  };
   const body = (
     <div className={classes.paper}>
       <Toolbar disableGutters>
@@ -169,6 +177,12 @@ export const EditProfileModal = (props) => {
         <TextField required fullWidth className={classes.textField} value={state.username} onChange={handleChange('username')} label="Username"
           error={state.username.length <= 0}
           helperText={state.username.length <= 0 ? 'Username Required' : ' '}
+        />
+        <Typography variant="body2" color='textSecondary'>All users are public by default. Anyone can view a public user. Users must request to follow and view a private user.</Typography>
+
+        <FormControlLabel
+          control={<Switch checked={state.private} onChange={handleCheckbox("private")} name="private" />}
+          label="Private"
         />
         {/* <TextField required id="standard-basic" fullWidth className={classes.textField} value={state.email} onChange={handleChange('email')} label="email"
           error={!emailRegex.test(state.email)}

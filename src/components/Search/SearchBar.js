@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
   searchArea: {
     width: 512,
     position: 'absolute',
-    right: 80,
+    right: 160,
     top: 56,
     background: 'white',
     [theme.breakpoints.down('sm')]: {
