@@ -1,6 +1,7 @@
 import React, { useContext, useState, useRef } from 'react';
 import { AuthContext } from '../../auth';
 import { SearchBar } from '../Search/SearchBar';
+import { NotificationBell } from '../Notification/NotificationBell';
 import { withRouter } from 'react-router-dom';
 import { useLazyQuery, useMutation, gql, useApolloClient } from '@apollo/client';
 import Button from '@material-ui/core/Button';
@@ -28,8 +29,6 @@ import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import InfoIcon from '@material-ui/icons/Info';
 import Avatar from '@material-ui/core/Avatar';
 import Skeleton from '@material-ui/lab/Skeleton';
-
-
 
 const Header = props => {
   var _fetchedMe = false
@@ -90,12 +89,14 @@ const Header = props => {
     openProfileMenu: false,
     openDrawer: false,
     openSearch: false,
+    openNotification: false
   })
   const handleMenu = () => {
     setState({
       openDrawer: false,
       openSearch: false,
-      openProfileMenu: true
+      openProfileMenu: true,
+      openNotification: false
     });
   }
 
@@ -119,12 +120,19 @@ const Header = props => {
       openSearch: true,
     });
   }
+  const handleNotificationOpen = () => {
+    setState({
+      ...state,
+      openNotification: !state.openNotification,
+    });
+  }
 
   const handleDrawerClose = () => {
     setState({
       ...state,
       openDrawer: false,
       openSearch: false,
+      openNotification: false
     });
   }
 
@@ -159,6 +167,7 @@ const Header = props => {
       id
       username
       profilePictureURL
+      unreadNotificationCount
     }
   }
 `;
@@ -170,7 +179,6 @@ const Header = props => {
     getMe()
   }
 
-  
   const { history } = props;
   const classes = useStyles();
 
@@ -195,6 +203,7 @@ const Header = props => {
           </Button>
           <div className={classes.spacer}></div>
           {user && <SearchBar openSearch={state.openSearch} handleSearchOpen={handleSearchOpen} handleDrawerClose={handleDrawerClose} history={history}/>}
+          {user && <NotificationBell openNotification={state.openNotification} notificationCount={(!loading && data && data.me) ? data.me.unreadNotificationCount : 0} handleNotificationOpen={handleNotificationOpen} handleDrawerClose={handleDrawerClose} history={history}/>}
           <div ref={menuButtonRef}>
             {!user ? <Button className={classes.loginButton} onClick={
               () => {
@@ -306,7 +315,7 @@ const Header = props => {
           </ListItem>
         </List> */}
       </Drawer>
-      <span className={(state.openDrawer || state.openSearch) ? "dismissModal" : "hide"} style={{position: 'fixed'}} onClick={handleDrawerClose}>
+      <span className={(state.openDrawer || state.openSearch || state.openNotification) ? "dismissModal" : "hide"} style={{position: 'fixed'}} onClick={handleDrawerClose}>
 
       </span>
     </div>);

@@ -77,7 +77,11 @@ export const CreateTeamModal = (props) => {
         }
       })
       props.handleClose();
-      
+      setState({
+        name: "",
+        description: "",
+        profilePictureURL: ""
+      });
     },
     onError(error) {
       console.log(error)
