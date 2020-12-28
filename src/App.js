@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import { AuthProvider } from './auth';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
@@ -50,6 +50,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const client = new ApolloClient({
+  credentials: 'include',
   link: ApolloLink.from([
     new TokenRefreshLink({
       accessTokenField: "token",
@@ -61,7 +62,6 @@ const client = new ApolloClient({
 
         try {
           const { exp } = jwtDecode(token);
-          test = jwtDecode(token)
           if (Date.now() >= exp * 1000) {
             return false;
           } else {
@@ -130,6 +130,23 @@ var theme = createMuiTheme({
 theme = responsiveFontSizes(theme);
 
 function App() {
+
+  useEffect(() => {
+    let refresh_uri = 'http://localhost:4000/refresh_token';
+    if (process.env.NODE_ENV === 'production'){
+      refresh_uri = 'https://' + prod_uri_base + '/refresh_token';
+    }
+    fetch(refresh_uri, {
+      method: "POST",
+      credentials: "include"
+    }).then(async x => {
+      const { accessToken } = await x.json();
+      console.log(accessToken)
+      if(accessToken){
+        localStorage.setItem("token", accessToken)
+      }
+    });
+  }, []);
 
   return (
     <AuthProvider>
