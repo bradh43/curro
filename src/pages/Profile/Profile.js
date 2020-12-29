@@ -40,9 +40,8 @@ export const Profile = (props) => {
   }
 
   const { user } = useContext(AuthContext)
-  console.log(user)
   const { userid } = props.match.params
-  console.log(userid)
+
   var me = false
   if(userid && user.id !== userid){
     me = false
@@ -65,61 +64,6 @@ export const Profile = (props) => {
   const { history } = props;
   return (
     <div className={classes.root}>
-      {/* <Grid container>
-        <Grid item xs={12} sm={6} lg={4}>
-          <Grid item xs={12}>
-            <ProfileCard loading={loading} error={error} data={data} me={me}/>
-          </Grid>
-          <Grid item xs={12}>
-            <TeamListCard 
-              me={me}
-              data={data}
-              loading={loading}
-              error={error}
-              createTeamData={createTeamData}
-              setCreateTeamData={setCreateTeamData}
-              setOpenTeamModal={setOpenEquipmentModal} 
-              setEditEquipmentData={setEditEquipmentData} 
-              setOpenCreateTeamModal={setOpenCreateTeamModal}
-              history={history}
-            />
-          </Grid>
-        </Grid>
-        <Grid item xs={12} sm={6} lg={4}>
-          <Grid item xs={12}>
-          <EquipmentCard 
-            me={me}
-            type="SHOE" 
-            data={data}
-            loading={loading}
-            error={error}
-            setOpenEquipmentModal={setOpenEquipmentModal} 
-            setEditEquipmentData={setEditEquipmentData} 
-            setOpenCreateEquipmentModal={setOpenCreateEquipmentModal} 
-            setCreateEquipmentType={setCreateEquipmentType}
-          />
-          </Grid>
-          <Grid item xs={12}>
-            <EquipmentCard 
-              me={me}
-              type="BIKE" 
-              data={data}
-              loading={loading}
-              error={error}
-              setOpenEquipmentModal={setOpenEquipmentModal} 
-              setEditEquipmentData={setEditEquipmentData} 
-              setOpenCreateEquipmentModal={setOpenCreateEquipmentModal} 
-              setCreateEquipmentType={setCreateEquipmentType}
-            />
-          </Grid>
-        </Grid>
-        {!error && !loading && data &&
-        (<Grid container item xs={12} lg={8}>
-            <UserStats userid={data.me?.id || data.user?.id}/>
-        </Grid>)}
-      </Grid> */}
-      {/* TODO This will look better for the profile with user stats
-      Comment out above and uncomment this when user stats are dynamic for both mobile and desktop */}
       <Grid container spacing={1}>
         <Grid item xs={12} sm={12} md={4} lg={4}>
           <Grid item xs={12}>
@@ -168,7 +112,7 @@ export const Profile = (props) => {
 
         {!error && !loading && data &&
           (<Grid container item xs={12} lg={12}>
-              <UserStats userid={data.me?.id || data.user?.id}/>
+              {/* <UserStats userid={data.me?.id || data.user?.id}/> */}
           </Grid>)}
         </Grid>
       </Grid>

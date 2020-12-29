@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -10,6 +10,10 @@ import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
 import { EditProfileModal } from "../../components/Modal/EditProfileModal"
 import EditIcon from '@material-ui/icons/Edit';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import { FollowButton } from '../../components/Form/FollowButton/FollowButton';
 
 export const ProfileCard = props => {
   
@@ -30,6 +34,14 @@ export const ProfileCard = props => {
     media: {
       height: 190,
     },
+    countBox: {
+      backgroundColor: theme.palette.background.main,
+      textAlign: 'center',
+      marginBottom: 8,
+    },
+    requestButton: {
+      marginBottom: 16,
+    }
   }));
   const formatDate = (createdAt) => {
     var options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -38,7 +50,7 @@ export const ProfileCard = props => {
     date.setMilliseconds(createdAt)
     return date.toLocaleDateString("en-US", options)
   }
-  const [openModal, setOpenModal] = React.useState(false);
+  const [openModal, setOpenModal] = useState(false);
   
   const handleOpen = () => {
     setOpenModal(true);
@@ -59,7 +71,6 @@ export const ProfileCard = props => {
               <IconButton aria-label="edit" onClick={handleOpen}>
                 <EditIcon />
               </IconButton>
-              
             )
           }
           title={
@@ -97,6 +108,31 @@ export const ProfileCard = props => {
                     />
                   </Box>
                 </Box>
+                <Grid container spacing={1}>
+                  <Grid item xs>
+                    <Box className={classes.countBox}>
+                      <Typography variant="body1" color="textSecondary" component="p" style={{ marginTop: '16px' }}>
+                        Followers
+                      </Typography>
+                      <Typography variant="body1" color="textSecondary" component="p">
+                        {props.me ? props.data.me.followerList.length : props.data.user.followerList.length}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid item xs>
+                    <Box className={classes.countBox}>
+                      <Typography variant="body1" color="textSecondary" component="p" style={{ marginTop: '16px' }}>
+                        Following
+                      </Typography>
+                      <Typography variant="body1" color="textSecondary" component="p">
+                        {props.me ? props.data.me.followingList.length : props.data.user.followingList.length}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                </Grid>
+                {(!props.me && props.data && props.data.user) &&
+                  <FollowButton followerId={props.data.user.id}/>
+                }
                 <Typography variant="body1" component="p">
                   {
                     props.me ? props.data.me.bio : props.data.user.bio

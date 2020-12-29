@@ -135,6 +135,19 @@ export const CREATE_TEAM_MUTATION = gql`
   ${TEAM_FRAGMENT}
 `;
 
+export const TEAM_QUERY = gql`
+  query getTeam($id: ID!){
+    team(id: $id) {
+      ...TeamData
+      createdAt
+      memberList {
+        id
+      }
+    }
+  }
+  ${TEAM_FRAGMENT}
+`;
+
 const PROFILE_FRAGMENT = gql`
   fragment ProfileData on User {
     id
@@ -147,6 +160,12 @@ const PROFILE_FRAGMENT = gql`
     bio
     private
     createdAt
+    followerList {
+      id
+    }
+    followingList {
+      id
+    }
     equipmentList {
       ...EquipmentData
     }

@@ -9,7 +9,8 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import { ME_QUERY } from '../../utils/graphql'
+import { TEAM_QUERY } from '../../utils/graphql';
+
 
 export const TeamCard = props => {
 
@@ -129,7 +130,24 @@ export const TeamCard = props => {
         } else {
           setJoined(true)
           updatedTeamList = [props.data.team, ...data.me.teamList]
-          //TODO update team list to have user on it, and the team member count          
+          const team_data = store.readQuery({
+            query: TEAM_QUERY,
+            variables: { id: props.data.team.id }
+          }) 
+          const updatedMemberCount = team_data.team.memberCount + 1
+          const updatedMemberList = [data.me, ...team_data.team.memberList]
+          store.writeQuery({
+            query: TEAM_QUERY,
+            variables: { id: props.data.team.id },
+            data: {
+              team: {
+                ...team_data.team,
+                __typename: "Team",
+                memberCount: updatedMemberCount,
+                memberList: updatedMemberList
+              }
+            }
+          }) 
         }
         store.writeQuery({
           query: ME_QUERY,
@@ -141,8 +159,7 @@ export const TeamCard = props => {
               teamList: updatedTeamList
             }
           }
-        }) 
-         
+        })  
       }
     },
     onError(error) {
@@ -150,7 +167,7 @@ export const TeamCard = props => {
     }
   })
 
-  const [leaveTeamMutation, {loading: leaveLoading}] = useMutation(LEAVE_TEAM, {
+  const [leaveTeamMutation, { loading: leaveLoading }] = useMutation(LEAVE_TEAM, {
     update(store, {data: result}) {
       const data = store.readQuery({
         query: ME_QUERY
@@ -161,10 +178,32 @@ export const TeamCard = props => {
             return team
           }
         })
-        //TODO update team list to have user not on it, and decrease the team member count          
 
         setRequestPending(false)
         setJoined(false)
+       
+        const team_data = store.readQuery({
+          query: TEAM_QUERY,
+          variables: { id: props.data.team.id }
+        }) 
+        const updatedMemberCount = team_data.team.memberCount - 1
+        const updatedMemberList = team_data.team.memberList.filter((member) => {
+          if(member.id !== data.me.id){
+            return member
+          }
+        })
+        store.writeQuery({
+          query: TEAM_QUERY,
+          variables: { id: props.data.team.id },
+          data: {
+            team: {
+              ...team_data.team,
+              __typename: "Team",
+              memberCount: updatedMemberCount,
+              memberList: updatedMemberList
+            }
+          }
+        }) 
 
         store.writeQuery({
           query: ME_QUERY,

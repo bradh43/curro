@@ -140,7 +140,7 @@ export const NotificationTile = (props) => {
                       Accept
                   </Button>
                   <Button className={classes.actionButton} onClick={deny} variant="outlined" color="default">
-                      Deny
+                      Decline
                   </Button>
                 </span>
 
@@ -156,7 +156,7 @@ export const NotificationTile = (props) => {
                 Accept
               </Button>
               <Button className={classes.actionButton} onClick={deny} variant="outlined" color="default">
-                Deny
+                Decline
               </Button>
             </span>
           </Hidden>}

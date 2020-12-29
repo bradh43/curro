@@ -76,11 +76,8 @@ export const NotificationBell = (props) => {
 
   useEffect(() => {
     getNotification()
-    console.log("REQUESTED")
   }, []);
-  if(data){
-    console.log(data)
-  }
+
   const { history } = props;
   const notificationRef = useRef()
   const classes = useStyles();

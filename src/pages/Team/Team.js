@@ -1,5 +1,6 @@
 import React from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery } from '@apollo/client';
+import { TEAM_QUERY } from '../../utils/graphql';
 import { TeamCard } from './TeamCard';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -13,25 +14,6 @@ export const Team = (props) => {
   }));
 
   const { teamid } = props.match.params
-
-  const TEAM_QUERY = gql`
-    query getTeam($id: ID!){
-      team(id: $id) {
-        id
-        name
-        description
-        createdAt
-        memberCount
-        profilePictureURL
-        owner {
-          id
-        }
-        memberList {
-          id
-        }
-      }
-    }
-  `;
 
   const { loading, error, data } = useQuery(TEAM_QUERY, {variables: {id: teamid}});
 
