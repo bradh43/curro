@@ -1,0 +1,123 @@
+import React, { useEffect, useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Modal from '@material-ui/core/Modal';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import { UserTile } from "../Profile/UserTile"
+import CloseIcon from '@material-ui/icons/Close';
+import List from '@material-ui/core/List';
+import Toolbar from '@material-ui/core/Toolbar';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import zIndex from '@material-ui/core/styles/zIndex';
+
+
+
+const useStyles = makeStyles((theme) => ({
+  modal: {
+    top: 48,
+  },
+  paper: {
+    position: 'absolute',
+    width: '40%',
+    height: '75%',
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[4],
+    padding: '0 16px 16px 16px',
+    margin: 0,
+    display: 'block',
+    overflow: 'scroll',
+    overflowX: 'hidden',
+    [theme.breakpoints.down('sm')]: {
+      height: '100%', 
+      width: '100%',
+    },
+    outline: 0,
+  },
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  spacer: {
+    flexGrow: 1,
+    textAlign: 'center',
+  },
+  results: {
+    marginTop: 64,
+  },
+  toolbar: {
+    backgroundColor: 'inherit',
+    flexGrow: 1,
+
+  },
+  toolbarDiv: {
+    display: 'block',
+    width: '38%',
+    padding: 0,
+    margin: 0,
+    backgroundColor: 'inherit',
+    minHeight: 64,
+    zIndex: 1,
+    position: 'fixed',
+    marginLeft: -16,
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+    },
+  },
+  loadingResults: {
+    margin: 'auto',
+    marginTop: 80,
+    marginBottom: 16,
+    display: 'block',
+    
+  },
+
+}));
+
+export const UserListModal = (props) => {
+  const classes = useStyles();
+  const { history } = props;
+
+  
+  // const handleConfirmDeleteOpen = () => {
+  //   setOpenConfirmDelete(true);
+  // };
+
+  // const handleConfirmDeleteClose = () => {
+  //   setOpenConfirmDelete(false);
+  // };
+
+  return (
+    <div>
+      <Modal
+        open={props.openModal}
+        onClose={props.handleClose}
+        disableBackdropClick
+        style={{display:'flex', alignItems:'center', justifyContent:'center'}}
+      >
+        <div style={classes.modalStyle} className={classes.paper}>
+          <div className={classes.toolbarDiv}>
+            <Toolbar disableGutters fullWidth className={classes.toolbar}>
+              <IconButton onClick={props.handleClose}>
+                <CloseIcon />
+              </IconButton>
+              <Typography variant="h6" className={classes.spacer}>{props.title} </Typography>
+            </Toolbar>
+          </div>
+          {props.loading ? <CircularProgress className={classes.loadingResults}/> : 
+          <List className={classes.results}> 
+            {(props.userList) && 
+            (props.userList.length >= 1 ?
+              props.userList.map((user) => (
+                <UserTile key={"userTile-" + user.id} user={user} history={props.history} handleClose={props.handleClose}/>
+              )) :
+              <span>No Users Found</span> )
+            }
+          </List>
+          }
+          
+        </div>
+      </Modal>
+    </div>
+  );
+}
