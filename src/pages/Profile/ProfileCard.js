@@ -9,11 +9,13 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
 import { EditProfileModal } from "../../components/Modal/EditProfileModal"
+import { UserListModal } from "../../components/Modal/UserList"
 import EditIcon from '@material-ui/icons/Edit';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { FollowButton } from '../../components/Form/FollowButton/FollowButton';
+import { useQuery, useLazyQuery, useMutation, gql } from '@apollo/client';
 
 export const ProfileCard = props => {
   
@@ -38,6 +40,7 @@ export const ProfileCard = props => {
       backgroundColor: theme.palette.background.main,
       textAlign: 'center',
       marginBottom: 8,
+      cursor: 'pointer'
     },
     requestButton: {
       marginBottom: 16,
@@ -51,11 +54,104 @@ export const ProfileCard = props => {
     return date.toLocaleDateString("en-US", options)
   }
   const [openModal, setOpenModal] = useState(false);
-  
+  const [openFollowerModal, setOpenFollowerModal] = useState(false);
+  const [openFollowingModal, setOpenFollowingModal] = useState(false);
+
+  const FOLLOWER_ME_QUERY = gql`
+    query ME {
+      me {
+        id
+        followerList{
+          id
+          username
+          first
+          last
+          profilePictureURL
+        }
+      }
+    }
+  `;
+  const FOLLOWING_ME_QUERY = gql`
+    query ME {
+      me {
+        id
+        followingList{
+          id
+          username
+          first
+          last
+          profilePictureURL
+        }
+      }
+    }
+  `;
+
+  const FOLLOWING_USER_QUERY = gql`
+    query USER($id: ID!) {
+      user(id: $id) {
+        id
+        followingList{
+          id
+          username
+          first
+          last
+          profilePictureURL
+        }
+      }
+    }
+  `;
+  const FOLLOWER_USER_QUERY = gql`
+    query USER($id: ID!) {
+      user(id: $id) {
+        id
+        followerList{
+          id
+          username
+          first
+          last
+          profilePictureURL
+        }
+      }
+    }
+  `;
+  const [followerMeQuery, { loading: followerLoading, data: followerData }] = useLazyQuery(FOLLOWER_ME_QUERY)
+  const [followingMeQuery, { loading: followingLoading, data: followingData }] = useLazyQuery(FOLLOWING_ME_QUERY)
+  const [followerUserQuery, { loading: followerUserLoading, data: followerUserData }] = useLazyQuery(FOLLOWER_USER_QUERY)
+  const [followingUserQuery, { loading: followingUserLoading, data: followingUserData }] = useLazyQuery(FOLLOWING_USER_QUERY)
+
   const handleOpen = () => {
     setOpenModal(true);
   };
 
+  const showFollowers = () => {
+    if(props.me){
+      followerMeQuery()
+    } else {
+      const searchInput = {
+        variables: {
+          id: props.data.user.id
+        }
+      }
+      
+      followerUserQuery(searchInput)
+    }
+    setOpenFollowerModal(true)
+
+  }
+  const showFollowing = () => {
+    if(props.me){
+      followingMeQuery()
+    } else {
+      const searchInput = {
+        variables: {
+          id: props.data.user.id
+        }
+      }
+      followingUserQuery(searchInput)
+    }
+    setOpenFollowingModal(true)
+
+  }
   const classes = useStyles();
 
   if (props.error) return (<div>
@@ -110,7 +206,7 @@ export const ProfileCard = props => {
                 </Box>
                 <Grid container spacing={1}>
                   <Grid item xs>
-                    <Box className={classes.countBox}>
+                    <Box className={classes.countBox} onClick={showFollowers}>
                       <Typography variant="body1" color="textSecondary" component="p" style={{ marginTop: '16px' }}>
                         Followers
                       </Typography>
@@ -120,7 +216,7 @@ export const ProfileCard = props => {
                     </Box>
                   </Grid>
                   <Grid item xs>
-                    <Box className={classes.countBox}>
+                    <Box className={classes.countBox} onClick={showFollowing} >
                       <Typography variant="body1" color="textSecondary" component="p" style={{ marginTop: '16px' }}>
                         Following
                       </Typography>
@@ -131,7 +227,7 @@ export const ProfileCard = props => {
                   </Grid>
                 </Grid>
                 {(!props.me && props.data && props.data.user) &&
-                  <FollowButton followerId={props.data.user.id}/>
+                  <FollowButton fullWidth={true} followerId={props.data.user.id}/>
                 }
                 <Typography variant="body1" component="p">
                   {
@@ -148,5 +244,28 @@ export const ProfileCard = props => {
         </CardContent>
       </Card>
       {props.me && <EditProfileModal data={props.data} loading={props.loading} openModal={openModal} handleClose={() => setOpenModal(false)}/>}
+      {(props.me || (props.data && props.data.user)) && 
+        <UserListModal 
+          title={"Followers"} 
+          history={props.history} 
+          data={followerData} 
+          userList={props.me ? (followerData ? followerData.me.followerList : []) 
+            : (followerUserData ? followerUserData.user.followerList : [])}
+          loading={followerLoading || followerUserLoading} 
+          openModal={openFollowerModal} 
+          handleClose={() => setOpenFollowerModal(false)}/>
+      }
+      {(props.me || (props.data && props.data.user)) && 
+        <UserListModal 
+        title={"Following"} 
+        history={props.history} 
+        data={followingData} 
+        userList={props.me ? (followingData ? followingData.me.followingList : []) 
+          : (followingUserData ? followingUserData.user.followingList : [])}
+        loading={followingLoading || followingUserLoading} 
+        openModal={openFollowingModal} 
+        handleClose={() => setOpenFollowingModal(false)}/>
+      }
+
     </div>);
 }
