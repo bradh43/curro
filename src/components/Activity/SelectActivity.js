@@ -59,7 +59,6 @@ export const SelectActivity = (props) => {
   }
 
   const selectActivity = (activity) => {
-    console.log(activity)
     props.setEditActivity(false)
     props.setSelectedActivity(activity)
     props.setOpenActivityDetailModal(true)

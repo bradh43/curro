@@ -223,7 +223,6 @@ export const FollowButton = props => {
         followerId: props.followerId
       }
     }
-    console.log(userInput)
     if(following){
       console.log("Todo ARE YOU SURE unfollow???")
       unfollowUserMutation({ variables: userInput })

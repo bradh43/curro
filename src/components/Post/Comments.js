@@ -26,8 +26,6 @@ export const Comments = props => {
   const showAllComments = () => {
     if(!_fetchedAllComments){
       _fetchedAllComments = true
-      console.log("Fetch All Comments for post")
-      console.log(props.postId)
     }
     setShowComments(!showComments)
   }

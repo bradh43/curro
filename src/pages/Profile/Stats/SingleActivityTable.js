@@ -239,7 +239,7 @@ export default function SingleActivityTable({ activityDataMap, displayedActivity
             
         )
     }
-    console.log('activityDataMap :>> ', activityDataMap);
+    // console.log('activityDataMap :>> ', activityDataMap);
 
     // Last 365 Days Stat Calculations
     let weekRows = extractDateRangeRowsFromDate(7, activityDataMap, displayedActivity);

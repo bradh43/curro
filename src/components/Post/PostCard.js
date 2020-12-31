@@ -150,7 +150,6 @@ export const PostCard = props => {
       }
     }
 
-    console.log(likeInput)
     likePostMutation({ variables: likeInput })
     setLikePost(event.target.checked)
   }
