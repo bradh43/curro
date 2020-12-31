@@ -118,7 +118,6 @@ export const Comment = props => {
       }
     }
 
-    console.log(likeInput)
     likeCommentMutation({ variables: likeInput })
     setLikeComment(event.target.checked)
   }

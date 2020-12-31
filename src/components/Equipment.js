@@ -17,7 +17,6 @@ export default function Equipment(props) {
     }))
       
     const handleOpenEditEquipment = () => {
-      console.log(props.data)
       props.setEditEquipmentData(props.data)
       props.setOpenEquipmentModal(true)
     };

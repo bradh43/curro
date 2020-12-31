@@ -60,11 +60,6 @@ export const NotificationTile = (props) => {
 
   const [updateNotificationMutation] = useMutation(UPDATE_NOTIFICATION, {
     update(store, { data: { updateNotification }}) {
-      console.log(updateNotification)
-      console.log("Updated noty")
-      console.log("TODO modal confirm deny, and remove from cache")
-      console.log("TODO delete from cache")
-
       // NOTIFICATION_QUERY
       const data = store.readQuery({
         query: NOTIFICATION_QUERY
@@ -101,7 +96,6 @@ export const NotificationTile = (props) => {
         accept: true
       }
     }
-    console.log(notificationInput)
     updateNotificationMutation({ variables: notificationInput })
   }
   const deny = () => {

@@ -89,15 +89,32 @@ export const FollowButton = props => {
         } else {
           // public user
           setFollowing(true)
+          try {
+            const user_data = store.readQuery({
+              query: USER_QUERY,
+              variables: { id: props.followerId },
+            }) 
+            // user's follower list
+            const updatedFollowerList = [data.me, ...user_data.user.followerList]
 
-          const user_data = store.readQuery({
-            query: USER_QUERY,
-            variables: { id: props.followerId },
-          }) 
-
+            // update user cache to include me in following list
+            store.writeQuery({
+              query: USER_QUERY,
+              variables: { id: props.followerId },
+              data: {
+                user: {
+                  ...user_data.user,
+                  __typename: "User",
+                  followerList: updatedFollowerList,
+                }
+              }
+            }) 
+          } catch(_) {
+            // Cache isn't populated yet
+          }
           // my following list
           updatedFollowingList = [{id: props.followerId}, ...data.me.followingList]
-          
+
           // update me cache for requests and following
           store.writeQuery({
             query: ME_QUERY,
@@ -107,22 +124,6 @@ export const FollowButton = props => {
                 __typename: "User",
                 requestedFollowingList: updatedRequestFollowingList,
                 followingList: updatedFollowingList
-              }
-            }
-          }) 
-
-          // user's follower list
-          const updatedFollowerList = [data.me, ...user_data.user.followerList]
-
-          // update user cache to include me in following list
-          store.writeQuery({
-            query: USER_QUERY,
-            variables: { id: props.followerId },
-            data: {
-              user: {
-                ...user_data.user,
-                __typename: "User",
-                followerList: updatedFollowerList,
               }
             }
           }) 
@@ -138,8 +139,7 @@ export const FollowButton = props => {
                 following: true,
               }
             }
-          }) 
-
+          })
         }
       }
     },
@@ -223,7 +223,6 @@ export const FollowButton = props => {
         followerId: props.followerId
       }
     }
-    console.log(userInput)
     if(following){
       console.log("Todo ARE YOU SURE unfollow???")
       unfollowUserMutation({ variables: userInput })
@@ -233,17 +232,27 @@ export const FollowButton = props => {
   }
 
   const classes = useStyles();
-
   return (
-    <Button 
-      variant={(following || requestPending) ? "outlined" : "contained"} 
-      color="secondary" 
-      size="small" 
-      fullWidth 
-      onClick={requestFollow}
-      disabled={requestPending || followLoading}
-      className={classes.requestButton}>
-      { requestPending ? "Request Pending" : (following ? "Following" : "Follow")}
-    </Button>
+    <div>
+      {followStatusLoading ? 
+      <Button variant="outlined"
+        color="secondary" 
+        size="small" 
+        fullWidth={props.fullWidth}
+        className={classes.requestButton}
+        disabled={true}
+      >Loading</Button> : 
+        <Button 
+        variant={(following || requestPending) ? "outlined" : "contained"} 
+        color="secondary" 
+        size="small" 
+        fullWidth={props.fullWidth}
+        onClick={requestFollow}
+        disabled={requestPending || followLoading}
+        className={classes.requestButton}>
+        { requestPending ? (props.fullWidth ? "Request Pending": "Pending")
+        : (following ? "Following" : "Follow")}
+      </Button>}
+  </div>
   );   
 }

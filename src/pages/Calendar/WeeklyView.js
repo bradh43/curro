@@ -138,7 +138,7 @@ const WeeklyView = ({ postList, date, setDate, setView, firstDayOfWeek }) => {
 
     const injectPostsInWeekColumns = (uninjectedWeekColumns) => {
         let postsInWeeklyView = paginatePostsByDay();
-        console.log('postsInWeeklyView :>> ', postsInWeeklyView);
+        // console.log('postsInWeeklyView :>> ', postsInWeeklyView);
 
         let injectedWeekColumns = [];
         for (let i = 0; i < NUMBER_OF_DAYS_IN_WEEK; i++) {
