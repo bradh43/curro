@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import './App.css';
 import { AuthProvider } from './auth';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { createMuiTheme, ThemeProvider, responsiveFontSizes } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/core/styles';
 import { Home } from './pages/Home/Home';
 import { Calendar } from './pages/Calendar/Calendar';
 import { Feed } from './pages/Feed/Feed';
@@ -24,6 +24,7 @@ import { onError } from "apollo-link-error";
 import jwtDecode from 'jwt-decode'
 import { setContext } from '@apollo/client/link/context';
 import { cache } from './cache';
+import { theme } from './theme';
 
 let prod_uri_base = "curro-api.herokuapp.com"
 // Connect to deployed backend if in production. Else localhost.
@@ -102,33 +103,6 @@ const client = new ApolloClient({
   cache
 });
 
-var theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#DC1E65'
-    },
-    secondary: {
-      main: '#8B51FF'
-    },
-    background: {
-      main: '#fafafa',
-    }
-  },
-  overrides: {
-    MuiInput: {
-      underline: {  
-        '&:after': {
-          borderBottom: '2px solid #8B51FF',
-        },
-        '&$focused:after': {
-          borderBottomColor: '#8B51FF',
-        },
-      },
-    }
-  }
-});
-theme = responsiveFontSizes(theme);
-
 function App() {
 
   useEffect(() => {
@@ -139,11 +113,10 @@ function App() {
     fetch(refresh_uri, {
       method: "POST",
       credentials: "include"
-    }).then(async x => {
-      const { accessToken } = await x.json();
-      console.log(accessToken)
-      if(accessToken){
-        localStorage.setItem("token", accessToken)
+    }).then(async response => {
+      const response_json = await response.json();
+      if(response_json.success && response_json.token){
+        localStorage.setItem("token", response_json.token)
       }
     });
   }, []);

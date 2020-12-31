@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useQuery, useMutation, gql } from '@apollo/client';
+import { USER_QUERY, FOLLOWER_STATUS_QUERY } from '../../../utils/graphql';
 import Button from '@material-ui/core/Button';
 
 export const FollowButton = props => {
@@ -47,38 +48,17 @@ export const FollowButton = props => {
   `;
 
   const { loading: meLoading, error, data } = useQuery(ME_QUERY)
-
-  // Check if the user is following
-  if(!meLoading && data && props.followerId){
+  const { loading: followStatusLoading, data: followStatusData } = useQuery(FOLLOWER_STATUS_QUERY, {
+    variables: { userId: props.followerId }
+  })
   
-    var foundFollowingUser = false
-    var requestedUserFlag = false
-    // loop through all of followers and see if following
-    for(var i=0; i<data.me.followingList.length; i++){
-      if(data.me.followingList[i].id === props.followerId){
-        foundFollowingUser = true
-        break;
-      }
+  useEffect(() => {
+    if(!followStatusLoading && followStatusData){
+      setFollowing(followStatusData.getFollowStatus.following) 
+      setRequestPending(followStatusData.getFollowStatus.pending)
     }
-    //if already in team list, don't need to check requestedTeamList as well
-    if(!requestedUserFlag) {
-      
-      for(var i=0; i<data.me.requestedFollowingList.length; i++){
-        if(data.me.requestedFollowingList[i].id === props.followerId){
-          requestedUserFlag= true
-          break;
-        }
-      }
-    }
-     // prevent the page from doing too many re-renders
-    if(following !== foundFollowingUser){
-      setFollowing(foundFollowingUser) 
-    }
+  })
 
-    if(requestPending !== requestedUserFlag){
-      setRequestPending(requestedUserFlag)
-    }
-  } 
   const [followUserMutation, {loading: followLoading}] = useMutation(FOLLOW_USER, {
     update(store, {data: result}) {
       const data = store.readQuery({
@@ -90,20 +70,35 @@ export const FollowButton = props => {
         // TODO update person's followers count, person is who just got followed 
 
         if(result.followUser.pending){
+          //private user
           setRequestPending(true)
           updatedRequestFollowingList = [{id: props.followerId}, ...data.me.requestedFollowingList]
+
+          // update follow status cache
+          store.writeQuery({
+            query: FOLLOWER_STATUS_QUERY,
+            variables: { userId: props.followerId },
+            data: {
+              getFollowStatus: {
+                ...followStatusData.getFollowStatus,
+                __typename: "FollowStatus",
+                pending: true,
+              }
+            }
+          }) 
         } else {
           // public user
           setFollowing(true)
+
+          const user_data = store.readQuery({
+            query: USER_QUERY,
+            variables: { id: props.followerId },
+          }) 
+
+          // my following list
           updatedFollowingList = [{id: props.followerId}, ...data.me.followingList]
-
-          // const team_data = store.readQuery({
-          //   query: TEAM_QUERY,
-          //   variables: { id: props.data.team.id }
-          // }) 
-
-          // const updatedFollowerCount = team_data.team.memberCount + 1
-          // const updatedFollowerList = [data.me, ...team_data.team.memberList]
+          
+          // update me cache for requests and following
           store.writeQuery({
             query: ME_QUERY,
             data: {
@@ -112,6 +107,35 @@ export const FollowButton = props => {
                 __typename: "User",
                 requestedFollowingList: updatedRequestFollowingList,
                 followingList: updatedFollowingList
+              }
+            }
+          }) 
+
+          // user's follower list
+          const updatedFollowerList = [data.me, ...user_data.user.followerList]
+
+          // update user cache to include me in following list
+          store.writeQuery({
+            query: USER_QUERY,
+            variables: { id: props.followerId },
+            data: {
+              user: {
+                ...user_data.user,
+                __typename: "User",
+                followerList: updatedFollowerList,
+              }
+            }
+          }) 
+
+          // update follow status cache
+          store.writeQuery({
+            query: FOLLOWER_STATUS_QUERY,
+            variables: { userId: props.followerId },
+            data: {
+              getFollowStatus: {
+                ...followStatusData.getFollowStatus,
+                __typename: "FollowStatus",
+                following: true,
               }
             }
           }) 
@@ -147,7 +171,45 @@ export const FollowButton = props => {
             }
           }
         }) 
-                
+
+        const user_data = store.readQuery({
+          query: USER_QUERY,
+          variables: { id: props.followerId },
+        }) 
+
+        // user's follower list
+        const updatedFollowerList = user_data.user.followerList.filter((user) => {
+          if(user.id !== data.me.id){
+            return user
+          }
+        })
+
+        // update user cache to remove me from following list
+        store.writeQuery({
+          query: USER_QUERY,
+          variables: { id: props.followerId },
+          data: {
+            user: {
+              ...user_data.user,
+              __typename: "User",
+              followerList: updatedFollowerList,
+            }
+          }
+        }) 
+
+        // update follow status cache
+        store.writeQuery({
+          query: FOLLOWER_STATUS_QUERY,
+          variables: { userId: props.followerId },
+          data: {
+            getFollowStatus: {
+              ...followStatusData.getFollowStatus,
+              __typename: "FollowStatus",
+              following: false,
+            }
+          }
+        }) 
+
       }
     },
     onError(error) {

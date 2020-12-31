@@ -9,7 +9,7 @@ import { IconButton, ListItemSecondaryAction } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Hidden from '@material-ui/core/Hidden';
 import { gql, useMutation } from '@apollo/client';
-import { UPDATE_NOTIFICATION } from '../../utils/graphql'
+import { UPDATE_NOTIFICATION, NOTIFICATION_QUERY } from '../../utils/graphql'
 
 const useStyles = makeStyles((theme) => ({
   message: {
@@ -57,9 +57,36 @@ const useStyles = makeStyles((theme) => ({
 export const NotificationTile = (props) => {
 
   const { history } = props;
+
   const [updateNotificationMutation] = useMutation(UPDATE_NOTIFICATION, {
-    update(_) {
+    update(store, { data: { updateNotification }}) {
+      console.log(updateNotification)
       console.log("Updated noty")
+      console.log("TODO modal confirm deny, and remove from cache")
+      console.log("TODO delete from cache")
+
+      // NOTIFICATION_QUERY
+      const data = store.readQuery({
+        query: NOTIFICATION_QUERY
+      })
+
+      const updatedNotificationList = data.me.notificationList.filter((notification) => {
+        if(notification.id !== updateNotification.id){
+          return notification
+        }
+      })
+
+      store.writeQuery({
+        query: NOTIFICATION_QUERY,
+        data: {
+          me: {
+            ...data.me,
+            __typename: "User",
+            notificationList: updatedNotificationList,
+          }
+        }
+      }) 
+
     },
     onError(error) {
       console.log(error)
@@ -140,7 +167,7 @@ export const NotificationTile = (props) => {
                       Accept
                   </Button>
                   <Button className={classes.actionButton} onClick={deny} variant="outlined" color="default">
-                      Decline
+                      Deny
                   </Button>
                 </span>
 
@@ -156,7 +183,7 @@ export const NotificationTile = (props) => {
                 Accept
               </Button>
               <Button className={classes.actionButton} onClick={deny} variant="outlined" color="default">
-                Decline
+                Deny
               </Button>
             </span>
           </Hidden>}

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLazyQuery, gql } from '@apollo/client';
 import { makeStyles } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
@@ -13,7 +13,6 @@ import List from '@material-ui/core/List';
 import { UserSearchTile } from './UserSearchTile';
 import { TeamSearchTile } from './TeamSearchTile';
 import { NoResults } from './NoResults';
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
   },
   loadingResults: {
     margin: 'auto',
+    marginTop: 16,
     marginBottom: 16,
     display: 'block',
   },
@@ -134,11 +134,12 @@ export const SearchBar = (props) => {
     setSearchQuery(searchString);
     if(!validSearch && searchString.length >= 1){
       setValidSearch(true)
-    } else if(searchString.length === 0){
+    } else if(searchString.length === 0) {
       setValidSearch(false)
     }
     submitSearch(searchString, filters.includes("Users"))
   };
+
 
   const handleKeypress = event => {
     //check if enter key pressed
@@ -224,6 +225,8 @@ export const SearchBar = (props) => {
               )) :
               <NoResults/>)
             }
+            {/* TODO replace <NoResults/> here with suggested users and suggeseted team */}
+            {(searchQuery.length === 0 && (!teamSearchData || !userSearchData)) && <NoResults/>}
           </List>
         </Box> }
     </Hidden>);

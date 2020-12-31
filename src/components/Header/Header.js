@@ -52,6 +52,9 @@ const Header = props => {
     hide: {
       display: 'none',
     },
+    dismissModal: {
+      
+    },
     drawerPaper: {
       width: 240,
     },
@@ -179,6 +182,9 @@ const Header = props => {
     getMe()
   }
 
+  if(state.openSearch || state.openDrawer || state.openNotification){
+    // TODO Disable Scroll when modal is open
+  }
   const { history } = props;
   const classes = useStyles();
 

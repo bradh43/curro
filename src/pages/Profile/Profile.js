@@ -112,7 +112,7 @@ export const Profile = (props) => {
 
         {!error && !loading && data &&
           (<Grid container item xs={12} lg={12}>
-              {/* <UserStats userid={data.me?.id || data.user?.id}/> */}
+              <UserStats userid={data.me?.id || data.user?.id}/>
           </Grid>)}
         </Grid>
       </Grid>

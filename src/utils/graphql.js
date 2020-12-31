@@ -273,3 +273,13 @@ export const NOTIFICATION_QUERY = gql`
   ${NOTIFICATION_FRAGMENT}
 `;
 
+export const FOLLOWER_STATUS_QUERY = gql`
+  query getFollowStatus($userId: ID!) {
+    getFollowStatus(userId: $userId) {
+      pending
+      following
+      private
+    }
+  }
+`;
+

@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     overflow: "hidden",
+    overflowY: 'hidden'
   },
   list: {
     width: "40%",
@@ -32,8 +33,7 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: 0,
       marginRight: 0,
     },
-    paddingBottom: 32
-   
+    paddingBottom: 32,
   },
   listItem: {
     width: '100%',

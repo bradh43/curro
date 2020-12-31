@@ -29,27 +29,31 @@ const useStyles = makeStyles((theme) => ({
     background: 'white',
     [theme.breakpoints.down('xs')]: {
       width: '100%',
-      right: 0,
-      
+      right: 0, 
     }
-    },  
-    results: {
-      marginLeft: 'auto',
-      marginRight: 'auto',
-      marginBottom: 0,
-      paddingTop: 0,
-      paddingBottom: 0,
-      width: "100%",
-      maxHeight: "60vh",
-      overflowY: 'scroll',
-      [theme.breakpoints.down('xs')]: {
-        minHeight: "100vh",
-        height: '100vh',
-        maxHeight: "100vh",
-        paddingBottom: 56
-      }
-    },
-    
+  },  
+  results: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginBottom: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+    width: "100%",
+    maxHeight: "60vh",
+    overflowY: 'scroll',
+    [theme.breakpoints.down('xs')]: {
+      minHeight: "100vh",
+      height: '100vh',
+      maxHeight: "100vh",
+      paddingBottom: 56
+    }
+  },
+  loadingResults: {
+    margin: 'auto',
+    marginTop: 16,
+    marginBottom: 16,
+    display: 'block',
+  },
 }));
 
 
@@ -77,7 +81,6 @@ export const NotificationBell = (props) => {
   useEffect(() => {
     getNotification()
   }, []);
-
   const { history } = props;
   const notificationRef = useRef()
   const classes = useStyles();
