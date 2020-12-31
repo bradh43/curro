@@ -26,11 +26,12 @@ import { setContext } from '@apollo/client/link/context';
 import { cache } from './cache';
 import { theme } from './theme';
 
-let prod_uri_base = "ec2-34-229-68-19.compute-1.amazonaws.com"
+// let prod_uri_base = "ec2-34-229-68-19.compute-1.amazonaws.com"
+let prod_uri_base = "curro-api.herokuapp.com"
 // Connect to deployed backend if in production. Else localhost.
 let uri = 'http://localhost:4000/graphql';
 if (process.env.NODE_ENV === 'production'){
-  uri = 'http://' + prod_uri_base + '/graphql';
+  uri = 'https://' + prod_uri_base + '/graphql';
 }
 
 const httpLink = createUploadLink({
@@ -75,7 +76,7 @@ const client = new ApolloClient({
       fetchAccessToken: () => {
         let refresh_uri = 'http://localhost:4000/refresh_token';
         if (process.env.NODE_ENV === 'production'){
-          refresh_uri = 'http://' + prod_uri_base + '/refresh_token';
+          refresh_uri = 'https://' + prod_uri_base + '/refresh_token';
         }
         return fetch(refresh_uri, {
           method: "POST",
@@ -108,7 +109,7 @@ function App() {
   useEffect(() => {
     let refresh_uri = 'http://localhost:4000/refresh_token';
     if (process.env.NODE_ENV === 'production'){
-      refresh_uri = 'http://' + prod_uri_base + '/refresh_token';
+      refresh_uri = 'https://' + prod_uri_base + '/refresh_token';
     }
     fetch(refresh_uri, {
       method: "POST",
