@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { useQuery, useMutation, gql } from '@apollo/client';
+import { useQuery, useLazyQuery, useMutation, gql } from '@apollo/client';
 import Typography from '@material-ui/core/Typography';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Card from '@material-ui/core/Card';
@@ -10,7 +10,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import { TEAM_QUERY } from '../../utils/graphql';
-
+import { UserListModal } from "../../components/Modal/UserList"
 
 export const TeamCard = props => {
 
@@ -43,6 +43,7 @@ export const TeamCard = props => {
 
   const [joined, setJoined] = useState(false);
   const [requestPending, setRequestPending] = useState(false);
+  const [openMemberModal, setOpenMemberModal] = useState(false);
 
   const ME_QUERY = gql`
     query {
@@ -77,7 +78,32 @@ export const TeamCard = props => {
     }
   `;
 
-  const { loading: meLoading, error, data } = useQuery(ME_QUERY)
+  const MEMBER_FRAGMENT = gql`
+    fragment MemberData on User {
+      id
+      username
+      first
+      last
+      profilePictureURL
+    }
+  `;
+  const TEAM_MEMBER_QUERY = gql`
+    query getTeam($id: ID!){
+      team(id: $id) {
+        id
+        adminList {
+          ...MemberData
+        }
+        memberList {
+         ...MemberData
+        }
+      }
+    }
+    ${MEMBER_FRAGMENT}
+  `; 
+
+  const { loading: meLoading, data } = useQuery(ME_QUERY)
+  const [teamMemberQuery, { loading: teamMemberLoading, data: teamMemberData }] = useLazyQuery(TEAM_MEMBER_QUERY)
 
   // Check if the user is a part of the team
   if(!meLoading && data && props.data && props.data.team){
@@ -245,6 +271,18 @@ export const TeamCard = props => {
     }
   }
 
+  const showMembers = () => {
+    
+    const searchInput = {
+      variables: {
+        id: props.data.team.id
+      }
+    }
+    teamMemberQuery(searchInput)
+    
+    setOpenMemberModal(true)
+  }
+
   const classes = useStyles();
 
   if (props.error) return (<div>
@@ -287,7 +325,7 @@ export const TeamCard = props => {
                     />
                   </Box>
                 </Box>
-                <Box className={classes.countBox}>
+                <Box className={classes.countBox} onClick={showMembers}>
                   <Typography variant="body1" color="textSecondary" component="p" style={{ marginTop: '16px' }}>
                     {props.data.team.memberCount + " Member" + (props.data.team.memberCount > 1 ? "s" : "")}
                   </Typography>
@@ -313,5 +351,16 @@ export const TeamCard = props => {
             )}
         </CardContent>
       </Card>
+      {(props.data && props.data.team) && 
+        <UserListModal 
+        title={props.data.team.name + " Member" + (props.data.team.memberCount > 1 ? "s" : "")} 
+        history={props.history} 
+        data={teamMemberData} 
+        userList={(teamMemberData && teamMemberData.team) ? 
+          [...teamMemberData.team.adminList, ...teamMemberData.team.memberList] : []}
+        loading={teamMemberLoading} 
+        openModal={openMemberModal} 
+        handleClose={() => setOpenMemberModal(false)}/>
+      }
     </div>);
 }

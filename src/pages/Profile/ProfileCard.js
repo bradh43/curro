@@ -11,11 +11,9 @@ import Box from '@material-ui/core/Box';
 import { EditProfileModal } from "../../components/Modal/EditProfileModal"
 import { UserListModal } from "../../components/Modal/UserList"
 import EditIcon from '@material-ui/icons/Edit';
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import { FollowButton } from '../../components/Form/FollowButton/FollowButton';
-import { useQuery, useLazyQuery, useMutation, gql } from '@apollo/client';
+import { useLazyQuery, gql } from '@apollo/client';
 
 export const ProfileCard = props => {
   
@@ -266,6 +264,5 @@ export const ProfileCard = props => {
         openModal={openFollowingModal} 
         handleClose={() => setOpenFollowingModal(false)}/>
       }
-
     </div>);
 }

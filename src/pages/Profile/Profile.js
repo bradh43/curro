@@ -62,6 +62,7 @@ export const Profile = (props) => {
 
   const classes = useStyles();
   const { history } = props;
+  
   return (
     <div className={classes.root}>
       <Grid container spacing={1}>

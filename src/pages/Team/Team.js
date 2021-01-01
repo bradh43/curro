@@ -19,12 +19,13 @@ export const Team = (props) => {
 
 
   const classes = useStyles();
+  const { history } = props;
 
   return (
     <div className={classes.root}>
       <Grid container spacing={1}>
         <Grid item xs={12} sm={6} lg={4}>
-          <TeamCard loading={loading} error={error} data={data}/>
+          <TeamCard loading={loading} error={error} data={data} history={history}/>
         </Grid>
       </Grid>
     </div>

@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import { UserTile } from "../Profile/UserTile"
 import CloseIcon from '@material-ui/icons/Close';
 import List from '@material-ui/core/List';
 import Toolbar from '@material-ui/core/Toolbar';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import zIndex from '@material-ui/core/styles/zIndex';
 
 
 
@@ -76,8 +74,6 @@ const useStyles = makeStyles((theme) => ({
 
 export const UserListModal = (props) => {
   const classes = useStyles();
-  const { history } = props;
-
   
   // const handleConfirmDeleteOpen = () => {
   //   setOpenConfirmDelete(true);
@@ -97,7 +93,7 @@ export const UserListModal = (props) => {
       >
         <div style={classes.modalStyle} className={classes.paper}>
           <div className={classes.toolbarDiv}>
-            <Toolbar disableGutters fullWidth className={classes.toolbar}>
+            <Toolbar disableGutters className={classes.toolbar}>
               <IconButton onClick={props.handleClose}>
                 <CloseIcon />
               </IconButton>

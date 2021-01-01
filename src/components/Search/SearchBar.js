@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { useLazyQuery, gql } from '@apollo/client';
 import { makeStyles } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
@@ -109,7 +109,6 @@ const TEAM_SEARCH_QUERY = gql`
   }
 `;
 
-
 export const SearchBar = (props) => {
 
   const { history } = props;
@@ -162,7 +161,7 @@ export const SearchBar = (props) => {
     setValidSearch(false)
   }
 
-  const [searchUserQuery, {data: userSearchData, loading: userSearchLoading, error}] = useLazyQuery(USER_SEARCH_QUERY)
+  const [searchUserQuery, {data: userSearchData, loading: userSearchLoading}] = useLazyQuery(USER_SEARCH_QUERY)
   const [searchTeamQuery, {data: teamSearchData, loading: teamSearchLoading}] = useLazyQuery(TEAM_SEARCH_QUERY)
 
   const submitSearch = (searchString, userSearch) => {
@@ -210,23 +209,25 @@ export const SearchBar = (props) => {
           </ToggleButtonGroup>
           <List className={classes.results}> 
             { userSearchLoading  ? <CircularProgress className={classes.loadingResults}/> :
-            (filters.includes("Users") && userSearchData && userSearchData.searchUser) && 
+            (filters.includes("Users") && userSearchData && userSearchData.searchUser) ? 
             (userSearchData.searchUser.length >= 1 ?
               userSearchData.searchUser.map((user) => (
                 <UserSearchTile key={"search-user-" + user.id} user={user} history={history} handleDrawerClose={closeSearchArea}/>
               )) :
-              <NoResults/>)
+              <NoResults/>) :
+              // TODO replace <NoResults/> here with suggested users or most recent 
+              (filters.includes("Users") && <NoResults/>)
             }
             { teamSearchLoading ? <CircularProgress className={classes.loadingResults}/> :
-            (filters.includes("Teams") && teamSearchData && teamSearchData.searchTeam) && 
+            (filters.includes("Teams") && teamSearchData && teamSearchData.searchTeam) ? 
             (teamSearchData.searchTeam.length >= 1 ? 
               teamSearchData.searchTeam.map((team) => (
                 <TeamSearchTile key={"search-team-" + team.id} team={team} history={history} handleDrawerClose={closeSearchArea}/>
               )) :
-              <NoResults/>)
+              <NoResults/>) : 
+              // TODO replace <NoResults/> here with suggested teams or most recent
+              (filters.includes("Teams") && <NoResults/>)
             }
-            {/* TODO replace <NoResults/> here with suggested users and suggeseted team */}
-            {(searchQuery.length === 0 && (!teamSearchData || !userSearchData)) && <NoResults/>}
           </List>
         </Box> }
     </Hidden>);
