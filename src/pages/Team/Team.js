@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { TEAM_QUERY } from '../../utils/graphql';
 import { TeamCard } from './TeamCard';
@@ -20,6 +20,10 @@ export const Team = (props) => {
 
   const classes = useStyles();
   const { history } = props;
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   return (
     <div className={classes.root}>

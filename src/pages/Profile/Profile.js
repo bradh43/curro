@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { AuthContext } from '../../auth';
 import { useQuery } from '@apollo/client';
 import { ProfileCard } from './ProfileCard';
@@ -62,6 +62,10 @@ export const Profile = (props) => {
 
   const classes = useStyles();
   const { history } = props;
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
   
   return (
     <div className={classes.root}>
