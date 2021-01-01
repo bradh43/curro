@@ -26,8 +26,8 @@ import { setContext } from '@apollo/client/link/context';
 import { cache } from './cache';
 import { theme } from './theme';
 
-// let prod_uri_base = "ec2-34-229-68-19.compute-1.amazonaws.com"
-let prod_uri_base = "curro-api.herokuapp.com"
+let prod_uri_base = "dev.curro.us"
+// let prod_uri_base = "curro-api.herokuapp.com"
 // Connect to deployed backend if in production. Else localhost.
 let uri = 'http://localhost:4000/graphql';
 if (process.env.NODE_ENV === 'production'){
