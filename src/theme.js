@@ -1,6 +1,14 @@
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
 
+const font =  "'Poppins', sans-serif";
+
 var muiTheme = createMuiTheme({
+  typography: {
+    fontFamily: font,
+    button: {
+      textTransform: 'none'
+    }
+  },
   palette: {
     primary: {
       main: '#DC1E65'
