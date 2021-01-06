@@ -21,7 +21,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 // import Link from '@material-ui/core/Link';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
+import Avatar from '@material-ui/core/Avatar';
 
 export const Login = props => {
 
@@ -78,7 +78,7 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
   update(_, {data: {signIn: userData}}) {
     _isMounted = false
     context.login(userData)
-    history.push('/feed')
+    history.push('/calendar')
   },
   onError(error) {
     if(_isMounted){
@@ -97,8 +97,28 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
         margin: '16px 0 0 0',
         padding: '2px 4px 2px 4px'
       },
+      transform: 'translate(0%,50%)',
+      
+    },
+    container: {
+      height: '100vh'
     },
     cardContent: {
+    },
+    logo: {
+      margin: 'auto'
+    },
+    welcome: {
+      textAlign: 'center',
+      fontSize: '22px',
+      fontWeight: 'bold'
+    },
+    image: {
+      // TODO add background image for login screen
+      //${process.env.PUBLIC_URL}
+
+      // backgroundImage: `url(${BackgroundImage})`,
+
     },
     withoutLabel: {
       marginTop: theme.spacing(3),
@@ -113,6 +133,13 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
           borderColor: theme.palette.secondary.main,
         },
       },
+    },
+    signUp: {
+      margin: '16px auto 8px auto',
+      borderRadius: '32px',
+      display: 'flex',
+      color: theme.palette.primary.main,
+      fontWeight: 'bold'
     },
     errorMessage: {
       color: theme.palette.error.main,
@@ -171,18 +198,19 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
   // }
 
   return (
-    <div>
+    <div className={classes.image}>
       { props.location.state ?
         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
           <Alert onClose={handleClose} severity="warning">
             Login to view {location} page
         </Alert>
         </Snackbar> : <></>}
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" className={classes.container}>
         <Card className={classes.root}>
           <CardContent className={classes.cardContent}>
             <div>
-              <Typography variant="h4">Login</Typography>
+              <Avatar alt="Logo" src={process.env.PUBLIC_URL + '/assets/logo/logoPink192.png'} className={classes.logo}/>
+              <Typography variant="h4" className={classes.welcome}>Welcome to Curro</Typography>
             </div>
             <form noValidate autoComplete="off" onSubmit={submitForm}>
               <TextField 
@@ -228,10 +256,10 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
               </FormControl>
               <div>
                 <Typography variant="subtitle1" className={classes.errorMessage}>{values.errorMessage}</Typography>
-                <Button variant="contained" className={classes.textField} color="primary" fullWidth size="large" onClick={loginUser} disabled={loading} type="submit">
+                <Button variant="contained" className={classes.textField} style={{borderRadius:'32px'}} color="primary" fullWidth size="large" onClick={loginUser} disabled={loading} type="submit">
                   {loading ? <CircularProgress color="inherit" size={26}/> : <>Login</> } 
                 </Button>
-                <Button className={classes.textField} fullWidth size="medium" onClick={newUser}>Need an account</Button>
+                <Button className={classes.textField, classes.signUp}  size="medium"  style={{borderRadius:'32px', boxShadow: '1'}} onClick={newUser}>Sign Up</Button>
                 {/* TODO: Add forgot password */}
                 {/* <div className={classes.forgotPassword}>
                   <Link

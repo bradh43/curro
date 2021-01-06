@@ -88,7 +88,7 @@ export const CreateAccount = props => {
     update(_, { data: { createUser: userData } }) {
       _isMounted = false
       context.login(userData)
-      history.push('/feed')
+      history.push('/calendar')
     },
     onError(error) {
       if (_isMounted) {

@@ -196,26 +196,29 @@ const Header = props => {
         className={classes.header}
         // Make the app bar white
         color="inherit"
+        style={user ? {boxShadow: "1"}: {boxShadow: "none"}}
       >
         <Toolbar>
-          <IconButton edge="start" className={clsx(classes.menuButton, state.openDrawer && classes.hide)} color="inherit" aria-label="menu" onClick={handleDrawerOpen}>
+          {user && <IconButton edge="start" className={clsx(classes.menuButton, state.openDrawer && classes.hide)} color="inherit" aria-label="menu" onClick={handleDrawerOpen}>
             <MenuIcon />
-          </IconButton>
-          <Button variant='text' className={classes.homeButton} onClick={() => history.push('/feed')}>
+          </IconButton>}
+          <Button variant='text' className={classes.homeButton} onClick={() => history.push('/calendar')}>
             <Avatar alt="Logo" src={process.env.PUBLIC_URL + '/assets/logo/logoPink192.png'} className={classes.logo}/>
-            <Typography variant="h6" className={classes.title} >
+            {user && <Typography variant="h6" className={classes.title} >
               Curro
-            </Typography>
+            </Typography>}
           </Button>
           <div className={classes.spacer}></div>
           {user && <SearchBar openSearch={state.openSearch} handleSearchOpen={handleSearchOpen} handleDrawerClose={handleDrawerClose} history={history}/>}
           {user && <NotificationBell openNotification={state.openNotification} notificationCount={(!loading && data && data.me) ? data.me.unreadNotificationCount : 0} handleNotificationOpen={handleNotificationOpen} handleDrawerClose={handleDrawerClose} history={history}/>}
           <div ref={menuButtonRef}>
-            {!user ? <Button className={classes.loginButton} onClick={
-              () => {
-                history.push('/login')
-              }
-            }>Login</Button> : <div><IconButton
+            {user &&
+            // <Button className={classes.loginButton} onClick={
+            //   () => {
+            //     history.push('/login')
+            //   }
+            // }>Login</Button> 
+            <div><IconButton
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
@@ -264,13 +267,13 @@ const Header = props => {
         }}
       >
         <div className={classes.drawerHeader}>
-          <IconButton onClick={handleDrawerClose}>
+          {user && <IconButton onClick={handleDrawerClose}>
             <MenuIcon />
-          </IconButton>
+          </IconButton>}
           <Avatar alt="Logo" color="primary" src={process.env.PUBLIC_URL + '/assets/logo/logoPink192.png'} className={classes.logo}/>
-          <Typography variant="h6" className={classes.title} >
+          {user && <Typography variant="h6" className={classes.title} >
             CURRO
-          </Typography>
+          </Typography>}
         </div>
         <Divider />
         <List>

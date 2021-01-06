@@ -6,7 +6,8 @@ var muiTheme = createMuiTheme({
   typography: {
     fontFamily: font,
     button: {
-      textTransform: 'none'
+      textTransform: 'none',
+      borderRadius: '32px'
     }
   },
   palette: {
