@@ -20,6 +20,8 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import Avatar from '@material-ui/core/Avatar';
+import Link from '@material-ui/core/Link';
 
 
 
@@ -115,9 +117,19 @@ export const CreateAccount = props => {
         padding: '2px 4px 2px 4px'
       },
     },
-
+    welcome: {
+      textAlign: 'center',
+      fontSize: '22px',
+      fontWeight: 'bold'
+    },
+    logo: {
+      margin: 'auto'
+    },
     withoutLabel: {
       marginTop: theme.spacing(3),
+    },
+    container: {
+      height: '100vh'
     },
     textField: {
       margin: '16px 0 0 0',
@@ -129,6 +141,13 @@ export const CreateAccount = props => {
           borderColor: theme.palette.secondary.main,
         },
       },
+    },
+    alreadyAccount: {
+      textAlign: 'center',
+      flexGrow: 1,
+      margin: '16px 0 -8px 0',
+      color: "grey",
+
     },
     errorMessage: {
       color: theme.palette.error.main,
@@ -210,11 +229,12 @@ export const CreateAccount = props => {
 
   return (
     <div>
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" className={classes.container}>
         <Card className={classes.root}>
           <CardContent>
             <div>
-              <Typography variant="h4">CreateAccount</Typography>
+              <Avatar alt="Logo" src={process.env.PUBLIC_URL + '/assets/logo/logoPink192.png'} className={classes.logo}/>
+              <Typography variant="h4" className={classes.welcome}>Create your account</Typography>
             </div>
             <form noValidate autoComplete="off" onSubmit={submitForm}>
               <TextField
@@ -340,10 +360,20 @@ export const CreateAccount = props => {
               </FormControl>
               <div>
                 <Typography variant="subtitle1" className={classes.errorMessage}>{values.errorMessage}</Typography>
-                <Button variant="contained" className={classes.textField} color="primary" fullWidth size="large" onClick={createUser} disabled={loading}>
+                <Button variant="contained" className={classes.textField} style={{borderRadius:'32px'}} color="primary" fullWidth size="large" onClick={createUser} disabled={loading}>
                   {loading ? <CircularProgress color="inherit" size={26} /> : <>Create Account</>}
                 </Button>
-                <Button className={classes.textField} fullWidth size="medium" onClick={existingUser}>Already have an account? Login</Button>
+                <div className={classes.alreadyAccount}>
+                  <Link
+                    component="button"
+                    variant="body2"
+                    color="textSecondary"
+                    onClick={existingUser}
+                  > 
+                    Already have an account? Login
+                  </Link>  
+                </div>
+                {/* <Button  fullWidth size="medium" onClick={existingUser}>Already have an account? Login</Button> */}
               </div>
             </form>
           </CardContent>

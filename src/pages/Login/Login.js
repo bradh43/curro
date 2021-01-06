@@ -19,9 +19,10 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-// import Link from '@material-ui/core/Link';
+import Link from '@material-ui/core/Link';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Avatar from '@material-ui/core/Avatar';
+import Divider from '@material-ui/core/Divider';
 
 export const Login = props => {
 
@@ -135,18 +136,23 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
       },
     },
     signUp: {
-      margin: '16px auto 8px auto',
+      margin: '16px auto -8px auto',
       borderRadius: '32px',
       display: 'flex',
       color: theme.palette.primary.main,
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      backgroundColor: 'white'
+      
     },
     errorMessage: {
       color: theme.palette.error.main,
     },
     forgotPassword: {
       textAlign: 'center',
-      flexGrow: 1
+      flexGrow: 1,
+      margin: '16px 0 16px 0',
+      color: "grey",
+
     },
   }));
 
@@ -193,9 +199,9 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
     history.push('createAccount')
   }
 
-  // const forgotPassword = () => {
-  //   console.log("TODO API call to forgot password")
-  // }
+  const forgotPassword = () => {
+    console.log("TODO API call to forgot password")
+  }
 
   return (
     <div className={classes.image}>
@@ -209,6 +215,7 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
         <Card className={classes.root}>
           <CardContent className={classes.cardContent}>
             <div>
+              {/* {TODO add bigger logo here} */}
               <Avatar alt="Logo" src={process.env.PUBLIC_URL + '/assets/logo/logoPink192.png'} className={classes.logo}/>
               <Typography variant="h4" className={classes.welcome}>Welcome to Curro</Typography>
             </div>
@@ -259,18 +266,19 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
                 <Button variant="contained" className={classes.textField} style={{borderRadius:'32px'}} color="primary" fullWidth size="large" onClick={loginUser} disabled={loading} type="submit">
                   {loading ? <CircularProgress color="inherit" size={26}/> : <>Login</> } 
                 </Button>
-                <Button className={classes.textField, classes.signUp}  size="medium"  style={{borderRadius:'32px', boxShadow: '1'}} onClick={newUser}>Sign Up</Button>
-                {/* TODO: Add forgot password */}
-                {/* <div className={classes.forgotPassword}>
+                <div className={classes.forgotPassword}>
                   <Link
-                    component="button"
-                    variant="body2"
-                    color="secondary"
-                    onClick={forgotPassword}
-                  >
-                    Forgot Password?
-                  </Link>   
-                </div> */}
+                      component="button"
+                      variant="body2"
+                      color="textSecondary"
+                      onClick={forgotPassword}
+                    >
+                      Forgot Password?
+                    </Link>  
+                </div> 
+                <Divider variant="middle" />
+                <Button className={classes.signUp} variant="contained" color="inherit" size="medium" onClick={newUser}>Sign Up</Button>
+
               </div>
             </form>
           </CardContent>
