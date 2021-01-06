@@ -90,7 +90,10 @@ export const CreateAccount = props => {
     update(_, { data: { createUser: userData } }) {
       _isMounted = false
       context.login(userData)
-      history.push('/calendar')
+      history.push({
+        pathname: '/',
+        state: { welcome: true }
+      })
     },
     onError(error) {
       if (_isMounted) {
@@ -112,9 +115,11 @@ export const CreateAccount = props => {
       padding: '8px 16px 8px 16px',
       alignItems: 'center',
       flexWrap: 'wrap',
+      transform: 'translate(0%,7%)',
       [theme.breakpoints.down('md')]: {
         margin: '16px 0 0 0',
-        padding: '2px 4px 2px 4px'
+        padding: '2px 4px 2px 4px',
+        transform: 'translate(0%,0%)',
       },
     },
     welcome: {
@@ -129,7 +134,7 @@ export const CreateAccount = props => {
       marginTop: theme.spacing(3),
     },
     container: {
-      height: '100vh'
+     
     },
     textField: {
       margin: '16px 0 0 0',

@@ -222,9 +222,9 @@ export const ToolBar = ({ date, setDate, view, setView, setFirstDayOfWeek, teamL
                         name="age"
                         onChange={handleViewChange}
                     >
-                        <option value={"day"}>Day (d)</option>
-                        <option value={"week"}>Week (w)</option>
-                        <option value={"month"}>Month (m)</option>
+                        <option value={"day"}>Day</option>
+                        <option value={"week"}>Week</option>
+                        <option value={"month"}>Month</option>
                     </NativeSelect>
                 </FormControl>
             </Toolbar>

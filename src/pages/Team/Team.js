@@ -17,7 +17,7 @@ export const Team = (props) => {
 
   const { loading, error, data } = useQuery(TEAM_QUERY, {variables: {id: teamid}});
 
-
+ 
   const classes = useStyles();
   const { history } = props;
 

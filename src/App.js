@@ -129,7 +129,7 @@ function App() {
           <BrowserRouter>
             <Header/>
             <Switch>
-              <ProtectedRoute exact path='/' component={ Feed }/>
+              <ProtectedRoute exact path='/' component={ Calendar }/>
               <Route exact path='/home' component={ Home }/>
               <Route exact path='/about' component={ About }/>
               <Route exact path='/login' component={ Login }/>

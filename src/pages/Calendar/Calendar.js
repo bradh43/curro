@@ -13,6 +13,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { gql, useQuery } from '@apollo/client';
 import TeamPostView from './TeamPostView';
+import { WelcomeModal } from '../../components/Modal/WelcomeModal';
 
 const useStyles = makeStyles((theme) => ({
     addFab: {
@@ -98,8 +99,9 @@ const GET_POSTLIST = gql`
 }
 `;
 
-export const Calendar = () => {
+export const Calendar = (props) => {
     const classes = useStyles();
+    const { history, location } = props;
 
     // API State
     const { data, loading, error } = useQuery(GET_POSTLIST);
@@ -111,6 +113,8 @@ export const Calendar = () => {
     // console.log('postList :>> ', postList);  
 
     // Calendar UI State
+    // TODO change back to false
+    const [welcome, setWelcome] = useState(false);
     const [date, setDate] = useState(new Date());
     const [view, setView] = useState("month");
     const [openModal, setOpenModal] = useState(false);
@@ -120,25 +124,14 @@ export const Calendar = () => {
     const [selectedTeamId, setSelectedTeamId] = useState(null);
     const [numDaysToDisplayInTeamView, setNumDaysToDisplayInTeamView] = useState(3);    // Hard coded to 3 in UI
 
-
-    // Event Handlers ********
-    const viewSwitchKeyPressListener = (e) => {
-        switch (e.key) {
-            case "m":
-                setView("month");
-                break;
-            case "w":
-                setView("week");
-                break;
-            case "d":
-                setView("day");
-                break;
-            default:
-                break;
-        }
-    };
     useEffect(() => {
-        document.addEventListener("keydown", viewSwitchKeyPressListener, false);
+        // Open Welcome modal if react router passes welcome as true
+        if(location.state){
+            if(location.state.welcome){
+                setWelcome(location.state.welcome)
+                location.state.welcome = false
+            }
+        }
     })
 
     // Display Logic
@@ -146,9 +139,6 @@ export const Calendar = () => {
         return (<div className={classes.spinnerWrapper}><CircularProgress color="primary" /></div>)
     }
     if (error) { return <div>Error</div> };
-    
-    //
-
 
     // Personal Calendar
     let currentViewComponent = null;
@@ -190,5 +180,6 @@ export const Calendar = () => {
                     <AddIcon />
                 </Fab>
             </span>
+            <WelcomeModal open={welcome} handleClose={() => setWelcome(false)}/>
         </div>);
 }

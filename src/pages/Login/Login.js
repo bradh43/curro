@@ -79,7 +79,10 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
   update(_, {data: {signIn: userData}}) {
     _isMounted = false
     context.login(userData)
-    history.push('/calendar')
+    history.push({
+      pathname: '/',
+      state: { welcome: false }
+    })
   },
   onError(error) {
     if(_isMounted){
@@ -94,15 +97,16 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
       padding: '8px 16px 8px 16px',
       alignItems: 'center',
       flexWrap: 'wrap',  
+      transform: 'translate(0%,40%)',
       [theme.breakpoints.down('md')]: {
         margin: '16px 0 0 0',
-        padding: '2px 4px 2px 4px'
+        padding: '2px 4px 2px 4px',
+        transform: 'translate(0%,15%)',
       },
-      transform: 'translate(0%,50%)',
       
     },
     container: {
-      height: '100vh'
+
     },
     cardContent: {
     },
@@ -137,7 +141,7 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
     },
     signUp: {
       margin: '16px auto -8px auto',
-      borderRadius: '32px',
+      borderRadius: '21px',
       display: 'flex',
       color: theme.palette.primary.main,
       fontWeight: 'bold',
@@ -263,7 +267,7 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
               </FormControl>
               <div>
                 <Typography variant="subtitle1" className={classes.errorMessage}>{values.errorMessage}</Typography>
-                <Button variant="contained" className={classes.textField} style={{borderRadius:'32px'}} color="primary" fullWidth size="large" onClick={loginUser} disabled={loading} type="submit">
+                <Button variant="contained" className={classes.textField} style={{borderRadius:'21px'}} color="primary" fullWidth size="large" onClick={loginUser} disabled={loading} type="submit">
                   {loading ? <CircularProgress color="inherit" size={26}/> : <>Login</> } 
                 </Button>
                 <div className={classes.forgotPassword}>
