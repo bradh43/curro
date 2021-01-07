@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from 'react';
+import React, { useContext, useState, useRef, useEffect } from 'react';
 import { AuthContext } from '../../auth';
 import { SearchBar } from '../Search/SearchBar';
 import { NotificationBell } from '../Notification/NotificationBell';
@@ -29,6 +29,11 @@ import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import InfoIcon from '@material-ui/icons/Info';
 import Avatar from '@material-ui/core/Avatar';
 import Skeleton from '@material-ui/lab/Skeleton';
+import Hidden from '@material-ui/core/Hidden';
+
+const calanderAliasList = ['/', '/cal', '/calendar']
+const newsfeedAliasList = ['/feed', '/newsfeed']
+
 
 const Header = props => {
   var _fetchedMe = false
@@ -70,6 +75,18 @@ const Header = props => {
     },
     loginButton: {
       
+    },
+    navbarButton: {
+      paddingLeft: 16,
+      paddingRight: 16,
+      fontWeight: 500,
+      color: theme.palette.text.secondary,
+    },
+    activeNavbarButton: {
+      paddingLeft: 16,
+      paddingRight: 16,
+      fontWeight: 500,
+      // color: '#222222'
     },
     homeButton: {
       color: 'white',
@@ -113,7 +130,9 @@ const Header = props => {
   const handleDrawerOpen = () => {
     setState({
       ...state,
-      openDrawer: true
+      openDrawer: true,
+      openNotification: false,
+      openSearch: false,
     });
   }
 
@@ -121,12 +140,14 @@ const Header = props => {
     setState({
       ...state,
       openSearch: true,
+      openNotification: false,
     });
   }
   const handleNotificationOpen = () => {
     setState({
       ...state,
       openNotification: !state.openNotification,
+      openSearch: false,
     });
   }
 
@@ -176,17 +197,39 @@ const Header = props => {
 `;
   const [getMe, { loading, data }] = useLazyQuery(QUERY_ME);
   
+  const [headerShadow, setHeaderShadow] = useState("none")
 
   if((user? true : false) && !_fetchedMe && (data? false : true) && !loading){
     _fetchedMe = true
     getMe()
   }
 
+  if(user && headerShadow === "none"){
+    setHeaderShadow(1)
+  }
+  if(!user && headerShadow === 1){
+    setHeaderShadow("none")
+  }
+
   if(state.openSearch || state.openDrawer || state.openNotification){
     // TODO Disable Scroll when modal is open
   }
-  const { history } = props;
+  const { history, location } = props;
   const classes = useStyles();
+
+  //TODO figure out where we are
+  // TODO bold just the one we are on
+  const [currentPage, setCurrentPage] = useState('/calendar')
+  useEffect(() => {
+    console.log(location.pathname)
+    if(currentPage !== location.pathname){
+      if(calanderAliasList.includes(location.pathname)){
+        setCurrentPage('/calendar')
+      } else if(newsfeedAliasList.includes(location.pathname)){
+        setCurrentPage('/newsfeed')
+      }
+    }
+  })
 
   return (
     <div className={classes.root} >
@@ -196,18 +239,30 @@ const Header = props => {
         className={classes.header}
         // Make the app bar white
         color="inherit"
-        style={user ? {boxShadow: "1"}: {boxShadow: "none"}}
+        style={{boxShadow: headerShadow}}
       >
         <Toolbar>
-          {user && <IconButton edge="start" className={clsx(classes.menuButton, state.openDrawer && classes.hide)} color="inherit" aria-label="menu" onClick={handleDrawerOpen}>
-            <MenuIcon />
-          </IconButton>}
+          <Hidden smUp>
+            {user && <IconButton edge="start" className={clsx(classes.menuButton, state.openDrawer && classes.hide)} color="inherit" aria-label="menu" onClick={handleDrawerOpen}>
+              <MenuIcon />
+            </IconButton>}
+          </Hidden>
           <Button variant='text' className={classes.homeButton} onClick={() => history.push('/calendar')}>
             <Avatar alt="Logo" src={process.env.PUBLIC_URL + '/assets/logo/logoPink192.png'} className={classes.logo}/>
-            {user && <Typography variant="h6" className={classes.title} >
-              Curro
-            </Typography>}
+            {user && <Hidden smUp>
+              <Typography variant="h6" className={classes.title} >
+                Curro
+              </Typography>
+            </Hidden>}
           </Button>
+          <Hidden xsDown>
+            <Button variant='text' size="large" className={currentPage === '/calendar' ? classes.activeNavbarButton : classes.navbarButton} onClick={() => history.push('/calendar')}>
+              Calendar
+            </Button>
+            <Button variant='text' size="large" className={currentPage === '/newsfeed' ? classes.activeNavbarButton : classes.navbarButton} onClick={() => history.push('/newsfeed')}>
+              Newsfeed
+            </Button>
+          </Hidden>
           <div className={classes.spacer}></div>
           {user && <SearchBar openSearch={state.openSearch} handleSearchOpen={handleSearchOpen} handleDrawerClose={handleDrawerClose} history={history}/>}
           {user && <NotificationBell openNotification={state.openNotification} notificationCount={(!loading && data && data.me) ? data.me.unreadNotificationCount : 0} handleNotificationOpen={handleNotificationOpen} handleDrawerClose={handleDrawerClose} history={history}/>}
@@ -272,7 +327,7 @@ const Header = props => {
           </IconButton>}
           <Avatar alt="Logo" color="primary" src={process.env.PUBLIC_URL + '/assets/logo/logoPink192.png'} className={classes.logo}/>
           {user && <Typography variant="h6" className={classes.title} >
-            CURRO
+            Curro
           </Typography>}
         </div>
         <Divider />

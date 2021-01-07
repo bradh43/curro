@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../../auth';
 import { useMutation, gql } from '@apollo/client';
 import { Footer } from '../../components/Footer/Footer';
@@ -28,7 +28,9 @@ import Link from '@material-ui/core/Link';
 export const CreateAccount = props => {
   var _isMounted = true
 
-  const [values, setValues] = React.useState({
+  const [imagePos, setImagePos] = useState(-1)
+
+  const [values, setValues] = useState({
     first: '',
     firstError: false,
     firstErrorMessage: '',
@@ -53,7 +55,7 @@ export const CreateAccount = props => {
     errorMessage: ''
   });
 
-  const [selectedDate, setSelectedDate] = React.useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const handleDateChange = (date) => {
     setSelectedDate(String(date));
@@ -109,6 +111,14 @@ export const CreateAccount = props => {
     return Math.abs(ageDate.getUTCFullYear() - 1970)
   }
 
+  const imageList = ['DSC_0811.jpg', 'DSC_1021.jpg', 'DSC_5789.jpg', 'DSC_8474.jpg', 'DSC_9056.jpg', 'IWU-44.jpg', 'MiniMeet2017-58.jpg', '_DSC3252.jpg', '_DSC5131.jpg']
+
+  useEffect(() => {
+    if(imagePos === -1){
+      setImagePos(Math.floor(Math.random()*imageList.length))
+    }
+  })
+
   const useStyles = makeStyles((theme) => ({
     root: {
       margin: '32px',
@@ -119,13 +129,34 @@ export const CreateAccount = props => {
       [theme.breakpoints.down('md')]: {
         margin: '16px 0 0 0',
         padding: '2px 4px 2px 4px',
-        transform: 'translate(0%,0%)',
+        transform: 'translate(0%,5%)',
       },
     },
     welcome: {
       textAlign: 'center',
       fontSize: '22px',
-      fontWeight: 'bold'
+      fontWeight: 500
+    },
+    content: {
+      position: 'absolute',
+      zIndex: 1,
+      width: '100vw'
+    },
+    image: {
+      height: '100vh',
+      width: '100vw',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'cover',
+      backgroundImage: imagePos !== -1 ? 'url(https://currodevimages.s3.amazonaws.com/background-images/'+imageList[imagePos]+')' : '',
+      zIndex: -1,
+      opacity: 0.6,
+      position: 'absolute',
+      overflow: 'hidden',
+      filter: 'grayscale(75%)',
+      marginTop: -64,
+      [theme.breakpoints.down('sm')]: {
+        marginTop: -56,
+      },
     },
     logo: {
       margin: 'auto'
@@ -150,7 +181,7 @@ export const CreateAccount = props => {
     alreadyAccount: {
       textAlign: 'center',
       flexGrow: 1,
-      margin: '16px 0 -8px 0',
+      margin: '16px 0 0 0',
       color: "grey",
 
     },
@@ -233,7 +264,8 @@ export const CreateAccount = props => {
   }
 
   return (
-    <div>
+    <div className={classes.content}>
+      <div className={classes.image}></div>      
       <Container maxWidth="sm" className={classes.container}>
         <Card className={classes.root}>
           <CardContent>

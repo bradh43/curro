@@ -26,12 +26,12 @@ export const WelcomeModal = (props) => {
     welcome: {
       textAlign: 'center',
       fontSize: '22px',
-      fontWeight: 'bold',
+      fontWeight: 500,
       marginBottom: 16,
     },
     button: {
       marginTop: 16,
-      marginBottom: 24,
+      marginBottom: 48,
       borderRadius: 21,
     },
     closeButton: {

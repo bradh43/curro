@@ -126,11 +126,10 @@ export const Calendar = (props) => {
 
     useEffect(() => {
         // Open Welcome modal if react router passes welcome as true
-        if(location.state){
-            if(location.state.welcome){
-                setWelcome(location.state.welcome)
-                location.state.welcome = false
-            }
+        if(location.state && location.state.welcome){
+            setWelcome(location.state.welcome)
+            // make sure only see welcome modal once
+            location.state.welcome = false
         }
     })
 

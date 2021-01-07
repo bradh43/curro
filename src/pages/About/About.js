@@ -9,6 +9,11 @@ import Typography from '@material-ui/core/Typography';
 // Treadmill Icon by Adrien Coquet from the Noun Project
 // Aqua Icon by Danil Polshin from the Noun Project
 
+// Login/Create Account Marco Quaroni
+// Logo Max Gillespie
+// Class Work Evan Han, Julio Trujillo, Jacob Quigley
+// UI/UX Audrey Western
+
 export const About = () => {
   return (
     <div>

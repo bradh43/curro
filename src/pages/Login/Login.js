@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../auth';
 import { useMutation, gql } from '@apollo/client';
 import { Footer } from '../../components/Footer/Footer';
@@ -24,13 +24,15 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
 
+
 export const Login = props => {
 
   var _isMounted = true
 
   const location = props.location.state ? props.location.state.from.pathname.substring(1) : ''
 
-  const [open, setOpen] = React.useState(location !== '');
+  const [open, setOpen] = useState(location !== '');
+  const [imagePos, setImagePos] = useState(-1)
 
   function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -43,7 +45,7 @@ export const Login = props => {
     setOpen(false);
   };
 
-  const [values, setValues] = React.useState({
+  const [values, setValues] = useState({
     email: '',
     password: '',
     showPassword: false,
@@ -91,6 +93,14 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
   }
 })
 
+  const imageList = ['DSC_0811.jpg', 'DSC_1021.jpg', 'DSC_5789.jpg', 'DSC_8474.jpg', 'DSC_9056.jpg', 'IWU-44.jpg', 'MiniMeet2017-58.jpg', '_DSC3252.jpg', '_DSC5131.jpg']
+
+  useEffect(() => {
+    if(imagePos === -1){
+      setImagePos(Math.floor(Math.random()*imageList.length))
+    }
+  })
+
   const useStyles = makeStyles((theme) => ({
     root: {
       margin: '32px',
@@ -116,14 +126,28 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
     welcome: {
       textAlign: 'center',
       fontSize: '22px',
-      fontWeight: 'bold'
+      fontWeight: 500
+    },
+    content: {
+      position: 'absolute',
+      zIndex: 1,
+      width: '100vw'
     },
     image: {
-      // TODO add background image for login screen
-      //${process.env.PUBLIC_URL}
-
-      // backgroundImage: `url(${BackgroundImage})`,
-
+      height: '100vh',
+      width: '100vw',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'cover',
+      backgroundImage: imagePos !== -1 ? 'url(https://currodevimages.s3.amazonaws.com/background-images/'+imageList[imagePos]+')' : '',
+      zIndex: -1,
+      opacity: 0.6,
+      position: 'absolute',
+      overflow: 'hidden',
+      filter: 'grayscale(75%)',
+      marginTop: -64,
+      [theme.breakpoints.down('sm')]: {
+        marginTop: -56,
+      },
     },
     withoutLabel: {
       marginTop: theme.spacing(3),
@@ -140,13 +164,13 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
       },
     },
     signUp: {
-      margin: '16px auto -8px auto',
+      margin: '16px auto 0px auto',
       borderRadius: '21px',
       display: 'flex',
       color: theme.palette.primary.main,
       fontWeight: 'bold',
-      backgroundColor: 'white'
-      
+      backgroundColor: 'white',
+      width: 112,
     },
     errorMessage: {
       color: theme.palette.error.main,
@@ -208,7 +232,8 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
   }
 
   return (
-    <div className={classes.image}>
+    <div className={classes.content}>
+      <div className={classes.image}></div>
       { props.location.state ?
         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
           <Alert onClose={handleClose} severity="warning">
