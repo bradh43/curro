@@ -1,100 +1,82 @@
-import React, { cloneElement } from 'react';
-import Day from './Day';
+import React, { useEffect, useState, useContext } from 'react';
+import { AuthContext } from '../../auth';
+import { NewActivityModal } from '../../components/Modal/NewActivityModal';
+import { ToolBar } from './ToolBar';
+import { makeStyles } from '@material-ui/core/styles';
+import AddIcon from '@material-ui/icons/Add';
+import Fab from '@material-ui/core/Fab';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { gql, useQuery } from '@apollo/client';
+import { WelcomeModal } from '../../components/Modal/WelcomeModal';
+import { UserNavBar } from '../../components/Calendar/UserNavBar';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import TodayIcon from '@material-ui/icons/Today';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import NativeSelect from '@material-ui/core/NativeSelect';
+import Box from '@material-ui/core/Box';
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
+import { Day } from './Day';
 
-const NUM_DAYS_IN_WEEK = 7;
-const Week = ({ posts, firstDay, currentMonth, setDate, setView }) => {
-    const generateNoPostsDayComponents = () => {
-        // Generate the 7 days in a week using the passed firstDay
-        let firstDayOfWeek = new Date(firstDay);
-        let days = [];
-        for (let i = 0; i < NUM_DAYS_IN_WEEK; i++) {
-            let day = new Date(firstDayOfWeek);
-            days.push(day);
 
-            firstDayOfWeek.setDate(firstDayOfWeek.getDate() + 1);
-        }
+const useStyles = makeStyles((theme) => ({
+    week: {
+      height: "calc(100%/6)",
+      minHeight: 160,
+    },
+    cell: {
+      height: '100%',
+      border: "1px solid #fafafa",
+      padding: 8,
+    },
+}));
 
-        days = days.map(dayDate => {
-            return (
-                <Day currentMonth={currentMonth}
-                    dayDate={dayDate}
-                    setView={setView}
-                    setDate={setDate}
-                    key={"-day" + dayDate.toISOString()}
-                />
-            )
-        });
-        return days;
+
+export const Week = (props) => {
+  const classes = useStyles();
+
+
+  const generateDayComponents = () => {
+    // Generate the 7 days in a week using the passed firstDay
+    let firstDayOfWeek = new Date(props.firstDay);
+    let days = [];
+    for (let i = 0; i < 7; i++) {
+        let day = new Date(firstDayOfWeek);
+        days.push(day);
+  
+        firstDayOfWeek.setDate(firstDayOfWeek.getDate() + 1);
     }
 
+    let dayComponents = []
+    dayComponents = days.map(dayDate => {
+        return (
+          <Grid item xs>
+            <Day dayDate={dayDate} viewMonth={props.viewMonth}/>
+          </Grid>
+        )
+    });
 
-    const paginatePostsByDate = () => {
-        // Construct array of all dates in this week
-        let firstDayOfWeek = new Date(firstDay);
+    return dayComponents;
+  }
 
-        let datesInWeek = [];
-        let dayIndex = new Date(firstDayOfWeek);
-        for (let i = 0; i < NUM_DAYS_IN_WEEK; i++) {
-            let copy = new Date(dayIndex);
-            datesInWeek.push(copy);
+  let dayComponents = generateDayComponents()
 
-            dayIndex.setDate(dayIndex.getDate() + 1);
-        }
+  return (
+    <Grid container item xs={12} spacing={0} className={classes.week}>
+      {dayComponents}
+      <Grid item xs>
+        <Box className={classes.cell}>
 
-        // Todo: Kind of inefficient. O(7n) time rn
-        // Now dump posts into each slot of datesInWeek
-        let postsPaginatedByDays = [];
-
-
-        for (let i = 0; i < NUM_DAYS_IN_WEEK; i++) {
-            const dayInWeek = datesInWeek[i];
-
-            let postsThisDay = [];
-            for (let j = 0; j < posts.length; j++) {
-                let post = posts[j];
-                let postCreationTime = new Date(post.postDate);
-                
-                let sameYear = dayInWeek.getFullYear() === postCreationTime.getFullYear();
-                let sameMonth = dayInWeek.getMonth() === postCreationTime.getMonth();
-                let sameDate = dayInWeek.getDate() === postCreationTime.getDate();
-                let exactSameDate = sameYear && sameMonth && sameDate;
-
-                if (exactSameDate) {
-                    // console.log("START---");
-                    // console.log('post :>> ', post);
-                    // console.log('dayInWeek :>> ', dayInWeek);
-                    // console.log('postCreationTime :>> ', postCreationTime);
-                    // console.log("\n");
-                    postsThisDay.push(post)
-                };
-            }
-            postsPaginatedByDays.push(postsThisDay);
-        }
-        return postsPaginatedByDays;
-    }
-
-    const injectPostsInDayComponents = (dayComponents) => {
-        let postsPaginatedByDays = paginatePostsByDate();
-
-        // console.log('postsPaginatedByDays :>> ', postsPaginatedByDays);
-        let injectedDayComponents = [];
-        for (let i = 0; i < NUM_DAYS_IN_WEEK; i++) {
-            let dayComponent = dayComponents[i];
-            let postsInThisDay = postsPaginatedByDays[i];
-            injectedDayComponents.push(cloneElement(dayComponent, {postsToday: postsInThisDay}));
-        }
-
-        return injectedDayComponents;
-    }
-
-    let uninjectedDays = generateNoPostsDayComponents();
-    let days = injectPostsInDayComponents(uninjectedDays);
-
-    return (
-        <tr>
-            {days}
-        </tr>
-    );
+        </Box>
+      </Grid>
+    </Grid>);
 }
-
-export default Week;

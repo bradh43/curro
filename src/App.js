@@ -4,7 +4,8 @@ import { AuthProvider } from './auth';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { Home } from './pages/Home/Home';
-import { Calendar } from './pages/Calendar/Calendar';
+import { UserCalendar } from './pages/Calendar/UserCalendar';
+import { TeamCalendar } from './pages/Calendar/TeamCalendar';
 import { Feed } from './pages/Feed/Feed';
 import { Profile } from './pages/Profile/Profile';
 import { Team } from './pages/Team/Team';
@@ -129,7 +130,7 @@ function App() {
           <BrowserRouter>
             <Header/>
             <Switch>
-              <ProtectedRoute exact path='/' component={ Calendar }/>
+              <ProtectedRoute exact path='/' component={ UserCalendar }/>
               <Route exact path='/home' component={ Home }/>
               <Route exact path='/about' component={ About }/>
               <Route exact path='/login' component={ Login }/>
@@ -137,8 +138,10 @@ function App() {
               <Route exact path='/createAccount' component={ CreateAccount }/>
               <ProtectedRoute exact path='/explore' component={ Explore }/>
               <ProtectedRoute exact path='/search' component={ Explore }/>
-              <ProtectedRoute exact path='/calendar' component={ Calendar }/>
-              <ProtectedRoute exact path='/cal' component={ Calendar }/>
+              <ProtectedRoute exact path='/calendar' component={ UserCalendar }/>
+              <ProtectedRoute exact path='/calendar/user' component={ UserCalendar }/>
+              <ProtectedRoute exact path='/calendar/user/:userid' component={ UserCalendar }/>
+              <ProtectedRoute exact path='/calendar/team/:teamid' component={ TeamCalendar }/>
               <ProtectedRoute exact path='/feed' component={ Feed }/>
               <ProtectedRoute exact path='/newsfeed' component={ Feed }/>
               <ProtectedRoute exact path='/profile' component={ Profile }/>

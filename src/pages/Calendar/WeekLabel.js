@@ -25,41 +25,38 @@ import NativeSelect from '@material-ui/core/NativeSelect';
 import Box from '@material-ui/core/Box';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
+import { Day } from './Day';
 
 
 const useStyles = makeStyles((theme) => ({
+    week: {
+
+    },
     cell: {
-      height: '100%',
-      border: "1px solid #fafafa",
-      padding: 8,
+      textAlign: 'center',
+      color: theme.palette.text.secondary,
+      padding: 4,
     },
-    previousCell: {
-      height: '100%',
-      border: "1px solid #fafafa",
-      padding: 8,
-      backgroundColor: '#f1f1f1',
-    },
-    today: {
-      backgroundColor: theme.palette.primary.main,
-      height: 24,
-      width: 24,
-      fontSize: '0.875rem',
-    }
 }));
 
-const isToday = (someDate) => {
-  const today = new Date()
-  return someDate.getDate() == today.getDate() &&
-    someDate.getMonth() == today.getMonth() &&
-    someDate.getFullYear() == today.getFullYear()
-}
+const week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
-export const Day = (props) => {
+export const WeekLabel = (props) => {
   const classes = useStyles();
-  const today = isToday(props.dayDate)
+  
   return (
-    <Box className={props.viewMonth === props.dayDate.getMonth() ? classes.cell : classes.previousCell}>
-      {today ? <Avatar className={classes.today}>{props.dayDate.getDate()}</Avatar> : props.dayDate.getDate()}
-    </Box>);
+    <Grid container item xs={12} spacing={0} className={classes.week}>
+      {week.map((dayLabel) => (
+        <Grid item xs>
+          <Box className={classes.cell}>
+            {dayLabel}
+          </Box>
+        </Grid>
+      ))}
+      <Grid item xs>
+        <Box className={classes.cell}>
+          Total
+        </Box>    
+      </Grid>
+    </Grid>);
 }

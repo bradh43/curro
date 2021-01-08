@@ -11,7 +11,6 @@ import { CreateEquipmentModal } from '../../components/Modal/CreateEquipmentModa
 import { ME_QUERY, USER_QUERY } from '../../utils/graphql';
 import { CreateTeamModal } from '../../components/Modal/CreateTeamModal';
 import UserStats from './Stats/UserStats';
-// import UserStats from './Stats/UserStats';
 
 
 export const Profile = (props) => {

@@ -19,7 +19,6 @@ import Select from '@material-ui/core/Select';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import Tooltip from '@material-ui/core/Tooltip';
 import { Button, ButtonGroup, Hidden, Menu } from '@material-ui/core';
-import CalendarSettings from './CalendarSettings';
 import add from 'date-fns/add';
 import TeamSelectDropdown from './TeamSelectDropdown';
 import { addDays, subDays } from 'date-fns';

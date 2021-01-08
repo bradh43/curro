@@ -143,7 +143,7 @@ export const NotificationTile = (props) => {
         </ListItemAvatar>
         <ListItemText 
           primary={<span onClick={navigateToProfile} className={classes.profileClick}>
-            {(props.notification.team&& props.notification.type !== "TEAM_REQUEST") ? props.notification.team.name : props.notification.sender.first + " " + props.notification.sender.last}
+            {(props.notification.team && props.notification.type !== "TEAM_REQUEST") ? props.notification.team.name : props.notification.sender.first + " " + props.notification.sender.last}
              </span>}
           secondary={
             <React.Fragment>

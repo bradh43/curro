@@ -31,9 +31,6 @@ import Avatar from '@material-ui/core/Avatar';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Hidden from '@material-ui/core/Hidden';
 
-const calanderAliasList = ['/', '/cal', '/calendar']
-const newsfeedAliasList = ['/feed', '/newsfeed']
-
 
 const Header = props => {
   var _fetchedMe = false
@@ -221,12 +218,13 @@ const Header = props => {
   // TODO bold just the one we are on
   const [currentPage, setCurrentPage] = useState('/calendar')
   useEffect(() => {
-    console.log(location.pathname)
     if(currentPage !== location.pathname){
-      if(calanderAliasList.includes(location.pathname)){
+      if(location.pathname.includes('cal')){
         setCurrentPage('/calendar')
-      } else if(newsfeedAliasList.includes(location.pathname)){
+      } else if(location.pathname.includes('feed')){
         setCurrentPage('/newsfeed')
+      } else {
+        setCurrentPage(location.pathname)
       }
     }
   })
@@ -256,13 +254,13 @@ const Header = props => {
             </Hidden>}
           </Button>
           <Hidden xsDown>
-            <Button variant='text' size="large" className={currentPage === '/calendar' ? classes.activeNavbarButton : classes.navbarButton} onClick={() => history.push('/calendar')}>
+            {user && <><Button variant='text' size="large" className={currentPage === '/calendar' ? classes.activeNavbarButton : classes.navbarButton} onClick={() => history.push('/calendar')}>
               Calendar
             </Button>
             <Button variant='text' size="large" className={currentPage === '/newsfeed' ? classes.activeNavbarButton : classes.navbarButton} onClick={() => history.push('/newsfeed')}>
               Newsfeed
-            </Button>
-          </Hidden>
+            </Button></>}
+          </Hidden> 
           <div className={classes.spacer}></div>
           {user && <SearchBar openSearch={state.openSearch} handleSearchOpen={handleSearchOpen} handleDrawerClose={handleDrawerClose} history={history}/>}
           {user && <NotificationBell openNotification={state.openNotification} notificationCount={(!loading && data && data.me) ? data.me.unreadNotificationCount : 0} handleNotificationOpen={handleNotificationOpen} handleDrawerClose={handleDrawerClose} history={history}/>}

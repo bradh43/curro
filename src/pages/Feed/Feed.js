@@ -157,7 +157,7 @@ export const Feed = (props) => {
     </div>
     <NewActivityModal openModal={openModal} handleClose={() => setOpenModal(false)} editPost={editPost} setEditPost={setEditPost}/>
     <span className={classes.addFab}>
-        <Fab color="secondary" aria-label="add" onClick={() => setOpenModal(true)}>
+        <Fab color="primary" aria-label="add" onClick={() => setOpenModal(true)}>
             <AddIcon />
         </Fab>
     </span>
