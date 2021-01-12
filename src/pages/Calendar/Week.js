@@ -26,57 +26,132 @@ import Box from '@material-ui/core/Box';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import { Day } from './Day';
-
+import { ActivityTile } from './ActivityTile';
+import moment from 'moment';
+import { format } from 'date-fns'
+import DistanceHelper from '../../utils/DistanceHelper';
+import { AllowedActivity } from '../../components/Activity/AllowedActivity';
 
 const useStyles = makeStyles((theme) => ({
     week: {
-      height: "calc(100%/6)",
-      minHeight: 160,
+      minHeight: 144,
     },
     cell: {
       height: '100%',
       border: "1px solid #fafafa",
       padding: 8,
+      paddingBottom: 32,
+      backgroundColor: '#fff8fb'
     },
 }));
 
+var seenDates = []
+var lastSeenMonth = -1
 
 export const Week = (props) => {
   const classes = useStyles();
 
+  const getPost = (dayDate) => {
+    if(props.data && props.data.getProfileCalendar){
+      const postList = props.data.getProfileCalendar
+      for(var i = 0; i < postList.length; i++){
+        var postDate = moment(postList[i].postDate)
+
+        if(postDate.month() === dayDate.month() && postDate.date() === dayDate.date()){
+          return postList[i]
+        }
+      }
+    }
+    return null
+  }
 
   const generateDayComponents = () => {
     // Generate the 7 days in a week using the passed firstDay
-    let firstDayOfWeek = new Date(props.firstDay);
-    let days = [];
-    for (let i = 0; i < 7; i++) {
-        let day = new Date(firstDayOfWeek);
-        days.push(day);
-  
-        firstDayOfWeek.setDate(firstDayOfWeek.getDate() + 1);
-    }
-
+    let day = moment(props.firstDay);
     let dayComponents = []
-    dayComponents = days.map(dayDate => {
-        return (
-          <Grid item xs>
-            <Day dayDate={dayDate} viewMonth={props.viewMonth}/>
-          </Grid>
-        )
-    });
+    var activityTotals = {}
+
+    for (let i = 0; i < 7; i++) {
+      // find post
+      var post = getPost(day)
+
+      // update activityTotals
+      activityTotals = updateActivityTotals(activityTotals, post)
+
+      dayComponents.push(
+        <Grid item xs key={'day-'+day.date()}>
+          <Day 
+            post={post}
+            dayDate={day} 
+            viewMonth={props.viewMonth}
+            setOpenModal={props.setOpenModal}
+            setModalDate={props.setModalDate}
+          />
+        </Grid>)
+        day = moment(day).add(1, 'days');
+    }
+    let totalComponents = []
+    totalComponents = Object.entries(activityTotals).map(entry => {
+      return(<ActivityTile activity={entry[1]} key={'total-'+entry[0]+props.firstDay.getDate()+'-'+props.firstDay.getMonth()}/>);
+    })
+
+    // display total
+    dayComponents.push(
+      <Grid item xs key={'total-week-'+day.format('YYYY-MM-DD')}>
+        <Box className={classes.cell}>
+          {totalComponents}
+        </Box>
+      </Grid>
+    )
 
     return dayComponents;
   }
 
-  let dayComponents = generateDayComponents()
+  const updateActivityTotals = (activityTotals, post) => {
+    // update totals with post data
+    if(post && post.activityList){
+      post.activityList.map(activity => {
+        // check if already a key in totals
+        if(activityTotals[activity.type]){
+          activityTotals[activity.type] = {
+            'type': activity.type,
+            'total': {
+              'distance': {
+                'value': DistanceHelper.convertDistanceToUnit(activity.distance, activityTotals[activity.type].total.distance.unit) + activityTotals[activity.type].total.distance.value,
+                'unit': activityTotals[activity.type].total.distance.unit
+              },
+              'duration': activity.duration + activityTotals[activity.type].total.duration
+            }
+          }
+        } else {
+          // get the selected activity default unit
+          var selectedActivity = AllowedActivity[0]
+          for(var i=0; i<AllowedActivity.length; i++) {
+            if(AllowedActivity[i].type.replace(/\s+/g, '_').toUpperCase() == activity.type){
+              selectedActivity = AllowedActivity[i]
+              break
+            }
+          }
+
+          activityTotals[activity.type] = {
+            'type': activity.type,
+            'total': {
+              'distance': {
+                'value': DistanceHelper.convertDistanceToUnit(activity.distance, selectedActivity.defaultUnit),
+                'unit': selectedActivity.defaultUnit
+              },
+              'duration': activity.duration
+            }
+          }
+        }
+        
+      })
+    }
+    return activityTotals
+  }
 
   return (
-    <Grid container item xs={12} spacing={0} className={classes.week}>
-      {dayComponents}
-      <Grid item xs>
-        <Box className={classes.cell}>
-
-        </Box>
-      </Grid>
+    <Grid container item xs={12} spacing={0} className={classes.week} style={{minHeight: 'calc(100%/'+props.weekCount+')'}}>
+      {generateDayComponents()}
     </Grid>);
 }

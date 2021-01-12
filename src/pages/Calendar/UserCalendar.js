@@ -10,6 +10,9 @@ import { gql, useQuery } from '@apollo/client';
 import { WelcomeModal } from '../../components/Modal/WelcomeModal';
 import { UserNavBar } from '../../components/Calendar/UserNavBar';
 import { UserCalendarDisplay } from './UserCalendarDisplay';
+import { Profile } from '../Profile/Profile';
+import Moment from 'moment';
+
 
 const useStyles = makeStyles((theme) => ({
     addFab: {
@@ -31,8 +34,10 @@ export const UserCalendar = (props) => {
 
     const [welcome, setWelcome] = useState(false);
     const [openModal, setOpenModal] = useState(false);
+    const [modalDate, setModalDate] = useState(new Date());
     const [viewValue, setViewValue] = React.useState(0);
     const [date, setDate] = useState(new Date());
+    const [mondayFirst, setMondayFirst] = useState(true)
 
     const { user } = useContext(AuthContext)
     const { userid } = props.match.params
@@ -43,6 +48,34 @@ export const UserCalendar = (props) => {
     } else {
       me = true
     }
+
+    const USER_CALENDAR_QUERY = gql`
+        query CALENDAR_POSTS($userId: ID, $date: String){
+            getProfileCalendar(userId: $userId, date: $date){
+                id
+                title
+                postDate
+                activityList {
+                    id
+                    type
+                    duration
+                    distance {
+                        unit
+                        value
+                    }
+                }
+            }
+        }
+    `;
+
+    const getUserCalendarDateFormat = () => {
+        var temp = Moment(date).format('YYYY-MM-DD')
+        return temp.toString()
+    }
+
+    const dateInput = getUserCalendarDateFormat()
+
+    const {data, loading, error} = useQuery(USER_CALENDAR_QUERY, {variables: {userId: userid, date: dateInput}})
 
     useEffect(() => {
         // Open Welcome modal if react router passes welcome as true
@@ -57,12 +90,35 @@ export const UserCalendar = (props) => {
 
     return (
         <div className={classes.root}>
-            <UserNavBar viewValue={viewValue} setViewValue={setViewValue} history={history} me={me} userid={userid}/>
-            {viewValue === CALENDAR_VIEW_VALUE && <UserCalendarDisplay me={me} userid={userid} date={date} setDate={setDate}/>}
-            {viewValue === PROFILE_VIEW_VALUE && <div>Profile</div>}
-            <NewActivityModal openModal={openModal} handleClose={() => setOpenModal(false)} />
+            <UserNavBar 
+                viewValue={viewValue} 
+                setViewValue={setViewValue} 
+                history={history} 
+                me={me} 
+                userid={userid} 
+                mondayFirst={mondayFirst} 
+                setMondayFirst={setMondayFirst}
+            />
+            {viewValue === CALENDAR_VIEW_VALUE && 
+                <UserCalendarDisplay
+                    me={me} 
+                    userid={userid} 
+                    date={date} 
+                    data={data}
+                    loading={loading}
+                    setDate={setDate} 
+                    mondayFirst={mondayFirst}
+                    setOpenModal={setOpenModal}
+                    setModalDate={setModalDate}
+                />}
+            {viewValue === PROFILE_VIEW_VALUE && <Profile userid={userid} me={me} history={history}/>}
+            <NewActivityModal openModal={openModal} handleClose={() => setOpenModal(false)} modalDate={modalDate}/>
             {viewValue === CALENDAR_VIEW_VALUE && <span className={classes.addFab}>
-                <Fab color="primary" aria-label="add" onClick={() => setOpenModal(true)}>
+                <Fab color="primary" aria-label="add" onClick={() => {
+                        setModalDate(new Date())
+                        setOpenModal(true)
+                    }
+                }>
                     <AddIcon />
                 </Fab>
             </span> }

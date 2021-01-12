@@ -39,14 +39,16 @@ export const Profile = (props) => {
   }
 
   const { user } = useContext(AuthContext)
-  const { userid } = props.match.params
+  // const { userid } = props.match.params
 
-  var me = false
-  if(userid && user.id !== userid){
-    me = false
-  } else {
-    me = true
-  }
+  // var me = false
+  // if(userid && user.id !== userid){
+  //   me = false
+  // } else {
+  //   me = true
+  // }
+  const me = props.me
+  const userid = props.userid
   
   const [openCreateTeamModal, setOpenCreateTeamModal] = React.useState(false);
   const [createTeamData, setCreateTeamData] = React.useState(defaultTeamData);

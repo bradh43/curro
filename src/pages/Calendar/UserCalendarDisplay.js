@@ -35,7 +35,9 @@ const WEEKS_TO_DISPLAY_IN_VIEW = 6;
 const useStyles = makeStyles((theme) => ({
     root: {
       margin: '16px 16px 0 16px',
-      // height: 'calc(100vh - 144px)'
+      height: 'calc(100vh - 144px)',
+      boxShadow: 'none',
+      overflow: 'hidden',
     },
     appbar: {
       // backgroundColor: theme.palette.background.main,
@@ -62,16 +64,40 @@ const useStyles = makeStyles((theme) => ({
             margin: 0,
         },
     },
+    weekLabel: {
+      height: 28,
+      width: '100%', 
+    },
     display: {
-      height: '100%' 
+      height: 'calc(100% - 94px)',
+      overflow: 'scroll',
+      width: '100%', 
+    },
+    loading: {
+      position: 'absolute',
+      top: '50vh',
+      left: 0,
+      width: '100vw',
+      height: 64,
+      margin: 0,
+      // backgroundColor: 'red',
+    },
+    progress: {
+      width: 64,
+      display: 'block',
+      margin: 'auto',
     }
+    // weeks: {
+    //   height: 'calc(100% - 64px)',
+    //   width: '100%', 
+    //   // backgroundColor: 'red',
+    //   overflow: 'scroll',
+    // }
 }));
 
 
 export const UserCalendarDisplay = (props) => {
   const classes = useStyles();
-  console.log(props.userid)
-  console.log("Is it me?", props.me)
 
   const previousButton = () => {
     props.setDate(prevDate => {
@@ -94,11 +120,13 @@ export const UserCalendarDisplay = (props) => {
     firstSunday.setDate(-1 * dayOne.getDay() + 1);
 
     let firstDayOfMonthView = firstSunday;
-    // Edge case: if the first day of a month is sunday, I want to go back a week.  
-    if (dayOne.getDay() === 0) {
-      firstDayOfMonthView.setDate(firstDayOfMonthView.getDate() - 7);
+    if(props.mondayFirst){
+      // Edge case: if the first day of a month is sunday, I want to go back a week.  
+      if (dayOne.getDay() === 0) {
+        firstDayOfMonthView.setDate(firstDayOfMonthView.getDate() - 7);
+      }
+      firstDayOfMonthView.setDate(firstDayOfMonthView.getDate() + 1);
     }
-    firstDayOfMonthView.setDate(firstDayOfMonthView.getDate() + 1);
     
     return firstDayOfMonthView
   }
@@ -111,6 +139,11 @@ export const UserCalendarDisplay = (props) => {
       let copy = new Date(weekIndex);
       firstDaysOfMonthView.push(copy);
       weekIndex.setDate(weekIndex.getDate() + 7);
+      copy = new Date(weekIndex);
+      if(props.date.getMonth() !== copy.getMonth()){
+        break;
+      }
+     
     }
 
     return firstDaysOfMonthView;
@@ -125,7 +158,6 @@ export const UserCalendarDisplay = (props) => {
     let temp = getFirstDaysOfMonthView()
     if(firstDaysOfMonthView.length === 0 || temp[0].toString() !== firstDaysOfMonthView[0].toString()){
       setFirstDaysOfMonthView(temp);
-      console.log("hi")
     }
   })
 
@@ -137,7 +169,7 @@ export const UserCalendarDisplay = (props) => {
               <ChevronLeftIcon />
           </IconButton>
         </Tooltip>
-        <Typography variant="h5" color="textSecondary" className={classes.displayCurrent}>
+        <Typography variant="h5" className={classes.displayCurrent}>
             {calendarTitle}
         </Typography>
         <Tooltip title={"Next Month"} enterDelay={400} >
@@ -146,12 +178,30 @@ export const UserCalendarDisplay = (props) => {
           </IconButton>
         </Tooltip>
       </Toolbar>
+      <Grid container spacing={0} className={classes.weekLabel}>
+        <WeekLabel mondayFirst={props.mondayFirst} key={'week-label'}/>
+      </Grid>
       <Grid container spacing={0} className={classes.display}>
-        <WeekLabel/>
-        {firstDaysOfMonthView.map(firstDay => {
-          return <Week firstDay={firstDay} viewMonth={props.date.getMonth()}/>
+
+        {firstDaysOfMonthView.map((firstDay, weekNumber) => {
+          return (<Week
+            data={props.data} 
+            loading={props.loading}
+            firstDay={firstDay} 
+            viewMonth={props.date.getMonth()} 
+            weekCount={firstDaysOfMonthView.length} 
+            weekNumber={weekNumber} 
+            key={'week-'+props.date.getMonth()+'-'+weekNumber}
+            setOpenModal={props.setOpenModal}
+            setModalDate={props.setModalDate}
+          />);
         })}
       </Grid>
+      {props.loading && <div className={classes.loading}>
+        <div className={classes.progress}>
+          <CircularProgress/>
+        </div>
+      </div>}
 
     </Paper>);
 }

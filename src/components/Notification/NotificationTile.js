@@ -110,7 +110,7 @@ export const NotificationTile = (props) => {
     updateNotificationMutation({ variables: notificationInput })
   }
   const navigateToUserProfile = () => {
-    history.push('/profile/'+props.notification.sender.id)
+    history.push('/user/'+props.notification.sender.id)
     if(props.handleDrawerClose){
       props.handleDrawerClose()
     }

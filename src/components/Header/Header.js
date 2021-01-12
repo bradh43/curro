@@ -31,7 +31,6 @@ import Avatar from '@material-ui/core/Avatar';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Hidden from '@material-ui/core/Hidden';
 
-
 const Header = props => {
   var _fetchedMe = false
   const client = useApolloClient();
@@ -208,18 +207,16 @@ const Header = props => {
     setHeaderShadow("none")
   }
 
-  if(state.openSearch || state.openDrawer || state.openNotification){
-    // TODO Disable Scroll when modal is open
-  }
+  // if(state.openSearch || state.openDrawer || state.openNotification){
+  //   // TODO Disable Scroll when modal is open
+  // }
   const { history, location } = props;
   const classes = useStyles();
 
-  //TODO figure out where we are
-  // TODO bold just the one we are on
   const [currentPage, setCurrentPage] = useState('/calendar')
   useEffect(() => {
     if(currentPage !== location.pathname){
-      if(location.pathname.includes('cal')){
+      if(location.pathname.includes('cal') || location.pathname === '/' || location.pathname.includes('/user') || location.pathname.includes('/team')){
         setCurrentPage('/calendar')
       } else if(location.pathname.includes('feed')){
         setCurrentPage('/newsfeed')
@@ -300,7 +297,8 @@ const Header = props => {
                 >
                   <MenuItem onClick={() => {
                     handleMenuClose()
-                    history.push('/profile');
+                    history.push('/calendar');
+                    // TODO make sure it opens profile tab
                   }
                   }>{loading | !data ? "Profile" : data.me.username}</MenuItem>
                   <MenuItem onClick={() => logoutUser(history, client)} disabled={signOutLoading}>Logout</MenuItem>

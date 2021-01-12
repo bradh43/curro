@@ -214,7 +214,7 @@ export const ToolBar = ({ date, setDate, view, setView, setFirstDayOfWeek, teamL
                 </Typography>
 
                 {/* Component File */}
-                <CalendarSettings setFirstDayOfWeek={setFirstDayOfWeek}></CalendarSettings>
+                {/* <CalendarSettings setFirstDayOfWeek={setFirstDayOfWeek}></CalendarSettings> */}
                 <FormControl>
                     <NativeSelect
                         value={view}

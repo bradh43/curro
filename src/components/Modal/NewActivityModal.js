@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMutation, gql } from '@apollo/client';
 import produce from "immer";
 import { ActivityTile } from '../Activity/ActivityTile';
@@ -95,7 +95,7 @@ var _previousPostId = ''
 
 export const NewActivityModal = (props) => {
   const classes = useStyles();
-  const [selectedDate, setSelectedDate] = React.useState(new Date());
+  const [selectedDate, setSelectedDate] = React.useState(props.modalDate ? props.modalDate : new Date());
   const [activityData, setActivityData] = React.useState([]);
   const [openSelectActivityModal, setOpenSelectActivityModal] = useState(false)
   const [openActivityDetailModal, setOpenActivityDetailModal] = useState(false)
@@ -103,6 +103,12 @@ export const NewActivityModal = (props) => {
   const [selectedActivity, setSelectedActivity] = useState(AllowedActivity[0])
   const [editActivity, setEditActivity] = useState(false)
   const [openConfirmDelete, setOpenConfirmDelete] = React.useState(false);
+
+  useEffect(() => {
+    if(props.modalDate){
+      setSelectedDate(props.modalDate)
+    }
+  })
 
   const handleConfirmDeleteOpen = () => {
     setOpenConfirmDelete(true);

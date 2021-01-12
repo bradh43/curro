@@ -7,8 +7,6 @@ import { Home } from './pages/Home/Home';
 import { UserCalendar } from './pages/Calendar/UserCalendar';
 import { TeamCalendar } from './pages/Calendar/TeamCalendar';
 import { Feed } from './pages/Feed/Feed';
-import { Profile } from './pages/Profile/Profile';
-import { Team } from './pages/Team/Team';
 import { About } from './pages/About/About';
 import { Explore } from './pages/Explore/Explore';
 import { Settings } from './pages/Settings/Settings';
@@ -139,14 +137,10 @@ function App() {
               <ProtectedRoute exact path='/explore' component={ Explore }/>
               <ProtectedRoute exact path='/search' component={ Explore }/>
               <ProtectedRoute exact path='/calendar' component={ UserCalendar }/>
-              <ProtectedRoute exact path='/calendar/user' component={ UserCalendar }/>
-              <ProtectedRoute exact path='/calendar/user/:userid' component={ UserCalendar }/>
-              <ProtectedRoute exact path='/calendar/team/:teamid' component={ TeamCalendar }/>
+              <ProtectedRoute exact path='/user/:userid' component={ UserCalendar }/>
+              <ProtectedRoute exact path='/team/:teamid' component={ TeamCalendar }/>
               <ProtectedRoute exact path='/feed' component={ Feed }/>
               <ProtectedRoute exact path='/newsfeed' component={ Feed }/>
-              <ProtectedRoute exact path='/profile' component={ Profile }/>
-              <ProtectedRoute exact path='/profile/:userid' component={ Profile }/>
-              <ProtectedRoute exact path='/team/:teamid' component={ Team }/>
               <ProtectedRoute exact path='/setting' component={ Settings }/>
               <ProtectedRoute exact path='/settings' component={ Settings }/>
               <Route exact path='/error' component={ PageNotFound }/>

@@ -163,7 +163,7 @@ export const PostCard = props => {
   }
 
   const navigateToUserProfile = () => { 
-    history.push('profile/'+props.post.author.id)
+    history.push('user/'+props.post.author.id)
   }
 
   

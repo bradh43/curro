@@ -34,26 +34,27 @@ const useStyles = makeStyles((theme) => ({
     },
     cell: {
       textAlign: 'center',
-      color: theme.palette.text.secondary,
+      color: '#8AA0BD',
       padding: 4,
     },
 }));
 
-const week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+const mondayWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+const sundayWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 export const WeekLabel = (props) => {
   const classes = useStyles();
   
   return (
     <Grid container item xs={12} spacing={0} className={classes.week}>
-      {week.map((dayLabel) => (
-        <Grid item xs>
+      {(props.mondayFirst ? mondayWeek : sundayWeek).map((dayLabel) => (
+        <Grid item xs key={dayLabel}>
           <Box className={classes.cell}>
             {dayLabel}
           </Box>
         </Grid>
       ))}
-      <Grid item xs>
+      <Grid item xs key={'total'}>
         <Box className={classes.cell}>
           Total
         </Box>    

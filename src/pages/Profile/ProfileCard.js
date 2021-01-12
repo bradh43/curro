@@ -38,7 +38,7 @@ export const ProfileCard = props => {
       backgroundColor: theme.palette.background.main,
       textAlign: 'center',
       marginBottom: 8,
-      cursor: 'pointer'
+      cursor: 'pointer',
     },
     requestButton: {
       marginBottom: 16,

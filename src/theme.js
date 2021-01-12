@@ -18,8 +18,8 @@ var muiTheme = createMuiTheme({
       main: '#8B51FF'
     },
     background: {
-      main: '#fafafa',
-    }
+      main: '#EEEFF1',
+    },
   },
   overrides: {
     MuiInput: {

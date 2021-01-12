@@ -132,7 +132,7 @@ export const Comment = props => {
   }
 
   const navigateToUserProfile = () => {
-    history.push('profile/'+props.comment.author.id)
+    history.push('user/'+props.comment.author.id)
   }
 
   const classes = useStyles();

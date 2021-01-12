@@ -39,9 +39,11 @@ import Select from '@material-ui/core/Select';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import TeamSelectDropdown from './TeamSelectDropdown';
+
+const CALENDAR_VIEW_VALUE = 0
 
 export const UserNavBar = props => {
-  var _fetchedMe = false
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -63,58 +65,86 @@ export const UserNavBar = props => {
       
     },
     select: {
-      paddingRight: 8
+      paddingRight: 8,
     },
     profilePicture: {
-      margin: '4px 16px 0 16px'
+      margin: '4px 16px 0 16px',
     },
     settings: {
-      marginRight: 16
+      marginRight: 16,
+      position: 'absolute',
+      right: 0,
+    },
+    navbarSide: {
+      whiteSpace: 'nowrap',
+      width: 248,
+      display: 'flex',
+      position: 'relative',
     }
   }));
 
   const QUERY_ME = gql`
-  query {
-    me {
-      id
-      username
-      profilePictureURL
-      teamList {
+    query {
+      me {
         id
-        name
+        username
+        first
+        last
+        profilePictureURL
+        teamList {
+          id
+          name
+          profilePictureURL
+        }
       }
     }
-  }
-`;
+  `;
+
+  const QUERY_USER = gql`
+    query getUser($id: ID!){
+      user(id: $id){
+        id
+        username
+        first
+        last
+        profilePictureURL
+      }
+    }
+  `;
 
   const { history, location } = props;
   const classes = useStyles();
   const { user } = useContext(AuthContext)
   const settingsButtonRef = useRef()
-  var _fetchedMe = false
-  const [getMe, { loading, data }] = useLazyQuery(QUERY_ME);
+  var _fetchedUser = false
+  const [getUser, { loading, data }] = useLazyQuery(props.me ? QUERY_ME : QUERY_USER);
   
-  if((user? true : false) && !_fetchedMe && (data? false : true) && !loading){
-    _fetchedMe = true
-    getMe()
+  if((user? true : false) && !_fetchedUser && (data? false : true) && !loading){
+    _fetchedUser = true
+    if(props.me){
+      getUser()
+    } else {
+      const input = {
+        variables: {
+          id: props.userid
+        }
+      }
+      getUser(input)
+    }
   }
-  //TODO figure out where we are
-  // TODO bold just the one we are on
+
   const [currentPage, setCurrentPage] = useState('/calendar')
   useEffect(() => {
 
+    
   })
-  if(data){
-    console.log(data)
-  }
+  
   const handleChange = (event, newValue) => {
     props.setViewValue(newValue)
   };
   const [currentTeam, setCurrentTeam] = useState(0);
 
   const handleTeamChange = (event, newValue) => {
-    console.log("Team Select", event.target.value)
-    // TODO load all of teams data or pass it somewhere
     setCurrentTeam(event.target.value)
   };
 
@@ -125,61 +155,42 @@ export const UserNavBar = props => {
   const handleSettingsClose = () => {
     setOpenSettingsMenu(false)
   }
+  const handleSundayFirst = () => {
+    props.setMondayFirst(false)
+    setOpenSettingsMenu(false)
+  }
+  const handleMondayFirst = () => {
+    props.setMondayFirst(true)
+    setOpenSettingsMenu(false)
+  }
 
+  
   return (
     <div className={classes.root} >
-      <Avatar 
-        alt='Profile Picture'
-        variant='circle' 
-        src={props.profile}
-        // onClick={navigateToProfile}
-        className={classes.profilePicture}
-      />
-     <FormControl className={classes.teamSelect}>
-        {/* <InputLabel id="user-calendar-select-label">Team</InputLabel> */}
-        <Select
-          IconComponent={() => (
-            <ExpandMoreIcon />
-          )}
-          labelId="user-calendar-select-label"
-          id="user-calendar-select"
-          value={currentTeam}
-          onChange={handleTeamChange}
-          disableUnderline={true}
-        >
-          {/* TODO map all user's teams to drop down */}
-          {/* { loading  ? <CircularProgress className={classes.loadingResults}/> :
-            (data && data.me && data.me.teamList) && 
-            (data.me.teamList.length >= 1 ?
-              data.me.teamList.map((team, index) => (
-                <MenuItem value={index}>{team.name}</MenuItem>
-              )) :
-              <NoResults/>)
-            }
-          {data && data.me && data.me.teamList} &&  */}
-          <MenuItem className={classes.select} disableGutters={true} value={0}>My Calendar</MenuItem>
-          <MenuItem value={1}>Team 2</MenuItem>
-          <MenuItem value={2}>Team 3</MenuItem>
-        </Select>
-      </FormControl>
-      {/* <StyledMenu
-                id="customized-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-            >
-                {teamList.map(team => {
-                    return (
-                        <TeamMenuItem 
-                            teamName={team.name} 
-                            teamId={team.id}
-                            teamImageURL={team.profilePictureURL}
-                            key={`dropdown-${team.id}-${team.name}`}
-                        />
-                    )
-                })}
-            </StyledMenu> */}
+      <span className={classes.navbarSide}>
+        <Avatar 
+          alt='Profile Picture'
+          variant='circle' 
+          src={props.me ? ((data && data.me) ? data.me.profilePictureURL : "") : ((data && data.user) ? data.user.profilePictureURL : "")}
+          className={classes.profilePicture}
+        />
+        {!props.me && data && data.user && 
+          <Button
+            aria-controls="customized-menu"
+            aria-haspopup="true"
+            onClick={() => props.setViewValue(0)}
+            size="large"
+          >
+            {data.user.username + ' Calendar'}
+          </Button>}
+        {props.me && <TeamSelectDropdown 
+            history={history}
+            setViewValue={props.setViewValue}
+            teamList={(data && data.me && data.me.teamList) ? data.me.teamList: []}
+            setSelectedTeamId={0}
+            user={(data && data.me) ? data.me : ""}
+        />}
+      </span>
       <div className={classes.spacer}></div>
       <Tabs
         value={props.viewValue}
@@ -192,33 +203,35 @@ export const UserNavBar = props => {
         <Tab label="Profile" />
       </Tabs>
       <div className={classes.spacer}></div>
-      <div className={classes.settings} ref={settingsButtonRef}>
-      <IconButton 
-        aria-label='settings'
-        onClick={handleSettingsClick}
-      >
-        <SettingsIcon />
-      </IconButton>
-        <Menu
-          id="menu-settings"
-          className={classes.settingsMenu}
-          anchorEl={settingsButtonRef.current}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          keepMounted
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          open={openSettingsMenu}
-          onClose={handleSettingsClose}
-        >
-          <MenuItem onClick={() => {console.log("Settings Menu Item 1 clicked")}}>Settings Item 1</MenuItem>
-          <MenuItem onClick={() => console.log("Settings Menu Item 2 clicked")} >Settings Item 2</MenuItem>
-        </Menu>
-        </div>
+      <span className={classes.navbarSide}>
+        {props.viewValue === CALENDAR_VIEW_VALUE && <div className={classes.settings} ref={settingsButtonRef}>
+          <IconButton 
+            aria-label='settings'
+            onClick={handleSettingsClick}
+          >
+            <SettingsIcon />
+          </IconButton>
+          <Menu
+            id="menu-settings"
+            className={classes.settingsMenu}
+            anchorEl={settingsButtonRef.current}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            open={openSettingsMenu}
+            onClose={handleSettingsClose}
+          >
+            <MenuItem onClick={handleSundayFirst}>Sundays First</MenuItem>
+            <MenuItem onClick={handleMondayFirst}>Mondays First</MenuItem>
+          </Menu>
+        </div>}
+      </span>
     </div>);
 
 }

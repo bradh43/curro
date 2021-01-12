@@ -3,8 +3,10 @@
 html, body {
   max-width: 100%;
   overflow-x: hidden;
+  background-color: #EEEFF1;
 }
 
 body {
-  height: 100vh;
+  /* Do not make 100vh or newsfeed scroll breaks */
+  background-color: #EEEFF1 !important;
 }
