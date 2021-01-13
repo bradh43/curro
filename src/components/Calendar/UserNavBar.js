@@ -40,6 +40,8 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TeamSelectDropdown from './TeamSelectDropdown';
+import AddIcon from '@material-ui/icons/Add';
+import Fab from '@material-ui/core/Fab';
 
 const CALENDAR_VIEW_VALUE = 0
 
@@ -74,6 +76,17 @@ export const UserNavBar = props => {
       marginRight: 16,
       position: 'absolute',
       right: 0,
+    },
+    addFab: {
+      position: 'absolute',
+      top: 8,
+      right: 72,
+    },
+    addButton: {
+      boxShadow: '0px 3px 5px -1px rgba(0,0,0,0.2)',
+    },
+    addIcon: {
+      fontSize: 18,
     },
     navbarSide: {
       whiteSpace: 'nowrap',
@@ -192,18 +205,33 @@ export const UserNavBar = props => {
         />}
       </span>
       <div className={classes.spacer}></div>
-      <Tabs
-        value={props.viewValue}
-        className={classes.tabs}
-        indicatorColor="primary"
-        centered
-        onChange={handleChange}
-      >
-        <Tab label="Calendar" />
-        <Tab label="Profile" />
-      </Tabs>
+      <Hidden xsDown>
+        <Tabs
+          value={props.viewValue}
+          className={classes.tabs}
+          indicatorColor="primary"
+          centered
+          onChange={handleChange}
+        >
+          <Tab label="Calendar" />
+          <Tab label="Profile" />
+        </Tabs>
+      </Hidden>
       <div className={classes.spacer}></div>
       <span className={classes.navbarSide}>
+        {props.viewValue === CALENDAR_VIEW_VALUE && 
+          <Hidden xsDown>
+            <span className={classes.addFab}>
+              <Fab color="primary" aria-label="add" size="small" variant="extended" className={classes.addButton} onClick={() => {
+                  props.setModalDate(new Date())
+                  props.setOpenModal(true)
+                }
+              }>
+                <AddIcon className={classes.addIcon}/>
+                Post
+              </Fab>
+            </span>
+            </Hidden>}
         {props.viewValue === CALENDAR_VIEW_VALUE && <div className={classes.settings} ref={settingsButtonRef}>
           <IconButton 
             aria-label='settings'

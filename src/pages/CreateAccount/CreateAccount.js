@@ -121,13 +121,13 @@ export const CreateAccount = props => {
 
   const useStyles = makeStyles((theme) => ({
     root: {
-      margin: '32px',
+      margin: '16px',
       padding: '8px 16px 8px 16px',
       alignItems: 'center',
       flexWrap: 'wrap',
       transform: 'translate(0%,7%)',
       [theme.breakpoints.down('md')]: {
-        margin: '16px 0 0 0',
+        margin: '16px 0 16px 0',
         padding: '2px 4px 2px 4px',
         transform: 'translate(0%,5%)',
       },
@@ -148,9 +148,11 @@ export const CreateAccount = props => {
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'cover',
       backgroundImage: imagePos !== -1 ? 'url(https://currodevimages.s3.amazonaws.com/background-images/'+imageList[imagePos]+')' : '',
+      backgroundAttachment: 'fixed',
+      backgroundPosition: 'center',
       zIndex: -1,
       opacity: 0.6,
-      position: 'absolute',
+      position: 'fixed',
       overflow: 'hidden',
       filter: 'grayscale(75%)',
       marginTop: -64,
@@ -165,7 +167,7 @@ export const CreateAccount = props => {
       marginTop: theme.spacing(3),
     },
     container: {
-     
+
     },
     textField: {
       margin: '16px 0 0 0',

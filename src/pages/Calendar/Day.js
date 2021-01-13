@@ -27,6 +27,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import List from '@material-ui/core/List';
+import Hidden from '@material-ui/core/Hidden';
 import { ActivityTile } from './ActivityTile';
 import moment from 'moment';
 
@@ -34,36 +35,36 @@ const useStyles = makeStyles((theme) => ({
     cell: {
       height: '100%',
       width: '100%',
-      border: "1px solid #fafafa",
+      border: "1px solid #E8E8E8",
       padding: 8,
       backgroundColor: '#ffffff',
       position: 'relative',
+    },
+    previousCell: {
+      backgroundColor: '#fbfbfb',
+      opacity: 0.7
+    },
+    hoverCell: {
       cursor: 'pointer',
-      color: '#5d5d5d',
+      color: '#1a1a1a',
       '&:hover': {
         backgroundColor: '#f5f5f5',
       }
     },
-    previousCell: {
-      height: '100%',
-      width: '100%',
-      border: "1px solid #fafafa",
-      padding: 8,
-      backgroundColor: '#f5f2fb',
-      position: 'relative',
-      color: '#bfbfbf',
-      cursor: 'pointer',
-      opacity: 0.7,
-      '&:hover': {
-        backgroundColor: '#f7f7f7',
-      }
+    postCell: {
+      [theme.breakpoints.down('xs')]: {
+        backgroundColor: '#F8F2F4',
+      },
     },
     date: {
-      color: '#8AA0BD',
+      color: '#8C8C8C',
       position: 'absolute',
       top: 8,
       left: 8,
       width: 24,
+      [theme.breakpoints.down('sm')]: {
+        textAlign: 'center',
+      },
     },
     today: {
       backgroundColor: theme.palette.primary.main,
@@ -74,15 +75,15 @@ const useStyles = makeStyles((theme) => ({
       lineHeight: '24px',
       textAlign: 'center',
       position: 'absolute',
-      top: 0,
-      left: 0,
+      top: -2,
+      left: -2,
     },
     title: {
       whiteSpace: 'nowrap',
       display: 'inline-block',
       marginLeft: 24,
-      color: '#232323',
-      fontWeight: 400,
+      color: '#1a1a1a',
+      fontWeight: '600',
       width: 'calc(((100vw - 32px) / 8) - 50px)',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
@@ -93,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const isToday = (someDate) => {
-  return someDate.isSame(moment())
+  return someDate.isSame(moment(), 'day')
 }
 
 export const Day = (props) => {
@@ -103,22 +104,47 @@ export const Day = (props) => {
   const post = props.post
 
   const openPostModal = () => {
-    if(post && post.id){
-      // edit post
-      console.log(post.id)
-      console.log("TODO: open edit post modal, and query post info")
-
-    } else {
-      // create new post
-      props.setModalDate(props.dayDate)
+    if(props.me){
+      if(post && post.id){
+        // edit post
+        // TODO query for post (API call)
+        console.log("TODO: query post: ", post.id)
+        props.setEditPost(post)
+      } else {
+        // create new post
+        props.setModalDate(props.dayDate)
+      }
       props.setOpenModal(true)
+    } else {
+      if(post && post.id){
+        // TODO View Details of User Post
+        console.log("View User Post: ",post.id)
+      } 
     }
+   
+  }
 
+  const getCellClass = () => {
+    var cellClass = `${classes.cell}`
+    if(props.viewMonth !== props.dayDate.month()){
+      cellClass = `${cellClass} ${classes.previousCell}`
+    }
+    // var cellClass = props.viewMonth !== props.dayDate.month() ? `${classes.cell} ${classes.previousCell}` : `${classes.cell}`
+    // if(props.me || post){
+    //   cellClass = props.viewMonth !== props.dayDate.month() ? `${classes.cell} ${classes.previousCell} ${classes.hoverCell}` : `${classes.cell} ${classes.hoverCell}`
+    // }
+    if(props.me || post){
+      cellClass =  `${cellClass} ${classes.hoverCell}`
+    }
+    if(post){
+      cellClass =  `${cellClass} ${classes.postCell}`
+    }
+    return cellClass
   }
   
   return (
     <Box 
-      className={props.viewMonth !== props.dayDate.month() ? classes.previousCell : classes.cell} 
+      className={getCellClass()} 
       onClick={openPostModal}
     >
       <div style={{width: '100%', height: '24px'}}>
@@ -126,9 +152,12 @@ export const Day = (props) => {
           <span className={classes.date}>
             {today ? <Avatar className={classes.today}>{props.dayDate.date()}</Avatar> : props.dayDate.date()}
           </span>
-          {post && <span style={{width: '24px', height: '24px'}}>
-            <Typography display={'inline'} variant={'body2'} className={classes.title}>{post.title}</Typography>
-          </span>}
+          {post && 
+            <Hidden xsDown>
+              <span style={{width: '24px', height: '24px'}}>
+                <Typography display={'inline'} variant={'body2'} className={classes.title}>{post.title}</Typography>
+              </span>
+            </Hidden>}
         </div>
         <div>
           {post && post.activityList.map(activity => (

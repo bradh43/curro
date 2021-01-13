@@ -25,21 +25,17 @@ import NativeSelect from '@material-ui/core/NativeSelect';
 import Box from '@material-ui/core/Box';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
+import Hidden from '@material-ui/core/Hidden';
 import Avatar from '@material-ui/core/Avatar';
 import TimeHelper from '../../utils/TimeHelper'
 import DistanceHelper from '../../utils/DistanceHelper'
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import PoolIcon from '@material-ui/icons/Pool'; //swim
-import DirectionsRunIcon from '@material-ui/icons/DirectionsRun'; //run, alter-g
-import DirectionsBikeIcon from '@material-ui/icons/DirectionsBike'; //bike
-import HotelIcon from '@material-ui/icons/Hotel'; //sleep
-import FitnessCenterIcon from '@material-ui/icons/FitnessCenter'; //default icon
 
 const useStyles = makeStyles((theme) => ({
     activityCell: {
-      backgroundColor: '#EEEFF1',
+      backgroundColor: '#E8E8E8',
       borderRadius: 4,
       padding: 0,
       margin: 0,
@@ -70,11 +66,22 @@ const useStyles = makeStyles((theme) => ({
       fontSize: '1rem',
       height: 16,
       width: 16,
+      marginTop: 1,
     },
 }));
 
 const getTotalMin = (totalMs) => {
   return Math.ceil(totalMs/60000)
+}
+
+const getTotalTimeFormat = (totalMs) => {
+  const hour = Math.floor(totalMs/(60000* 60))
+  const min = getTotalMin(totalMs-(hour*(60000* 60)))
+
+  const hourFormat = hour === 0 ? '' : `${hour} hr `
+  const minFormat = min === 0 ? '' : `${min} min`
+
+  return `${hourFormat}${minFormat}`
 }
 
 
@@ -85,25 +92,25 @@ export const ActivityTile = (props) => {
   const getActivityTypeIcon = (activityType) => {
     switch(activityType.toUpperCase()) {
       case "RUN":
-        return <DirectionsRunIcon className={classes.icon}/>
+        return <Avatar alt="Run" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/run.svg'} className={classes.icon}/>
       case "BIKE":
-        return <DirectionsBikeIcon className={classes.icon}/>
+        return <Avatar alt="Bike" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/bike.svg'} className={classes.icon}/>
       case "SWIM":
-        return <PoolIcon className={classes.icon}/>
+        return <Avatar alt="Swim" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/swim.svg'} className={classes.icon}/>
       case "SLEEP":
-        return <HotelIcon className={classes.icon}/>
+        return <Avatar alt="Sleep" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/sleep.svg'} className={classes.icon}/>
       case "CLIMB":
-        return <Avatar alt="Climb" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/noun_climbing.png'} className={classes.icon}/>
+        return <Avatar alt="Climb" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/climb.svg'} className={classes.icon}/>
       case "ALTERG":
-        return <Avatar alt="AlterG" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/noun_treadmill.png'} className={classes.icon}/>
+        return <Avatar alt="AlterG" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/alterg.svg'} className={classes.icon}/>
       case "YOGA":
-        return <Avatar alt="Yoga" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/noun_yoga.png'} className={classes.icon}/>
+        return <Avatar alt="Yoga" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/yoga.svg'} className={classes.icon}/>
       case "AQUA_JOG":
-        return <Avatar alt="Aqua" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/noun_aqua.png'} className={classes.icon}/>
+        return <Avatar alt="Aqua" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/aqua_jog.svg'} className={classes.icon}/>
       case "HIKE":
-        return <Avatar alt="Hike" src={process.env.PUBLIC_URL + '/assets/icons/noun_hiking.png'} className={classes.icon}/>
+        return <Avatar alt="Hike" src={process.env.PUBLIC_URL + '/assets/icons/hike.svg'} className={classes.icon}/>
       default:
-        return <FitnessCenterIcon className={classes.icon}/>
+        return <Avatar alt="Lift" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/lift.svg'} className={classes.icon}/>
     }
   }
 
@@ -113,28 +120,35 @@ export const ActivityTile = (props) => {
         {props.activity && props.activity.type && getActivityTypeIcon(props.activity.type)}
       </span>
     </span>
-    {props.activity && props.activity.total && props.activity.total.duration && props.activity.total.duration !== 0 && 
-    <>
-      <span className={classes.middleDot}>&#183;</span>
-      <Typography display={'inline'} variant={'body2'} className={classes.details}>{getTotalMin(props.activity.total.duration) + ' min'}</Typography>
-    </>}
-    {props.activity && props.activity.total && props.activity.total.distance && props.activity.total.distance.value !== 0 && 
-    <>
-      <span className={classes.middleDot}>&#183;</span>
-      <Typography display={'inline'} variant={'body2'} className={classes.details}>{props.activity.total.distance.value + ' ' + props.activity.total.distance.unit}</Typography>
-    </>}
+    <Hidden only={'xs'}>
+      <Hidden lgUp>
+        <Typography display={'inline'} variant={'body2'} className={classes.details}>{props.activity.type}</Typography>
+      </Hidden>
+    </Hidden>
+    <Hidden mdDown>
+      {props.activity && props.activity.total && props.activity.total.duration && props.activity.total.duration !== 0 && 
+      <>
+        <span className={classes.middleDot}>&#183;</span>
+        <Typography display={'inline'} variant={'body2'} className={classes.details}>{getTotalTimeFormat(props.activity.total.duration)}</Typography>
+      </>}
+      {props.activity && props.activity.total && props.activity.total.distance && props.activity.total.distance.value !== 0 && 
+      <>
+        <span className={classes.middleDot}>&#183;</span>
+        <Typography display={'inline'} variant={'body2'} className={classes.details}>{props.activity.total.distance.value + ' ' + props.activity.total.distance.unit}</Typography>
+      </>}
 
-    {props.activity && props.activity.duration && props.activity.duration !== 0 && 
-      <>
-        <span className={classes.middleDot}>&#183;</span>
-        <Typography display={'inline'} variant={'body2'} className={classes.details}>{getTotalMin(props.activity.duration) + ' min'}</Typography>
-      </>
-    }
-    {props.activity && props.activity.distance && props.activity.distance.value !== 0 && 
-      <>
-        <span className={classes.middleDot}>&#183;</span>
-        <Typography display={'inline'} variant={'body2'} className={classes.details}>{props.activity.distance.value + ' ' + props.activity.distance.unit}</Typography>
-      </>
-    }
+      {props.activity && props.activity.duration && props.activity.duration !== 0 && 
+        <>
+          <span className={classes.middleDot}>&#183;</span>
+          <Typography display={'inline'} variant={'body2'} className={classes.details}>{getTotalMin(props.activity.duration) + ' min'}</Typography>
+        </>
+      }
+      {props.activity && props.activity.distance && props.activity.distance.value !== 0 && 
+        <>
+          <span className={classes.middleDot}>&#183;</span>
+          <Typography display={'inline'} variant={'body2'} className={classes.details}>{props.activity.distance.value + ' ' + props.activity.distance.unit}</Typography>
+        </>
+      }
+    </Hidden>
   </div>);
 }

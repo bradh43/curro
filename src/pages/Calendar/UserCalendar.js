@@ -3,6 +3,7 @@ import { AuthContext } from '../../auth';
 import { NewActivityModal } from '../../components/Modal/NewActivityModal';
 import { ToolBar } from './ToolBar';
 import { makeStyles } from '@material-ui/core/styles';
+import Hidden from '@material-ui/core/Hidden';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -18,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     addFab: {
         position: 'fixed',
         bottom: 16,
-        right: 32,
+        right: 16,
     },
     root: {
         flexGrow: 1,
@@ -34,6 +35,7 @@ export const UserCalendar = (props) => {
 
     const [welcome, setWelcome] = useState(false);
     const [openModal, setOpenModal] = useState(false);
+    const [editPost, setEditPost] = useState(null)
     const [modalDate, setModalDate] = useState(new Date());
     const [viewValue, setViewValue] = React.useState(0);
     const [date, setDate] = useState(new Date());
@@ -93,6 +95,8 @@ export const UserCalendar = (props) => {
             <UserNavBar 
                 viewValue={viewValue} 
                 setViewValue={setViewValue} 
+                setModalDate={setModalDate}
+                setOpenModal={setOpenModal}
                 history={history} 
                 me={me} 
                 userid={userid} 
@@ -101,6 +105,8 @@ export const UserCalendar = (props) => {
             />
             {viewValue === CALENDAR_VIEW_VALUE && 
                 <UserCalendarDisplay
+                    editPost={editPost}
+                    setEditPost={setEditPost}
                     me={me} 
                     userid={userid} 
                     date={date} 
@@ -112,16 +118,19 @@ export const UserCalendar = (props) => {
                     setModalDate={setModalDate}
                 />}
             {viewValue === PROFILE_VIEW_VALUE && <Profile userid={userid} me={me} history={history}/>}
-            <NewActivityModal openModal={openModal} handleClose={() => setOpenModal(false)} modalDate={modalDate}/>
-            {viewValue === CALENDAR_VIEW_VALUE && <span className={classes.addFab}>
-                <Fab color="primary" aria-label="add" onClick={() => {
-                        setModalDate(new Date())
-                        setOpenModal(true)
-                    }
-                }>
-                    <AddIcon />
-                </Fab>
-            </span> }
+            <NewActivityModal openModal={openModal} handleClose={() => setOpenModal(false)} modalDate={modalDate} editPost={editPost} setEditPost={setEditPost}/>
+            {viewValue === CALENDAR_VIEW_VALUE && 
+                <Hidden smUp>
+                    <span className={classes.addFab}>
+                        <Fab color="primary" aria-label="add" size="small" className={classes.addButton} onClick={() => {
+                                setModalDate(new Date())
+                                setOpenModal(true)
+                            }
+                        }>
+                            <AddIcon className={classes.addIcon}/>
+                        </Fab>
+                    </span> 
+                </Hidden>}
             <WelcomeModal open={welcome} handleClose={() => setWelcome(false)}/>
         </div>);
 }

@@ -25,6 +25,7 @@ import NativeSelect from '@material-ui/core/NativeSelect';
 import Box from '@material-ui/core/Box';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
+import Hidden from '@material-ui/core/Hidden';
 import { Day } from './Day';
 import { ActivityTile } from './ActivityTile';
 import moment from 'moment';
@@ -38,10 +39,10 @@ const useStyles = makeStyles((theme) => ({
     },
     cell: {
       height: '100%',
-      border: "1px solid #fafafa",
+      border: "1px solid #E8E8E8",
       padding: 8,
       paddingBottom: 32,
-      backgroundColor: '#fff8fb'
+      backgroundColor: '#F8F2F4'
     },
 }));
 
@@ -82,7 +83,10 @@ export const Week = (props) => {
         <Grid item xs key={'day-'+day.date()}>
           <Day 
             post={post}
+            editPost={props.editPost} 
+            setEditPost={props.setEditPost}
             dayDate={day} 
+            me={props.me}
             viewMonth={props.viewMonth}
             setOpenModal={props.setOpenModal}
             setModalDate={props.setModalDate}
@@ -92,16 +96,20 @@ export const Week = (props) => {
     }
     let totalComponents = []
     totalComponents = Object.entries(activityTotals).map(entry => {
-      return(<ActivityTile activity={entry[1]} key={'total-'+entry[0]+props.firstDay.getDate()+'-'+props.firstDay.getMonth()}/>);
+      return (
+        <ActivityTile activity={entry[1]} key={'total-'+entry[0]+props.firstDay.getDate()+'-'+props.firstDay.getMonth()}/>
+      );
     })
 
     // display total
     dayComponents.push(
-      <Grid item xs key={'total-week-'+day.format('YYYY-MM-DD')}>
-        <Box className={classes.cell}>
-          {totalComponents}
-        </Box>
-      </Grid>
+      <Hidden mdDown>
+        <Grid item xs key={'total-week-'+day.format('YYYY-MM-DD')}>
+          <Box className={classes.cell}>
+            {totalComponents}
+          </Box>
+        </Grid>
+      </Hidden>
     )
 
     return dayComponents;

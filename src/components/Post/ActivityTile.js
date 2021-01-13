@@ -1,16 +1,19 @@
 import React from 'react';
 import TimeHelper from '../../utils/TimeHelper'
 import DistanceHelper from '../../utils/DistanceHelper'
+import { makeStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import PoolIcon from '@material-ui/icons/Pool'; //swim
-import DirectionsRunIcon from '@material-ui/icons/DirectionsRun'; //run, alter-g
-import DirectionsBikeIcon from '@material-ui/icons/DirectionsBike'; //bike
-import HotelIcon from '@material-ui/icons/Hotel'; //sleep
-import FitnessCenterIcon from '@material-ui/icons/FitnessCenter'; //default icon
 import Avatar from '@material-ui/core/Avatar';
 
+
+const useStyles = makeStyles((theme) => ({
+    icon: {
+      height: 24,
+      width: 24,
+    },
+}));
 
 export const ActivityTile = props => {
   
@@ -22,28 +25,30 @@ export const ActivityTile = props => {
 
   const pace = (validDistance && validDuration) ? ("("+DistanceHelper.calculateAveragePace(props.activity.distance, props.activity.duration, props.activity.type) + ")") : ""
 
+  const classes = useStyles();
+
   const getActivityTypeIcon = (activityType) => {
     switch(activityType.toUpperCase()) {
       case "RUN":
-        return <DirectionsRunIcon/>
+        return <Avatar alt="Run" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/run.svg'} className={classes.icon}/>
       case "BIKE":
-        return <DirectionsBikeIcon/>
+        return <Avatar alt="Bike" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/bike.svg'} className={classes.icon}/>
       case "SWIM":
-        return <PoolIcon/>
+        return <Avatar alt="Swim" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/swim.svg'} className={classes.icon}/>
       case "SLEEP":
-        return <HotelIcon/>
+        return <Avatar alt="Sleep" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/sleep.svg'} className={classes.icon}/>
       case "CLIMB":
-        return <Avatar alt="Climb" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/noun_climbing.png'} style={{height: "24px", width: "24px"}}/>
+        return <Avatar alt="Climb" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/climb.svg'} className={classes.icon}/>
       case "ALTERG":
-        return <Avatar alt="AlterG" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/noun_treadmill.png'} style={{height: "24px", width: "24px"}}/>
+        return <Avatar alt="AlterG" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/alterg.svg'} className={classes.icon}/>
       case "YOGA":
-        return <Avatar alt="Yoga" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/noun_yoga.png'} style={{height: "24px", width: "24px"}}/>
+        return <Avatar alt="Yoga" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/yoga.svg'} className={classes.icon}/>
       case "AQUA_JOG":
-        return <Avatar alt="Aqua" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/noun_aqua.png'} style={{height: "24px", width: "24px"}}/>
+        return <Avatar alt="Aqua" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/aqua_jog.svg'} className={classes.icon}/>
       case "HIKE":
-        return <Avatar alt="Hike" src={process.env.PUBLIC_URL + '/assets/icons/noun_hiking.png'} style={{height: "24px", width: "24px"}}/>
+        return <Avatar alt="Hike" src={process.env.PUBLIC_URL + '/assets/icons/hike.svg'} className={classes.icon}/>
       default:
-        return <FitnessCenterIcon/>
+        return <Avatar alt="Lift" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/lift.svg'} className={classes.icon}/>
     }
   }
 

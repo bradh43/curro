@@ -25,6 +25,7 @@ import NativeSelect from '@material-ui/core/NativeSelect';
 import Box from '@material-ui/core/Box';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
+import Hidden from '@material-ui/core/Hidden';
 import { Day } from './Day';
 
 
@@ -47,17 +48,30 @@ export const WeekLabel = (props) => {
   
   return (
     <Grid container item xs={12} spacing={0} className={classes.week}>
-      {(props.mondayFirst ? mondayWeek : sundayWeek).map((dayLabel) => (
-        <Grid item xs key={dayLabel}>
+      <Hidden smUp>
+        {(props.mondayFirst ? mondayWeek : sundayWeek).map((dayLabel) => (
+          <Grid item xs key={dayLabel}>
+            <Box className={classes.cell}>
+              {dayLabel[0]}
+            </Box>
+          </Grid>
+        ))}
+      </Hidden>
+      <Hidden xsDown>
+        {(props.mondayFirst ? mondayWeek : sundayWeek).map((dayLabel) => (
+          <Grid item xs key={dayLabel}>
+            <Box className={classes.cell}>
+              {dayLabel}
+            </Box>
+          </Grid>
+        ))}
+      </Hidden>
+      <Hidden mdDown>
+        <Grid item xs key={'total'}>
           <Box className={classes.cell}>
-            {dayLabel}
-          </Box>
+            Total
+          </Box>    
         </Grid>
-      ))}
-      <Grid item xs key={'total'}>
-        <Box className={classes.cell}>
-          Total
-        </Box>    
-      </Grid>
+      </Hidden>
     </Grid>);
 }

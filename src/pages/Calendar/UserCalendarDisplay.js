@@ -38,6 +38,13 @@ const useStyles = makeStyles((theme) => ({
       height: 'calc(100vh - 144px)',
       boxShadow: 'none',
       overflow: 'hidden',
+      [theme.breakpoints.down('sm')]: {
+          height: 'calc(100vh - 136px)',
+      },
+      [theme.breakpoints.down('xs')]: {
+          margin: '8px 8px 0 8px',
+          height: 'calc(100vh - 128px)',
+      },
     },
     appbar: {
       // backgroundColor: theme.palette.background.main,
@@ -45,11 +52,11 @@ const useStyles = makeStyles((theme) => ({
       // position: 'static',
     },
     toolbar: {
+      boxShadow: '0 2px rgba(0,0,0,0.12)',
       [theme.breakpoints.down('sm')]: {
           paddingLeft: 4,
           paddingRight: 4,
       },
-      boxShadow: '0 2px rgba(0,0,0,0.12)',
     },
     title: {
         marginRight: theme.spacing(2),
@@ -72,6 +79,9 @@ const useStyles = makeStyles((theme) => ({
       height: 'calc(100% - 94px)',
       overflow: 'scroll',
       width: '100%', 
+      [theme.breakpoints.down('xs')]: {
+          height: 'calc(100% - 86px)',
+      },
     },
     loading: {
       position: 'absolute',
@@ -187,12 +197,15 @@ export const UserCalendarDisplay = (props) => {
           return (<Week
             data={props.data} 
             loading={props.loading}
+            me={props.me}
             firstDay={firstDay} 
             viewMonth={props.date.getMonth()} 
             weekCount={firstDaysOfMonthView.length} 
             weekNumber={weekNumber} 
             key={'week-'+props.date.getMonth()+'-'+weekNumber}
             setOpenModal={props.setOpenModal}
+            editPost={props.editPost} 
+            setEditPost={props.setEditPost}
             setModalDate={props.setModalDate}
           />);
         })}

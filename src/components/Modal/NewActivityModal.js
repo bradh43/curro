@@ -12,11 +12,6 @@ import Modal from '@material-ui/core/Modal';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import DateFnsUtils from '@date-io/date-fns';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
 import Toolbar from '@material-ui/core/Toolbar';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -87,6 +82,12 @@ const useStyles = makeStyles((theme) => ({
   },
   postDate: {
     paddingTop: 16,
+  },
+  activityTile: {
+    boxShadow: 'none',
+    [theme.breakpoints.up('sm')]: {
+      maxWidth: '40%',
+    },
   }
 }));
 
@@ -122,9 +123,7 @@ export const NewActivityModal = (props) => {
     title: '',
     note: '',
     titleError: false,
-    dateError: false,
     titleErrorMessage: '',
-    dateErrorMessage: '',
     errorMessage: ''
   }
   const [post, setPost] = React.useState(defaultPost);
@@ -190,14 +189,6 @@ export const NewActivityModal = (props) => {
     setEditActivityValues(defaultActivityValues)
   }
 
-  const handleDateChange = (date) => {
-    if(date !== ''){
-      setPost({ ...post, 
-        dateError: false,
-      });
-    }
-    setSelectedDate(date);
-  };
   const clearState = () => {
     if(editPost){
       props.setEditPost(null)
@@ -213,9 +204,9 @@ export const NewActivityModal = (props) => {
     
   }
 
-  const formatDate = (postDate) => {
+  const formatDate = () => {
     var options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'};
-    var date = new Date(postDate) 
+    var date = props.editPost ? new Date(props.editPost.postDate) : new Date(selectedDate)
     return date.toLocaleDateString("en-US", options)
   }
 
@@ -338,11 +329,9 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
     const selectedDateValid = selectedDate !== null
 
     var titleErrorMessage = 'Title is required'
-    var dateErrorMessage = 'Date is required'
 
     setPost({ ...post, 
       titleError: !postTitleValid, titleErrorMessage: titleErrorMessage,
-      dateError: !selectedDateValid, dateErrorMessage: dateErrorMessage
     });
 
     if(postTitleValid && selectedDateValid) {
@@ -460,29 +449,11 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
             variant="outlined" 
             required
           />
-          {editPost ? <Typography variant="subtitle1" className={classes.postDate}>{formatDate(props.editPost.postDate)}</Typography>
-          : <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardDatePicker
-              fullWidth
-              required
-              className={classes.textField}
-              margin="normal"
-              id="date-picker-dialog"
-              label="Activity Date"
-              format="MM/dd/yyyy"
-              value={selectedDate}
-              onChange={handleDateChange}
-              helperText={post.dateError ? post.dateErrorMessage : ''}
-              error={post.dateError}
-              KeyboardButtonProps={{
-                'aria-label': 'change date',
-              }}
-            />
-          </MuiPickersUtilsProvider>}
+          <Typography variant="subtitle1" className={classes.postDate}>{formatDate()}</Typography>
           <div className={classes.activityGrid}>
             <GridList className={classes.gridList} cols={1.5} >
               {activityData.map((activity) => (
-                <GridListTile key={activity.id} style={{boxShadow: 'none'}}>
+                <GridListTile key={activity.id} className={classes.activityTile}>
                     <ActivityTile 
                       activity={activity} 
                       edit={true}
@@ -494,7 +465,7 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
                     />
                 </GridListTile>
               ))}
-              <GridListTile key="add-activity-button">
+              <GridListTile key="add-activity-button" className={classes.activityTile}>
                 <AddActivityButton openSelectActivity={() => setOpenSelectActivityModal(true)}/>
               </GridListTile>
             </GridList>
