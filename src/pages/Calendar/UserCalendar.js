@@ -28,6 +28,8 @@ const useStyles = makeStyles((theme) => ({
 
 const CALENDAR_VIEW_VALUE = 0
 const PROFILE_VIEW_VALUE = 1
+var previousUserid = null
+var previousView = null
 
 export const UserCalendar = (props) => {
     const classes = useStyles();
@@ -37,18 +39,19 @@ export const UserCalendar = (props) => {
     const [openModal, setOpenModal] = useState(false);
     const [editPost, setEditPost] = useState(null)
     const [modalDate, setModalDate] = useState(new Date());
-    const [viewValue, setViewValue] = React.useState(0);
+    const [viewValue, setViewValue] = React.useState((location.state && location.state.calendar) ? CALENDAR_VIEW_VALUE : PROFILE_VIEW_VALUE);
     const [date, setDate] = useState(new Date());
     const [mondayFirst, setMondayFirst] = useState(true)
 
     const { user } = useContext(AuthContext)
-    const { userid } = props.match.params
+    var { userid } = props.match.params
 
     var me = false
     if(userid && user.id !== userid){
       me = false
     } else {
       me = true
+      userid = user.id
     }
 
     const USER_CALENDAR_QUERY = gql`
@@ -85,6 +88,19 @@ export const UserCalendar = (props) => {
             setWelcome(location.state.welcome)
             // make sure only see welcome modal once
             location.state.welcome = false
+        }
+        // Check if calendar or profile view
+        if(previousUserid != userid || (location.state && location.state.calendar !== null)){
+            previousUserid = userid
+            if(location.state && location.state.calendar){
+                setViewValue(CALENDAR_VIEW_VALUE)
+                location.state.calendar = null
+            } else {
+                setViewValue(PROFILE_VIEW_VALUE)
+                if(location.state){
+                    location.state.calendar = null
+                }
+            }
         }
     })
 

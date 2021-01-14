@@ -231,14 +231,14 @@ const UserStats = ({ userid }) => {
 
     return (
         <>
-            <Grid item xs={12} lg={12}>
+            {/* <Grid item xs={12} lg={12}>
                 <BasicLayout title={'Combined Activity History'}>
                     {activityDataMap && <CumulativeBarChart activityDataMap={activityDataMap} />}
                 </BasicLayout>
                 <BasicLayout title={'Single Activity History'}>
                     {activityDataMap && <SingleBarChart activityDataMap={activityDataMap} />}
                 </BasicLayout>
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} lg={12}>
                 <BasicLayout title={'Numbers'}>

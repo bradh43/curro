@@ -96,13 +96,7 @@ const useStyles = makeStyles((theme) => ({
       width: 64,
       display: 'block',
       margin: 'auto',
-    }
-    // weeks: {
-    //   height: 'calc(100% - 64px)',
-    //   width: '100%', 
-    //   // backgroundColor: 'red',
-    //   overflow: 'scroll',
-    // }
+    },
 }));
 
 

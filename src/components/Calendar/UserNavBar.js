@@ -44,6 +44,7 @@ import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 
 const CALENDAR_VIEW_VALUE = 0
+var _fetchedUser = false
 
 export const UserNavBar = props => {
 
@@ -129,12 +130,36 @@ export const UserNavBar = props => {
   const classes = useStyles();
   const { user } = useContext(AuthContext)
   const settingsButtonRef = useRef()
-  var _fetchedUser = false
   const [getUser, { loading, data }] = useLazyQuery(props.me ? QUERY_ME : QUERY_USER);
   
-  if((user? true : false) && !_fetchedUser && (data? false : true) && !loading){
-    _fetchedUser = true
+  // TODO Fix this logic, should load if new user or me
+  // check if view a different users profile
+  if(data && props.userid && data.user && data.user.id !== props.userid){
+    _fetchedUser = false
+  }
+  
+  // if((user? true : false) && props.userid && !_fetchedUser && !loading){
+  //   _fetchedUser = true
+  //   if(props.me){
+  //     console.log("getting me")
+  //     getUser()
+  //   } else {
+  //     const input = {
+  //       variables: {
+  //         id: props.userid
+  //       }
+  //     }
+  //     console.log("getting user")
+  //     console.log(props.userid)
+  //     getUser(input)
+  //   }
+  // }
+
+  const [currentPage, setCurrentPage] = useState('/calendar')
+  useEffect(() => {
+    console.log("mount")
     if(props.me){
+      console.log("getting me")
       getUser()
     } else {
       const input = {
@@ -142,15 +167,12 @@ export const UserNavBar = props => {
           id: props.userid
         }
       }
+      console.log("getting user")
+      console.log(props.userid)
       getUser(input)
     }
-  }
-
-  const [currentPage, setCurrentPage] = useState('/calendar')
-  useEffect(() => {
-
     
-  })
+  }, [props.me, props.userid])
   
   const handleChange = (event, newValue) => {
     props.setViewValue(newValue)
@@ -191,10 +213,11 @@ export const UserNavBar = props => {
           <Button
             aria-controls="customized-menu"
             aria-haspopup="true"
+            style={{textTransform: 'none'}}
             onClick={() => props.setViewValue(0)}
             size="large"
           >
-            {data.user.username + ' Calendar'}
+            {data.user.first + '\'s Calendar'}
           </Button>}
         {props.me && <TeamSelectDropdown 
             history={history}

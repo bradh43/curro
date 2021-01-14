@@ -103,8 +103,8 @@ export const Week = (props) => {
 
     // display total
     dayComponents.push(
-      <Hidden mdDown>
-        <Grid item xs key={'total-week-'+day.format('YYYY-MM-DD')}>
+      <Hidden mdDown key={'total-week-'+day.format('YYYY-MM-DD')}>
+        <Grid item xs>
           <Box className={classes.cell}>
             {totalComponents}
           </Box>

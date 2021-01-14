@@ -83,7 +83,10 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
     context.login(userData)
     history.push({
       pathname: '/',
-      state: { welcome: false }
+      state: { 
+        welcome: false,
+        calendar: true,
+      }
     })
   },
   onError(error) {

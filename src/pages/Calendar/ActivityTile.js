@@ -37,10 +37,9 @@ const useStyles = makeStyles((theme) => ({
     activityCell: {
       backgroundColor: '#E8E8E8',
       borderRadius: 4,
-      padding: 0,
+      padding: 2,
       margin: 0,
       marginTop: 4,
-      height: 20,
     },
     details: {
       paddingLeft: 4,
@@ -68,6 +67,10 @@ const useStyles = makeStyles((theme) => ({
       width: 16,
       marginTop: 1,
     },
+    totalList: {
+      width: 96,
+      display: 'inline-block',
+    }
 }));
 
 const getTotalMin = (totalMs) => {
@@ -114,8 +117,20 @@ export const ActivityTile = (props) => {
     }
   }
 
-  return (<div className={classes.activityCell}>
-    <span className={classes.activityIcon}>
+  const isTotal = props.activity && props.activity.total 
+  const isActivityTotalDuration = isTotal && props.activity.total.duration && props.activity.total.duration !== 0
+  const isActivityTotalDistance = isTotal && props.activity.total.distance && props.activity.total.distance.value !== 0
+
+  const getActivityCellStyle = () => {
+    if(isActivityTotalDuration && isActivityTotalDistance){
+      return {top: '-8px'}
+    }
+    return {}
+  }
+
+  return (
+  <div className={classes.activityCell}>
+    <span className={classes.activityIcon} style={getActivityCellStyle()}>
       <span className={classes.innerActivityIcon}>
         {props.activity && props.activity.type && getActivityTypeIcon(props.activity.type)}
       </span>
@@ -126,17 +141,18 @@ export const ActivityTile = (props) => {
       </Hidden>
     </Hidden>
     <Hidden mdDown>
-      {props.activity && props.activity.total && props.activity.total.duration && props.activity.total.duration !== 0 && 
-      <>
-        <span className={classes.middleDot}>&#183;</span>
-        <Typography display={'inline'} variant={'body2'} className={classes.details}>{getTotalTimeFormat(props.activity.total.duration)}</Typography>
-      </>}
-      {props.activity && props.activity.total && props.activity.total.distance && props.activity.total.distance.value !== 0 && 
-      <>
-        <span className={classes.middleDot}>&#183;</span>
-        <Typography display={'inline'} variant={'body2'} className={classes.details}>{props.activity.total.distance.value + ' ' + props.activity.total.distance.unit}</Typography>
-      </>}
-
+      {isTotal && <span className={classes.totalList}>
+        {isActivityTotalDuration && 
+        <div>
+          <span className={classes.middleDot}>&#183;</span>
+          <Typography display={'inline'} variant={'body2'} className={classes.details}>{getTotalTimeFormat(props.activity.total.duration)}</Typography>
+        </div>}
+        {isActivityTotalDistance && 
+        <div>
+          <span className={classes.middleDot}>&#183;</span>
+          <Typography display={'inline'} variant={'body2'} className={classes.details}>{props.activity.total.distance.value + ' ' + props.activity.total.distance.unit}</Typography>
+        </div>}
+      </span>}
       {props.activity && props.activity.duration && props.activity.duration !== 0 && 
         <>
           <span className={classes.middleDot}>&#183;</span>

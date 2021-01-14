@@ -113,6 +113,15 @@ export const CREATE_POST_MUTATION = gql`
   ${POST_FRAGMENT}
 `;
 
+export const GET_POST_BY_ID_QUERY = gql`
+  query getPost($id: ID!){
+    post(id: $id){
+      ...FeedPagePost
+    }
+  }
+  ${POST_FRAGMENT}
+`;
+
 const TEAM_FRAGMENT = gql`
   fragment TeamData on Team {
     id

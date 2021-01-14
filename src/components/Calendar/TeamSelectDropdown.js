@@ -97,7 +97,7 @@ export default function TeamSelectDropdown({ teamList, user, setViewValue, histo
             <Button
                 onClick={handleClick}
                 size="large"
-                style={{height: 48}}
+                style={{height: 48, textTransform: 'none'}}
             >
               {currentTeam}
                <ExpandMoreIcon />

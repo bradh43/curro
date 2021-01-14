@@ -94,7 +94,10 @@ export const CreateAccount = props => {
       context.login(userData)
       history.push({
         pathname: '/',
-        state: { welcome: true }
+        state: { 
+          welcome: true,
+          calendar: false, 
+        }
       })
     },
     onError(error) {

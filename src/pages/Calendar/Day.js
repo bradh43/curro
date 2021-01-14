@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, useLazyQuery } from '@apollo/client';
 import { WelcomeModal } from '../../components/Modal/WelcomeModal';
 import { UserNavBar } from '../../components/Calendar/UserNavBar';
 import Paper from '@material-ui/core/Paper';
@@ -30,6 +30,7 @@ import List from '@material-ui/core/List';
 import Hidden from '@material-ui/core/Hidden';
 import { ActivityTile } from './ActivityTile';
 import moment from 'moment';
+import { GET_POST_BY_ID_QUERY } from '../../utils/graphql';
 
 const useStyles = makeStyles((theme) => ({
     cell: {
@@ -90,12 +91,24 @@ const useStyles = makeStyles((theme) => ({
       '&:hover': {
         color: theme.palette.primary.main,
       }
-    }
+    },
+    loading: {
+      position: 'absolute',
+      top: 16,
+    },
+    loadingBox: {
+      width: 40,
+      display: 'block',
+      margin: 'auto',
+      position: 'relative'
+    },
 }));
 
 const isToday = (someDate) => {
   return someDate.isSame(moment(), 'day')
 }
+
+var moreDetailPost = {}
 
 export const Day = (props) => {
   const classes = useStyles();
@@ -103,18 +116,38 @@ export const Day = (props) => {
 
   const post = props.post
 
+  const [getPost, { data, loading }] = useLazyQuery(GET_POST_BY_ID_QUERY, {
+    onCompleted: (result) => {
+      moreDetailPost[post.id] = result.post
+      props.setEditPost(result.post)
+      props.setOpenModal(true)
+      return 
+    },
+    onError: (error) => console.log(error)
+  })
+
+
   const openPostModal = () => {
     if(props.me){
       if(post && post.id){
+        console.log("edit post")
         // edit post
-        // TODO query for post (API call)
-        console.log("TODO: query post: ", post.id)
-        props.setEditPost(post)
+        if(moreDetailPost[post.id]){
+          console.log("already got post")
+          // already got post data
+          props.setEditPost(moreDetailPost[post.id])
+          props.setOpenModal(true)
+        } else {
+          // Get post data first time
+          getPost({
+            variables: {id: post.id},
+          })
+        }
       } else {
         // create new post
         props.setModalDate(props.dayDate)
+        props.setOpenModal(true)
       }
-      props.setOpenModal(true)
     } else {
       if(post && post.id){
         // TODO View Details of User Post
@@ -159,6 +192,11 @@ export const Day = (props) => {
               </span>
             </Hidden>}
         </div>
+        {loading && 
+          <span className={classes.loadingBox}>
+            <CircularProgress className={classes.loading}/>
+          </span>
+        }
         <div>
           {post && post.activityList.map(activity => (
             <ActivityTile activity={activity} key={'day-activity-'+activity.id}/>

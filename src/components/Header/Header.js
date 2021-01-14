@@ -77,11 +77,13 @@ const Header = props => {
       paddingRight: 16,
       fontWeight: 500,
       color: theme.palette.text.secondary,
+      textTransform: 'none',
     },
     activeNavbarButton: {
       paddingLeft: 16,
       paddingRight: 16,
       fontWeight: 500,
+      textTransform: 'none',
       // color: '#222222'
     },
     homeButton: {
@@ -251,12 +253,25 @@ const Header = props => {
             </Hidden>}
           </Button>
           <Hidden xsDown>
-            {user && <><Button variant='text' size="large" className={currentPage === '/calendar' ? classes.activeNavbarButton : classes.navbarButton} onClick={() => history.push('/calendar')}>
+            {user && 
+              <>
+              <Button 
+                variant='text' 
+                size="large" 
+                className={currentPage === '/calendar' ? classes.activeNavbarButton : classes.navbarButton} 
+                onClick={() => history.push({
+                  pathname: '/calendar',
+                  state: { 
+                    welcome: false,
+                    calendar: true,
+                  }
+                })}>
               Calendar
-            </Button>
-            <Button variant='text' size="large" className={currentPage === '/newsfeed' ? classes.activeNavbarButton : classes.navbarButton} onClick={() => history.push('/newsfeed')}>
-              Newsfeed
-            </Button></>}
+              </Button>
+              <Button variant='text' size="large" className={currentPage === '/newsfeed' ? classes.activeNavbarButton : classes.navbarButton} onClick={() => history.push('/newsfeed')}>
+                Newsfeed
+              </Button>
+            </>}
           </Hidden> 
           <div className={classes.spacer}></div>
           {user && <SearchBar openSearch={state.openSearch} handleSearchOpen={handleSearchOpen} handleDrawerClose={handleDrawerClose} history={history}/>}
@@ -297,8 +312,13 @@ const Header = props => {
                 >
                   <MenuItem onClick={() => {
                     handleMenuClose()
-                    history.push('/calendar');
-                    // TODO make sure it opens profile tab
+                    history.push({
+                      pathname: '/',
+                      state: { 
+                        welcome: false,
+                        calendar: false,
+                      }
+                    })
                   }
                   }>{loading | !data ? "Profile" : data.me.username}</MenuItem>
                   <MenuItem onClick={() => logoutUser(history, client)} disabled={signOutLoading}>Logout</MenuItem>
@@ -344,14 +364,26 @@ const Header = props => {
           </ListItem>
           <ListItem button key={"Calendar"} onClick={() => {
             handleDrawerClose()
-            history.push('/calendar');
+            history.push({
+              pathname: '/calendar',
+              state: { 
+                welcome: false,
+                calendar: true,
+              }
+            })
           }}>
             <ListItemIcon><TodayIcon /></ListItemIcon>
             <ListItemText primary={"Calendar"} />
           </ListItem>
           <ListItem button key={"Profile"} onClick={() => {
             handleDrawerClose()
-            history.push('/profile');
+            history.push({
+              pathname: '/',
+              state: { 
+                welcome: false,
+                calendar: false,
+              }
+            })
           }}>
             <ListItemIcon><AccountBoxIcon /></ListItemIcon>
             <ListItemText primary={"Profile"} />
