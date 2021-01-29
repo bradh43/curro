@@ -118,6 +118,7 @@ export const Day = (props) => {
 
   const [getPost, { data, loading }] = useLazyQuery(GET_POST_BY_ID_QUERY, {
     onCompleted: (result) => {
+      console.log("done...")
       moreDetailPost[post.id] = result.post
       props.setEditPost(result.post)
       props.setOpenModal(true)
@@ -130,18 +131,14 @@ export const Day = (props) => {
   const openPostModal = () => {
     if(props.me){
       if(post && post.id){
-        console.log("edit post")
-        // edit post
-        if(moreDetailPost[post.id]){
-          console.log("already got post")
-          // already got post data
-          props.setEditPost(moreDetailPost[post.id])
+        // get post data
+        getPost({
+          variables: {id: post.id},
+        })
+        // if already seen before
+        if(data && data.post){
+          props.setEditPost(data.post)
           props.setOpenModal(true)
-        } else {
-          // Get post data first time
-          getPost({
-            variables: {id: post.id},
-          })
         }
       } else {
         // create new post

@@ -46,7 +46,7 @@ export const EquipmentCard = props => {
 
   var equipmentListRender = [];
   var equipmentCount = 0
-  if (!props.loading) {
+  if (!props.loading && props.me) {
     equipmentListRender = (props.me ? props.data.me.equipmentList : props.data.user.equipmentList).map((e) => 
       ((e.type === props.type) && <Equipment 
         key={e.id} data={e} 

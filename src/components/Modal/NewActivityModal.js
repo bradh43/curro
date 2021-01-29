@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation, gql } from '@apollo/client';
-import produce from "immer";
 import { ActivityTile } from '../Activity/ActivityTile';
 import { ActivityDetail } from '../Activity/ActivityDetail';
 import { AllowedActivity } from '../Activity/AllowedActivity';
@@ -22,6 +21,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { GET_POST_QUERY } from '../../utils/graphql';
 import { UPDATE_POST_MUTATION } from '../../utils/graphql';
 import { CREATE_POST_MUTATION } from '../../utils/graphql';
+import { USER_CALENDAR_QUERY } from '../../utils/graphql';
+import Moment from 'moment';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -104,6 +105,11 @@ export const NewActivityModal = (props) => {
   const [selectedActivity, setSelectedActivity] = useState(AllowedActivity[0])
   const [editActivity, setEditActivity] = useState(false)
   const [openConfirmDelete, setOpenConfirmDelete] = React.useState(false);
+
+  const getUserCalendarDateFormat = () => {
+    var temp = Moment(selectedDate).format('YYYY-MM-DD')
+    return temp.toString()
+  }
 
   useEffect(() => {
     if(props.modalDate){
@@ -212,26 +218,27 @@ export const NewActivityModal = (props) => {
 
   const [createPostMutation, {loading}] = useMutation(CREATE_POST_MUTATION, {
     update(store, result) {
-      const data = store.readQuery({
-        query: GET_POST_QUERY
-      })
-      const updatedPosts = [result.data.createPost, ...data.postList.posts]
-      
-      store.writeQuery({
-        query: GET_POST_QUERY,
-        data: {
-          postList: {
-            __typename: "CreatePost",
-            posts: updatedPosts,
-            hasMore: data.postList.hasMore,
-            cursor: data.postList.cursor
+
+      const cacheId = store.identify(result.data.createPost)
+
+      store.modify({
+        fields: {
+          postList: (existingFieldData, { toReference }) => {
+            return {
+              __typename: "CreatePost",
+              posts: [toReference(cacheId), ...existingFieldData.posts],
+              hasMore: existingFieldData.hasMore,
+              cursor: existingFieldData.cursor,
+            }
           },
+          getProfileCalendar: (existingFieldData, { toReference }) => {
+            return [toReference(cacheId), ...existingFieldData]
+          }
         }
       })
 
       clearState()
       props.handleClose()
-
     },
     onError(error) {
       console.log(error)
@@ -243,29 +250,33 @@ export const NewActivityModal = (props) => {
 
 const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUTATION, {
   update(store, result) {
-    const data = store.readQuery({
-      query: GET_POST_QUERY
-    })
+    try {
+      const data = store.readQuery({
+        query: GET_POST_QUERY
+      })
 
-    const updatedPosts = data.postList.posts.filter((post) => {
-      if(post.id === props.editPost.id){
-        return result.data.updatePost
-      }
-      return post
-    })
-    
-    // TODO update using immer look at Comment.js
-    store.writeQuery({
-      query: GET_POST_QUERY,
-      data: {
-        postList: {
-          __typename: "UpdatePost",
-          posts: updatedPosts,
-          hasMore: data.postList.hasMore,
-          cursor: data.postList.cursor
-        },
-      }
-    })
+      const updatedPosts = data.postList.posts.filter((post) => {
+        if(post.id === props.editPost.id){
+          return result.data.updatePost
+        }
+        return post
+      })
+      
+      // TODO update using immer look at Comment.js
+      store.writeQuery({
+        query: GET_POST_QUERY,
+        data: {
+          postList: {
+            __typename: "UpdatePost",
+            posts: updatedPosts,
+            hasMore: data.postList.hasMore,
+            cursor: data.postList.cursor
+          },
+        }
+      })
+    } catch (_) {
+      // newsfeed Cache isn't populated yet
+    }
 
     clearState()
     props.handleClose()
@@ -290,27 +301,33 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
 
   const [deletePostMutation, {loading: deleteLoading}] = useMutation(DELETE_POST_MUTATION, {
     update(store, _) {
-      const data = store.readQuery({
-        query: GET_POST_QUERY
-      })
+      
+      const cacheId = store.identify(props.editPost)
 
-      const updatedPosts = data.postList.posts.filter((post) => {
-        if(post.id !== props.editPost.id){
-          return post
-        }
-      })
-
-      store.writeQuery({
-        query: GET_POST_QUERY,
-        data: {
-          postList: {
-            __typename: "DeletePost",
-            posts: updatedPosts,
-            hasMore: data.postList.hasMore,
-            cursor: data.postList.cursor
+      store.modify({
+        fields: {
+          postList: (existingFieldData, { toReference }) => {
+            return {
+              __typename: "DeletePost",
+              posts: existingFieldData.posts.filter((postRef) => {
+                if(toReference(cacheId)['__ref'] !== postRef['__ref']){
+                  return postRef
+                }
+              }),
+              hasMore: existingFieldData.hasMore,
+              cursor: existingFieldData.cursor,
+            }            
           },
+          getProfileCalendar: (existingFieldData, { toReference }) => {
+            return existingFieldData.filter((postRef) => {
+              if(toReference(cacheId)['__ref'] !== postRef['__ref']){
+                return postRef
+              }
+            })
+          }
         }
       })
+
       clearState()
       props.handleClose()
     },
@@ -394,7 +411,6 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
           }
         }
         
-
         createPostMutation({ variables: creatPostInput })
       }
       

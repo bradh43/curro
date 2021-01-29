@@ -292,3 +292,21 @@ export const FOLLOWER_STATUS_QUERY = gql`
   }
 `;
 
+export const USER_CALENDAR_QUERY = gql`
+  query CALENDAR_POSTS($userId: ID, $date: String){
+      getProfileCalendar(userId: $userId, date: $date){
+          id
+          title
+          postDate
+          activityList {
+              id
+              type
+              duration
+              distance {
+                  unit
+                  value
+              }
+          }
+      }
+  }
+`;

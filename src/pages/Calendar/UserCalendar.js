@@ -7,11 +7,12 @@ import Hidden from '@material-ui/core/Hidden';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, useLazyQuery } from '@apollo/client';
 import { WelcomeModal } from '../../components/Modal/WelcomeModal';
 import { UserNavBar } from '../../components/Calendar/UserNavBar';
 import { UserCalendarDisplay } from './UserCalendarDisplay';
 import { Profile } from '../Profile/Profile';
+import { USER_CALENDAR_QUERY } from '../../utils/graphql';
 import Moment from 'moment';
 
 
@@ -30,6 +31,7 @@ const CALENDAR_VIEW_VALUE = 0
 const PROFILE_VIEW_VALUE = 1
 var previousUserid = null
 var previousView = null
+var previousDate = null
 
 export const UserCalendar = (props) => {
     const classes = useStyles();
@@ -43,8 +45,8 @@ export const UserCalendar = (props) => {
     const [date, setDate] = useState(new Date());
     const [mondayFirst, setMondayFirst] = useState(true)
 
-    const { user } = useContext(AuthContext)
     var { userid } = props.match.params
+    const { user } = useContext(AuthContext)
 
     var me = false
     if(userid && user.id !== userid){
@@ -54,31 +56,14 @@ export const UserCalendar = (props) => {
       userid = user.id
     }
 
-    const USER_CALENDAR_QUERY = gql`
-        query CALENDAR_POSTS($userId: ID, $date: String){
-            getProfileCalendar(userId: $userId, date: $date){
-                id
-                title
-                postDate
-                activityList {
-                    id
-                    type
-                    duration
-                    distance {
-                        unit
-                        value
-                    }
-                }
-            }
-        }
-    `;
-
     const getUserCalendarDateFormat = () => {
         var temp = Moment(date).format('YYYY-MM-DD')
         return temp.toString()
     }
 
     const dateInput = getUserCalendarDateFormat()
+
+    // const [userCalendarQuery, {data, loading, error}] = useLazyQuery(USER_CALENDAR_QUERY)
 
     const {data, loading, error} = useQuery(USER_CALENDAR_QUERY, {variables: {userId: userid, date: dateInput}})
 
@@ -89,9 +74,18 @@ export const UserCalendar = (props) => {
             // make sure only see welcome modal once
             location.state.welcome = false
         }
+        if(previousDate !== dateInput){
+            previousDate = dateInput
+            // TODO delete
+            // console.log("lazy query date change")
+            // userCalendarQuery({variables: {userId: userid, date: dateInput}})
+        }
+
         // Check if calendar or profile view
         if(previousUserid != userid || (location.state && location.state.calendar !== null)){
             previousUserid = userid
+            setDate(new Date())
+
             if(location.state && location.state.calendar){
                 setViewValue(CALENDAR_VIEW_VALUE)
                 location.state.calendar = null

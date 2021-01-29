@@ -42,6 +42,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import TeamSelectDropdown from './TeamSelectDropdown';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const CALENDAR_VIEW_VALUE = 0
 var _fetchedUser = false
@@ -245,23 +246,27 @@ export const UserNavBar = props => {
         {props.viewValue === CALENDAR_VIEW_VALUE && 
           <Hidden xsDown>
             <span className={classes.addFab}>
-              <Fab color="primary" aria-label="add" size="small" variant="extended" className={classes.addButton} onClick={() => {
-                  props.setModalDate(new Date())
-                  props.setOpenModal(true)
-                }
-              }>
-                <AddIcon className={classes.addIcon}/>
-                Post
-              </Fab>
+              <Tooltip title="Post Today" enterDelay={400}>
+                <Fab color="primary" aria-label="add" size="small" variant="extended" className={classes.addButton} onClick={() => {
+                    props.setModalDate(new Date())
+                    props.setOpenModal(true)
+                  }
+                }>
+                  <AddIcon className={classes.addIcon}/>
+                  Post
+                </Fab>
+              </Tooltip>
             </span>
             </Hidden>}
         {props.viewValue === CALENDAR_VIEW_VALUE && <div className={classes.settings} ref={settingsButtonRef}>
-          <IconButton 
-            aria-label='settings'
-            onClick={handleSettingsClick}
-          >
-            <SettingsIcon />
-          </IconButton>
+          <Tooltip title="Settings" enterDelay={400}>
+            <IconButton 
+              aria-label='settings'
+              onClick={handleSettingsClick}
+            >
+              <SettingsIcon />
+            </IconButton>
+          </Tooltip>
           <Menu
             id="menu-settings"
             className={classes.settingsMenu}

@@ -16,6 +16,7 @@ export const cache = new InMemoryCache({
         postList: {
           keyArgs: false,
           merge(existing = {posts: []}, incoming) {
+            console.log("post list cache")
 
             const {posts: newPosts} = incoming
 
@@ -38,22 +39,6 @@ export const cache = new InMemoryCache({
             }
           }
         },
-        postListByDateRange: {
-          keyArgs: false,
-          merge(existing, incoming) {
-            let posts = [];
-            if (existing && existing.posts) {
-              posts = posts.concat(existing.posts);
-            }
-            if (incoming && incoming.posts) {
-              posts = posts.concat(incoming.posts);
-            }
-            return {
-              ...incoming,
-              posts: posts
-            };
-          }
-        }
       }
     }
   }

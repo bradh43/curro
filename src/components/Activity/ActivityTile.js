@@ -37,7 +37,7 @@ export const ActivityTile = props => {
       distanceValue: activity.distance.value ? activity.distance.value : 0,
       distanceUnit: activity.distance.unit.toLowerCase(),
       duration: TimeHelper.formatTimeString(activity.duration),
-      equipmentId: activity.equipmentId ? activity.equipmentId : 0,
+      equipmentId: activity.equipment.id ? activity.equipment.id : '',
       heartRate: activity.additionalInfo.averageHeartRate ? activity.additionalInfo.averageHeartRate : 0,
       elevationGain: activity.additionalInfo.elevationGain ? activity.additionalInfo.elevationGain : 0,
       calories: activity.additionalInfo.calories ? activity.additionalInfo.calories : 0

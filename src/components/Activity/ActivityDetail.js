@@ -94,7 +94,7 @@ export const ActivityDetail = (props) => {
           unit: props.editActivityValues.distanceUnit.toUpperCase()
         },
         equipment: {
-          id: props.editActivityValues.equipmentId ? props.editActivityValues.equipmentId : 0,
+          id: props.editActivityValues.equipmentId ? props.editActivityValues.equipmentId : '',
         },
         additionalInfo: {
           averageHeartRate: props.editActivityValues.averageHeartRate ? parseInt(props.editActivityValues.heartRate) : 0,
