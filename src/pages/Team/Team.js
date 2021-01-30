@@ -13,7 +13,7 @@ export const Team = (props) => {
     },
   }));
 
-  const { teamid } = props.match.params
+  const teamid = props.teamid
 
   const { loading, error, data } = useQuery(TEAM_QUERY, {variables: {id: teamid}});
 

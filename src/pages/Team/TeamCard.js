@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useQuery, useLazyQuery, useMutation, gql } from '@apollo/client';
 import Typography from '@material-ui/core/Typography';
@@ -45,6 +45,7 @@ export const TeamCard = props => {
   const [joined, setJoined] = useState(false);
   const [requestPending, setRequestPending] = useState(false);
   const [openMemberModal, setOpenMemberModal] = useState(false);
+  const [userList, setUserList] = useState([])
 
   const ME_QUERY = gql`
     query {
@@ -273,7 +274,6 @@ export const TeamCard = props => {
   }
 
   const showMembers = () => {
-    
     const searchInput = {
       variables: {
         id: props.data.team.id
@@ -283,6 +283,7 @@ export const TeamCard = props => {
     
     setOpenMemberModal(true)
   }
+
 
   const classes = useStyles();
 
@@ -357,8 +358,6 @@ export const TeamCard = props => {
         title={props.data.team.name + " Member" + (props.data.team.memberCount > 1 ? "s" : "")} 
         history={props.history} 
         data={teamMemberData} 
-        userList={(teamMemberData && teamMemberData.team) ? 
-          [...teamMemberData.team.adminList, ...teamMemberData.team.memberList] : []}
         loading={teamMemberLoading} 
         openModal={openMemberModal} 
         handleClose={() => setOpenMemberModal(false)}/>

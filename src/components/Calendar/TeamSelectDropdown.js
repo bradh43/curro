@@ -44,17 +44,28 @@ const StyledMenuItem = withStyles((theme) => ({
 
 
 
-export default function TeamSelectDropdown({ teamList, user, setViewValue, history }) {
+export default function TeamSelectDropdown({ teamList, user, setViewValue, history, teamName }) {
 
     const TeamMenuItem = ({ teamName, teamId, teamImageURL }) => {
         const handleTeamClick = (e) => {
             // setView("team");
             //setSelectedTeamId(teamId);
             if(teamName === 'My Calendar'){
-                // Make Sure in Calendar View
-                setViewValue(0)
+                history.push({
+                    pathname: '/',
+                    state: { 
+                      welcome: false,
+                      calendar: true,
+                    }
+                  })
             } else {
-                history.push('/team/'+teamId)
+                history.push({
+                    pathname: '/team/'+teamId,
+                    state: { 
+                      welcome: false,
+                      calendar: true,
+                    }
+                  })
             }
             setCurrentTeam(teamName)
             handleClose();
@@ -89,8 +100,14 @@ export default function TeamSelectDropdown({ teamList, user, setViewValue, histo
     const handleClose = () => {
         setAnchorEl(null);
     };
-    // ${user.first} ${user.last}'s
-    const [currentTeam, setCurrentTeam] = useState('My Calendar');
+
+    const [currentTeam, setCurrentTeam] = useState(teamName);
+
+    useEffect(()=> {
+        if(teamName !== currentTeam){
+            setCurrentTeam(teamName)
+        }
+    })
 
     return (
         <div>

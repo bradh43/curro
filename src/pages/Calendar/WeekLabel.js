@@ -48,6 +48,13 @@ export const WeekLabel = (props) => {
   
   return (
     <Grid container item xs={12} spacing={0} className={classes.week}>
+      {props.team && <Hidden mdDown>
+        <Grid item xs key={'User'}>
+          <Box className={classes.cell}>
+            User
+          </Box>    
+        </Grid>
+      </Hidden>}
       <Hidden smUp>
         {(props.mondayFirst ? mondayWeek : sundayWeek).map((dayLabel) => (
           <Grid item xs key={dayLabel}>
@@ -66,12 +73,12 @@ export const WeekLabel = (props) => {
           </Grid>
         ))}
       </Hidden>
-      <Hidden mdDown>
+      {!props.team && <Hidden mdDown>
         <Grid item xs key={'total'}>
           <Box className={classes.cell}>
             Total
           </Box>    
         </Grid>
-      </Hidden>
+      </Hidden>}
     </Grid>);
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Typography from '@material-ui/core/Typography';
@@ -72,6 +72,9 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+var cacheUserList = []
+var previousTeamId = null
+
 export const UserListModal = (props) => {
   const classes = useStyles();
   
@@ -82,6 +85,11 @@ export const UserListModal = (props) => {
   // const handleConfirmDeleteClose = () => {
   //   setOpenConfirmDelete(false);
   // };
+
+  if(!props.loading && props.data && props.data.team){
+    cacheUserList = [...props.data.team.adminList, ...props.data.team.memberList]
+    previousTeamId = props.data.team.id
+  }
 
   return (
     <div>
@@ -108,6 +116,18 @@ export const UserListModal = (props) => {
                 <UserTile key={"userTile-" + user.id} user={user} history={props.history} handleClose={props.handleClose}/>
               )) :
               <span>No Users Found</span> )
+            }
+            {(props.data) ? 
+            (props.data.team.adminList.length >= 1 ||  props.data.team.memberList.length >= 1?
+              [...props.data.team.adminList, ...props.data.team.memberList].map((user) => (
+                <UserTile key={props.data.team.id+"-userTile-" + user.id} user={user} history={props.history} handleClose={props.handleClose}/>
+              )) :
+              <span>No Users Found</span> ) :
+              (cacheUserList.length >= 1?
+                cacheUserList.map((user) => (
+                  <UserTile key={previousTeamId+"-userTile-" + user.id} user={user} history={props.history} handleClose={props.handleClose}/>
+                )) :
+                <span>No Users Found</span> )
             }
           </List>
           }

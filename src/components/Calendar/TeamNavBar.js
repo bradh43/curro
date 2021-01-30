@@ -1,9 +1,9 @@
-import React, { useContext, useState, useRef, useEffect } from 'react';
+import React, { useContext, useState, useRef } from 'react';
 import { AuthContext } from '../../auth';
 import { SearchBar } from '../Search/SearchBar';
 import { NotificationBell } from '../Notification/NotificationBell';
 import { withRouter } from 'react-router-dom';
-import { useLazyQuery, useMutation, gql } from '@apollo/client';
+import { useQuery, useMutation, gql } from '@apollo/client';
 import Button from '@material-ui/core/Button';
 import AppBar from '@material-ui/core/AppBar';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -38,16 +38,22 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import TeamSelectDropdown from './TeamSelectDropdown';
+import AddIcon from '@material-ui/icons/Add';
+import Fab from '@material-ui/core/Fab';
+import Tooltip from '@material-ui/core/Tooltip';
+
+const CALENDAR_VIEW_VALUE = 0
 
 export const TeamNavBar = props => {
-  var _fetchedMe = false
 
   const useStyles = makeStyles((theme) => ({
     root: {
       display: 'flex',
       height: '100%',
       overflow: 'hidden',
-      margin: '16px 0 16px 0'
+      padding: '16px 0 0 0'
     },
     spacer: {
       flexGrow: 1,
@@ -62,51 +68,137 @@ export const TeamNavBar = props => {
       
     },
     select: {
-      paddingRight: 8
+      paddingRight: 8,
     },
     profilePicture: {
-      margin: '0 16px 0 16px'
+      margin: '4px 16px 0 16px',
     },
     settings: {
-      marginRight: 16
+      marginRight: 16,
+      position: 'absolute',
+      right: 0,
+    },
+    addFab: {
+      position: 'absolute',
+      top: 8,
+      right: 72,
+    },
+    addButton: {
+      boxShadow: '0px 3px 5px -1px rgba(0,0,0,0.2)',
+    },
+    addIcon: {
+      fontSize: 18,
+    },
+    navbarSide: {
+      whiteSpace: 'nowrap',
+      width: 248,
+      display: 'flex',
+      position: 'relative',
     }
   }));
 
   const QUERY_ME = gql`
-  query {
-    me {
+    query {
+      me {
+        id
+        username
+        first
+        last
+        profilePictureURL
+        teamList {
+          id
+          name
+          profilePictureURL
+        }
+        requestedTeamList {
+          id
+        }
+      }
+    }
+  `;
+
+const TEAM_MEMBER_QUERY = gql`
+  query getTeam($id: ID!){
+    team(id: $id) {
       id
-      username
+      name
       profilePictureURL
     }
   }
 `;
 
+const JOIN_TEAM = gql`
+  mutation joinTeam($input: UserTeamInput!) {
+    joinTeam(input: $input) {
+      message
+      success
+      pending
+    }
+  }
+`;
+
+const LEAVE_TEAM = gql`
+  mutation leaveTeam($input: UserTeamInput!) {
+    leaveTeam(input: $input) {
+      message
+      success
+    }
+  }
+`;
+
+
   const { history, location } = props;
   const classes = useStyles();
   const { user } = useContext(AuthContext)
   const settingsButtonRef = useRef()
-  var _fetchedMe = false
-  const [getMe, { loading, data }] = useLazyQuery(QUERY_ME);
-  
-  if((user? true : false) && !_fetchedMe && (data? false : true) && !loading){
-    _fetchedMe = true
-    getMe()
-  }
-  //TODO figure out where we are
-  // TODO bold just the one we are on
+  const {data, loading, error} = useQuery(QUERY_ME);
+  const {data: teamData} = useQuery(TEAM_MEMBER_QUERY, {variables: {id: props.teamid}});
+
+  const [joined, setJoined] = useState(false);
+  const [requestPending, setRequestPending] = useState(false);
+
+  // Check if the user is a part of the team
+  if(!loading && data && props.teamid){
+    
+    var foundTeamFlag = false
+    var requestedTeamFlag = false
+    // loop through all of their teams and check for team id
+    for(var i=0; i<data.me.teamList.length; i++){
+      if(data.me.teamList[i].id === props.teamid){
+        foundTeamFlag = true
+
+        break;
+      }
+    }
+    //if already in team list, don't need to check requestedTeamList as well
+    if(!foundTeamFlag) {
+      for(var i=0; i<data.me.requestedTeamList.length; i++){
+        if(data.me.requestedTeamList[i].id === props.teamid){
+          requestedTeamFlag = true
+          break;
+        }
+      }
+    }
+
+
+    // prevent the page from doing too many re-renders
+    if(joined !== foundTeamFlag){
+      setJoined(foundTeamFlag) 
+    }
+
+    if(requestPending !== requestedTeamFlag){
+      setRequestPending(requestedTeamFlag)
+    }
+  } 
+
   const [currentPage, setCurrentPage] = useState('/calendar')
-  useEffect(() => {
-
-  })
-
+  
   const handleChange = (event, newValue) => {
     props.setViewValue(newValue)
   };
   const [currentTeam, setCurrentTeam] = useState(0);
 
   const handleTeamChange = (event, newValue) => {
-    console.log("Team Select", event.target.value)
     setCurrentTeam(event.target.value)
   };
 
@@ -117,73 +209,121 @@ export const TeamNavBar = props => {
   const handleSettingsClose = () => {
     setOpenSettingsMenu(false)
   }
+  const handleSundayFirst = () => {
+    props.setMondayFirst(false)
+    setOpenSettingsMenu(false)
+  }
+  const handleMondayFirst = () => {
+    props.setMondayFirst(true)
+    setOpenSettingsMenu(false)
+  }
 
+  // const joinTeam = () => {
+  //   const userInput = {
+  //     input: {
+  //       teamId: props.data.team.id
+  //     }
+  //   }
+  //   joinTeamMutation({ variables: userInput })
+
+  //   setOpenSettingsMenu(false)
+  // }
+
+  // const leaveTeam = () => {
+  //   const userInput = {
+  //     input: {
+  //       teamId: props.data.team.id
+  //     }
+  //   }
+  //   leaveTeamMutation({ variables: userInput })
+
+  //   setOpenSettingsMenu(false)
+  // }
+
+  
+
+  
   return (
     <div className={classes.root} >
-      <Avatar 
-        alt='Profile Picture'
-        variant='circle' 
-        src={props.profile}
-        // onClick={navigateToProfile}
-        className={classes.profilePicture}
-      />
-     <FormControl className={classes.teamSelect}>
-        {/* <InputLabel id="user-calendar-select-label">Team</InputLabel> */}
-        <Select
-          IconComponent={() => (
-            <ExpandMoreIcon />
-          )}
-          labelId="user-calendar-select-label"
-          id="user-calendar-select"
-          value={currentTeam}
-          onChange={handleTeamChange}
-          disableUnderline={true}
-        >
-          {/* TODO map all user's teams to drop down */}
-          <MenuItem className={classes.select} disableGutters={true} value={0}>My Calendar</MenuItem>
-          <MenuItem value={1}>Team 2</MenuItem>
-          <MenuItem value={2}>Team 3</MenuItem>
-        </Select>
-      </FormControl>
+      <span className={classes.navbarSide}>
+        <Avatar 
+          alt='Team Picture'
+          variant='square' 
+          src={(teamData && teamData.team && teamData.team.profilePictureURL) ? teamData.team.profilePictureURL : ""}
+          className={classes.profilePicture}
+        />
+        <TeamSelectDropdown 
+            history={history}
+            setViewValue={props.setViewValue}
+            teamList={(data && data.me && data.me.teamList) ? data.me.teamList: []}
+            setSelectedTeamId={props.teamid}
+            teamName={(teamData && teamData.team && teamData.team.name) ? teamData.team.name : ''}
+            user={(data && data.me) ? data.me : ""}
+        />
+      </span>
       <div className={classes.spacer}></div>
-      <Tabs
-        value={props.viewValue}
-        className={classes.tabs}
-        indicatorColor="primary"
-        centered
-        onChange={handleChange}
-      >
-        <Tab label="Calendar" />
-        <Tab label="Profile" />
-      </Tabs>
-      <div className={classes.spacer}></div>
-      <div className={classes.settings} ref={settingsButtonRef}>
-      <IconButton 
-        aria-label='settings'
-        onClick={handleSettingsClick}
-      >
-        <SettingsIcon />
-      </IconButton>
-        <Menu
-          id="menu-settings"
-          className={classes.settingsMenu}
-          anchorEl={settingsButtonRef.current}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          keepMounted
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          open={openSettingsMenu}
-          onClose={handleSettingsClose}
+      <Hidden xsDown>
+        <Tabs
+          value={props.viewValue}
+          className={classes.tabs}
+          indicatorColor="primary"
+          centered
+          onChange={handleChange}
         >
-          <MenuItem onClick={() => {console.log("Settings Menu Item 1 clicked")}}>Settings Item 1</MenuItem>
-          <MenuItem onClick={() => console.log("Settings Menu Item 2 clicked")} >Settings Item 2</MenuItem>
-        </Menu>
-        </div>
+          <Tab label="Calendar" />
+          <Tab label="Overview" />
+        </Tabs>
+      </Hidden>
+      <div className={classes.spacer}></div>
+      <span className={classes.navbarSide}>
+        {props.viewValue === CALENDAR_VIEW_VALUE && 
+          <Hidden xsDown>
+            <span className={classes.addFab}>
+              <Tooltip title="Post Today" enterDelay={400}>
+                <Fab color="primary" aria-label="add" size="small" variant="extended" className={classes.addButton} onClick={() => {
+                    props.setModalDate(new Date())
+                    props.setOpenModal(true)
+                  }
+                }>
+                  <AddIcon className={classes.addIcon}/>
+                  Post
+                </Fab>
+              </Tooltip>
+            </span>
+            </Hidden>}
+        {props.viewValue === CALENDAR_VIEW_VALUE && <div className={classes.settings} ref={settingsButtonRef}>
+          <Tooltip title="Settings" enterDelay={400}>
+            <IconButton 
+              aria-label='settings'
+              onClick={handleSettingsClick}
+            >
+              <SettingsIcon />
+            </IconButton>
+          </Tooltip>
+          <Menu
+            id="menu-settings"
+            className={classes.settingsMenu}
+            anchorEl={settingsButtonRef.current}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            open={openSettingsMenu}
+            onClose={handleSettingsClose}
+          >
+            {/* {!joined && !requestPending && <MenuItem onClick={joinTeam}>Join Team</MenuItem>}
+            {joined && !requestPending && <MenuItem onClick={leaveTeam}>Leave Team</MenuItem>}
+            {requestPending && <MenuItem>Request Pending</MenuItem>} */}
+            <MenuItem onClick={handleSundayFirst}>Sundays First</MenuItem>
+            <MenuItem onClick={handleMondayFirst}>Mondays First</MenuItem>
+          </Menu>
+        </div>}
+      </span>
     </div>);
 
 }

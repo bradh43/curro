@@ -133,29 +133,10 @@ export const UserNavBar = props => {
   const settingsButtonRef = useRef()
   const [getUser, { loading, data }] = useLazyQuery(props.me ? QUERY_ME : QUERY_USER);
   
-  // TODO Fix this logic, should load if new user or me
-  // check if view a different users profile
   if(data && props.userid && data.user && data.user.id !== props.userid){
     _fetchedUser = false
   }
   
-  // if((user? true : false) && props.userid && !_fetchedUser && !loading){
-  //   _fetchedUser = true
-  //   if(props.me){
-  //     console.log("getting me")
-  //     getUser()
-  //   } else {
-  //     const input = {
-  //       variables: {
-  //         id: props.userid
-  //       }
-  //     }
-  //     console.log("getting user")
-  //     console.log(props.userid)
-  //     getUser(input)
-  //   }
-  // }
-
   const [currentPage, setCurrentPage] = useState('/calendar')
   useEffect(() => {
     console.log("mount")
@@ -225,6 +206,7 @@ export const UserNavBar = props => {
             setViewValue={props.setViewValue}
             teamList={(data && data.me && data.me.teamList) ? data.me.teamList: []}
             setSelectedTeamId={0}
+            teamName={'My Calendar'}
             user={(data && data.me) ? data.me : ""}
         />}
       </span>
