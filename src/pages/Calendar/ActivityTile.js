@@ -41,6 +41,14 @@ const useStyles = makeStyles((theme) => ({
       margin: 0,
       marginTop: 4,
     },
+    primaryCell: {
+      backgroundColor: theme.palette.primary.main,
+      color: 'white',
+      borderRadius: 4,
+      padding: 2,
+      margin: 0,
+      marginTop: 4,
+    },
     details: {
       paddingLeft: 4,
     },
@@ -66,6 +74,13 @@ const useStyles = makeStyles((theme) => ({
       height: 16,
       width: 16,
       marginTop: 1,
+    },
+    primaryIcon: {
+      fontSize: '1rem',
+      height: 16,
+      width: 16,
+      marginTop: 1,
+      filter: 'invert(1)'
     },
     totalList: {
       width: 96,
@@ -95,25 +110,25 @@ export const ActivityTile = (props) => {
   const getActivityTypeIcon = (activityType) => {
     switch(activityType.toUpperCase()) {
       case "RUN":
-        return <Avatar alt="Run" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/run.svg'} className={classes.icon}/>
+        return <Avatar alt="Run" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/run.svg'} className={props.primary ? classes.primaryIcon : classes.icon}/>
       case "BIKE":
-        return <Avatar alt="Bike" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/bike.svg'} className={classes.icon}/>
+        return <Avatar alt="Bike" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/bike.svg'} className={props.primary ? classes.primaryIcon : classes.icon}/>
       case "SWIM":
-        return <Avatar alt="Swim" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/swim.svg'} className={classes.icon}/>
+        return <Avatar alt="Swim" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/swim.svg'} className={props.primary ? classes.primaryIcon : classes.icon}/>
       case "SLEEP":
-        return <Avatar alt="Sleep" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/sleep.svg'} className={classes.icon}/>
+        return <Avatar alt="Sleep" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/sleep.svg'} className={props.primary ? classes.primaryIcon : classes.icon}/>
       case "CLIMB":
-        return <Avatar alt="Climb" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/climb.svg'} className={classes.icon}/>
+        return <Avatar alt="Climb" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/climb.svg'} className={props.primary ? classes.primaryIcon : classes.icon}/>
       case "ALTERG":
-        return <Avatar alt="AlterG" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/alterg.svg'} className={classes.icon}/>
+        return <Avatar alt="AlterG" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/alterg.svg'} className={props.primary ? classes.primaryIcon : classes.icon}/>
       case "YOGA":
-        return <Avatar alt="Yoga" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/yoga.svg'} className={classes.icon}/>
+        return <Avatar alt="Yoga" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/yoga.svg'} className={props.primary ? classes.primaryIcon : classes.icon}/>
       case "AQUA_JOG":
-        return <Avatar alt="Aqua" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/aqua_jog.svg'} className={classes.icon}/>
+        return <Avatar alt="Aqua" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/aqua_jog.svg'} className={props.primary ? classes.primaryIcon : classes.icon}/>
       case "HIKE":
-        return <Avatar alt="Hike" src={process.env.PUBLIC_URL + '/assets/icons/hike.svg'} className={classes.icon}/>
+        return <Avatar alt="Hike" src={process.env.PUBLIC_URL + '/assets/icons/hike.svg'} className={props.primary ? classes.primaryIcon : classes.icon}/>
       default:
-        return <Avatar alt="Lift" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/lift.svg'} className={classes.icon}/>
+        return <Avatar alt="Lift" variant="square" src={process.env.PUBLIC_URL + '/assets/icons/lift.svg'} className={props.primary ? classes.primaryIcon : classes.icon}/>
     }
   }
 
@@ -129,7 +144,7 @@ export const ActivityTile = (props) => {
   }
 
   return (
-  <div className={classes.activityCell}>
+  <div className={props.primary ? classes.primaryCell : classes.activityCell}>
     <span className={classes.activityIcon} style={getActivityCellStyle()}>
       <span className={classes.innerActivityIcon}>
         {props.activity && props.activity.type && getActivityTypeIcon(props.activity.type)}

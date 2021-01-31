@@ -310,3 +310,30 @@ export const USER_CALENDAR_QUERY = gql`
       }
   }
 `;
+
+export const TEAM_CALENDAR_QUERY = gql`
+  query TEAM_CALENDAR_POSTS($teamId: ID!, $date: String){
+    getTeamCalendar(teamId: $teamId, date: $date){
+      user {
+        id
+        username
+      }
+      posts {
+        id
+        title
+        note
+        id
+        postDate
+        activityList {
+          id
+          type
+          duration
+          distance {
+              unit
+              value
+          }
+        }
+      }
+    }
+  }
+`;

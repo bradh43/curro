@@ -26,7 +26,7 @@ import Box from '@material-ui/core/Box';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import Hidden from '@material-ui/core/Hidden';
-import { Day } from './Day';
+import { TeamDay } from './TeamDay';
 import { ActivityTile } from './ActivityTile';
 import moment from 'moment';
 import { format } from 'date-fns'
@@ -36,6 +36,7 @@ import { AllowedActivity } from '../../components/Activity/AllowedActivity';
 const useStyles = makeStyles((theme) => ({
     week: {
       minHeight: 144,
+      maxHeight: 384,
     },
     cell: {
       height: '100%',
@@ -44,23 +45,32 @@ const useStyles = makeStyles((theme) => ({
       paddingBottom: 32,
       backgroundColor: '#FBFBFB'
     },
+    username: {
+      overflowWrap: 'anywhere',
+      cursor: 'pointer',
+      '&:hover': {
+        color: theme.palette.primary.main,
+      }
+    },
 }));
 
 
 export const TeamWeek = (props) => {
   const classes = useStyles();
 
-  const getPost = (dayDate) => {
-    // if(props.data && props.data.getProfileCalendar){
-    //   const postList = props.data.getProfileCalendar
-    //   for(var i = 0; i < postList.length; i++){
-    //     var postDate = moment(postList[i].postDate)
+  const [weekHeight, setWeekHeight] = useState(128)
 
-    //     if(postDate.month() === dayDate.month() && postDate.date() === dayDate.date()){
-    //       return postList[i]
-    //     }
-    //   }
-    // }
+  const getPost = (dayDate) => {
+    if(props.data && props.data){
+      const postList = props.data.posts
+      for(var i = 0; i < postList.length; i++){
+        var postDate = moment(postList[i].postDate)
+
+        if(postDate.month() === dayDate.month() && postDate.date() === dayDate.date()){
+          return postList[i]
+        }
+      }
+    }
     return null
   }
 
@@ -79,7 +89,7 @@ export const TeamWeek = (props) => {
 
       dayComponents.push(
         <Grid item xs key={'week-day-'+day.date()}>
-          <Day 
+          <TeamDay 
             post={post}
             editPost={props.editPost} 
             setEditPost={props.setEditPost}
@@ -95,14 +105,16 @@ export const TeamWeek = (props) => {
     let totalComponents = []
     totalComponents = Object.entries(activityTotals).map(entry => {
       return (
-        <ActivityTile activity={entry[1]} key={'user-total-'+entry[0]+props.firstDay.getDate()+'-'+props.firstDay.getMonth()}/>
+        <ActivityTile activity={entry[1]} key={'user-total-'+entry[0]+props.firstDay.getDate()+'-'+props.firstDay.getMonth()} primary={true}/>
       );
     })
 
     return [(<Grid item xs key={'total-week-'+day.format('YYYY-MM-DD')}>
         <Box className={classes.cell}>
-          <Typography>{props.data.user.username}</Typography>
-          {totalComponents}
+          <Typography className={classes.username}>{props.data.user.username}</Typography>
+          <Hidden mdDown>
+            {totalComponents}
+          </Hidden>
         </Box>
       </Grid>), ...dayComponents];
   }
@@ -151,7 +163,7 @@ export const TeamWeek = (props) => {
   }
 
   return (
-    <Grid container item xs={12} spacing={0} className={classes.week} style={{minHeight: 'calc(100%/'+props.weekCount+')'}}>
+    <Grid container item wrap="wrap" alignItems="stretch" xs={12} spacing={0} className={classes.week} style={{minHeight: 'calc(100%/'+props.weekCount+')', height: weekHeight}}>
       {generateDayComponents()}
     </Grid>);
 }

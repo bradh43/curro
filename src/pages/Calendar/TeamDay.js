@@ -43,7 +43,6 @@ const useStyles = makeStyles((theme) => ({
     },
     previousCell: {
       backgroundColor: '#fbfbfb',
-      opacity: 0.7
     },
     hoverCell: {
       cursor: 'pointer',
@@ -102,6 +101,9 @@ const useStyles = makeStyles((theme) => ({
       margin: 'auto',
       position: 'relative'
     },
+    note: {
+      marginTop: 8,
+    }
 }));
 
 const isToday = (someDate) => {
@@ -110,7 +112,7 @@ const isToday = (someDate) => {
 
 var moreDetailPost = {}
 
-export const Day = (props) => {
+export const TeamDay = (props) => {
   const classes = useStyles();
   const today = isToday(props.dayDate)
 
@@ -200,6 +202,9 @@ export const Day = (props) => {
             <ActivityTile activity={activity} key={'day-activity-'+activity.id}/>
           ))}
         </div>
+        {post && post.note &&
+          <Typography className={classes.note} variant={'body2'}>{post.note}</Typography>
+        }
       </div>
     </Box>);
 }

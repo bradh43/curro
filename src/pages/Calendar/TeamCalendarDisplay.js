@@ -33,70 +33,69 @@ const WEEKS_TO_DISPLAY_IN_VIEW = 6;
 
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-      margin: '16px 16px 0 16px',
-      height: 'calc(100vh - 144px)',
-      boxShadow: 'none',
-      overflow: 'hidden',
+  root: {
+    margin: '16px 16px 0 16px',
+    height: 'calc(100vh - 144px)',
+    boxShadow: 'none',
+    overflow: 'hidden',
+    [theme.breakpoints.down('sm')]: {
+        height: 'calc(100vh - 136px)',
+    },
+    [theme.breakpoints.down('xs')]: {
+      margin: '8px 8px 0 8px',
+      height: 'calc(100vh - 128px)',
+    },
+  },
+  appbar: {
+    // backgroundColor: theme.palette.background.main,
+    // color: '#4c4c4c',
+    // position: 'static',
+  },
+  toolbar: {
+    boxShadow: '0 2px rgba(0,0,0,0.12)',
+    [theme.breakpoints.down('sm')]: {
+        paddingLeft: 4,
+        paddingRight: 4,
+    },
+  },
+  title: {
+      marginRight: theme.spacing(2),
+  },
+  displayCurrent: {
+      flexGrow: 1,
+      textAlign: 'center',
+  },
+  iconButton: {
+      marginRight: theme.spacing(2),
       [theme.breakpoints.down('sm')]: {
-          height: 'calc(100vh - 136px)',
+          margin: 0,
       },
-      [theme.breakpoints.down('xs')]: {
-          margin: '8px 8px 0 8px',
-          height: 'calc(100vh - 128px)',
-      },
+  },
+  weekLabel: {
+    height: 28,
+    width: '100%', 
+  },
+  display: {
+    height: 'calc(100% - 94px)',
+    overflow: 'scroll',
+    width: '100%', 
+    [theme.breakpoints.down('xs')]: {
+        height: 'calc(100% - 86px)',
     },
-    appbar: {
-      // backgroundColor: theme.palette.background.main,
-      // color: '#4c4c4c',
-      // position: 'static',
-    },
-    toolbar: {
-      boxShadow: '0 2px rgba(0,0,0,0.12)',
-      [theme.breakpoints.down('sm')]: {
-          paddingLeft: 4,
-          paddingRight: 4,
-      },
-    },
-    title: {
-        marginRight: theme.spacing(2),
-    },
-    displayCurrent: {
-        flexGrow: 1,
-        textAlign: 'center',
-    },
-    iconButton: {
-        marginRight: theme.spacing(2),
-        [theme.breakpoints.down('sm')]: {
-            margin: 0,
-        },
-    },
-    weekLabel: {
-      height: 28,
-      width: '100%', 
-    },
-    display: {
-      height: 'calc(100% - 94px)',
-      overflow: 'scroll',
-      width: '100%', 
-      [theme.breakpoints.down('xs')]: {
-          height: 'calc(100% - 86px)',
-      },
-    },
-    loading: {
-      position: 'absolute',
-      top: '50vh',
-      left: 0,
-      width: '100vw',
-      height: 64,
-      margin: 0,
-      // backgroundColor: 'red',
-    },
-    progress: {
-      width: 64,
-      display: 'block',
-      margin: 'auto',
-    },
+  },
+  loading: {
+    position: 'absolute',
+    top: '50vh',
+    left: 0,
+    width: '100vw',
+    height: 64,
+    margin: 0,
+  },
+  progress: {
+    width: 64,
+    display: 'block',
+    margin: 'auto',
+  },
 }));
 
 
@@ -117,53 +116,12 @@ export const TeamCalendarDisplay = (props) => {
     });
   }
 
-  // const getFirstDayOfMonthView = () => {
-  //   // Get the first day of the month and get the first Sunday of that week.
-  //   let dayOne = new Date(props.date.getFullYear(), props.date.getMonth());
-  //   let firstSunday = new Date(dayOne);
-  //   firstSunday.setDate(-1 * dayOne.getDay() + 1);
-
-  //   let firstDayOfMonthView = firstSunday;
-  //   if(props.mondayFirst){
-  //     // Edge case: if the first day of a month is sunday, I want to go back a week.  
-  //     if (dayOne.getDay() === 0) {
-  //       firstDayOfMonthView.setDate(firstDayOfMonthView.getDate() - 7);
-  //     }
-  //     firstDayOfMonthView.setDate(firstDayOfMonthView.getDate() + 1);
-  //   }
-    
-  //   return firstDayOfMonthView
-  // }
-
-  // const getFirstDaysOfMonthView = () => {
-  //   let weekIndex = getFirstDayOfMonthView();
-
-  //   let firstDaysOfMonthView = [];
-  //   for (let i = 0; i < WEEKS_TO_DISPLAY_IN_VIEW; i++) {
-  //     let copy = new Date(weekIndex);
-  //     firstDaysOfMonthView.push(copy);
-  //     weekIndex.setDate(weekIndex.getDate() + 7);
-  //     copy = new Date(weekIndex);
-  //     if(props.date.getMonth() !== copy.getMonth()){
-  //       break;
-  //     }
-     
-  //   }
-
-  //   return firstDaysOfMonthView;
-  // }
-
   const getFirstDayOfWeek = () => {
-    // console.log(props.date)
-    // console.log(props.date.getDay())
     let firstDay = new Date(props.date);
-    console.log(firstDay)
     // Get the first sunday of the week
     firstDay.setDate(props.date.getDate()-props.date.getDay());
-    console.log(firstDay)
     // if monday first just add one day
     if(props.mondayFirst){
-      console.log("Monday First")
       firstDay.setDate(firstDay.getDate()+1);
     } 
     return firstDay
@@ -171,8 +129,6 @@ export const TeamCalendarDisplay = (props) => {
 
   const options = { year: 'numeric', month: 'long' };
   const calendarTitle = props.date.toLocaleDateString(undefined, options);
-  console.log(calendarTitle)
-  console.log(props.date)
   const [firstDayOfWeekView, setFirstDayOfWeekView] = useState(new Date());
 
   useEffect(() => {
@@ -211,29 +167,13 @@ export const TeamCalendarDisplay = (props) => {
             firstDay={firstDayOfWeekView} 
             viewMonth={props.date.getMonth()} 
             key={'week-'+props.date.getDay()+'-'+userPostMap.user.id}
+            weekCount={props.data.getTeamCalendar.length}
             setOpenModal={props.setOpenModal}
             editPost={props.editPost} 
             setEditPost={props.setEditPost}
             setModalDate={props.setModalDate}
           />);
         })}
-
-        {/* {firstDaysOfMonthView.map((firstDay, weekNumber) => {
-          return (<TeamWeek
-            data={props.data} 
-            loading={props.loading}
-            me={props.me}
-            firstDay={firstDay} 
-            viewMonth={props.date.getMonth()} 
-            weekCount={firstDaysOfMonthView.length} 
-            weekNumber={weekNumber} 
-            key={'week-'+props.date.getMonth()+'-'+weekNumber}
-            setOpenModal={props.setOpenModal}
-            editPost={props.editPost} 
-            setEditPost={props.setEditPost}
-            setModalDate={props.setModalDate}
-          />);
-        })} */}
       </Grid>
       {props.loading && <div className={classes.loading}>
         <div className={classes.progress}>

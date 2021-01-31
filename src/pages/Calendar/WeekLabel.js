@@ -48,13 +48,11 @@ export const WeekLabel = (props) => {
   
   return (
     <Grid container item xs={12} spacing={0} className={classes.week}>
-      {props.team && <Hidden mdDown>
-        <Grid item xs key={'User'}>
-          <Box className={classes.cell}>
-            User
-          </Box>    
-        </Grid>
-      </Hidden>}
+      {props.team && <Grid item xs key={'User'}>
+        <Box className={classes.cell}>
+          User
+        </Box>    
+      </Grid>}
       <Hidden smUp>
         {(props.mondayFirst ? mondayWeek : sundayWeek).map((dayLabel) => (
           <Grid item xs key={dayLabel}>
