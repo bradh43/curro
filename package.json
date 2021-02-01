@@ -34,6 +34,7 @@
     "react-lines-ellipsis": "^0.14.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.0",
+    "react-show-more-text": "^1.4.6",
     "react-swipeable": "^5.5.1",
     "react-waypoint": "^9.0.3",
     "recharts": "^1.8.5"

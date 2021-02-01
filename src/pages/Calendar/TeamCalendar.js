@@ -78,6 +78,7 @@ export const TeamCalendar = (props) => {
             />
             {viewValue === CALENDAR_VIEW_VALUE && 
                 <TeamCalendarDisplay
+                    history={history} 
                     editPost={editPost}
                     setEditPost={setEditPost}
                     teamid={teamid} 

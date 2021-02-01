@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { AuthContext } from '../../auth';
 import { NewActivityModal } from '../../components/Modal/NewActivityModal';
 import { ToolBar } from './ToolBar';
@@ -31,6 +31,8 @@ import Hidden from '@material-ui/core/Hidden';
 import { ActivityTile } from './ActivityTile';
 import moment from 'moment';
 import { GET_POST_BY_ID_QUERY } from '../../utils/graphql';
+import ShowMoreText from 'react-show-more-text';
+
 
 const useStyles = makeStyles((theme) => ({
     cell: {
@@ -103,7 +105,12 @@ const useStyles = makeStyles((theme) => ({
     },
     note: {
       marginTop: 8,
-    }
+    },
+    showButton: {
+      color: theme.palette.primary.main,
+      cursor: 'pointer',
+      textDecoration: 'none',
+    },
 }));
 
 const isToday = (someDate) => {
@@ -173,11 +180,39 @@ export const TeamDay = (props) => {
     }
     return cellClass
   }
+
+  const handleShowMore = (isExpanded) => {
+    console.log(isExpanded)
+    console.log("TODO show more API call")
+  }
+
+  function showMore() {
+    return (
+      <Typography component="span" className={classes.showButton} variant={'body2'}>Show all</Typography>
+    );
+  }
+
+  function showLess() {
+    return (
+      <Typography component="span" className={classes.showButton} variant={'body2'}>Show less</Typography>
+    );
+  }
+
+  const cellRef = useRef(null);
+  const [cellWidth, setCellWidth] = useState(null)
+  useEffect(() => {
+    if(!cellWidth && cellRef.current){
+      // console.log('width', cellRef.current.offsetWidth-19);
+      // console.log("mount")
+      setCellWidth(cellRef.current.offsetWidth-19)
+    }
+  }, [cellRef.current]);
   
   return (
-    <Box 
+    <Grid item xs key={'week-day-'+props.dayDate.date()}
       className={getCellClass()} 
-      onClick={openPostModal}
+      zeroMinWidth
+      ref={cellRef}
     >
       <div style={{width: '100%', height: '24px'}}>
         <div style={{width: '100%', height: '24px'}}>
@@ -187,7 +222,14 @@ export const TeamDay = (props) => {
           {post && 
             <Hidden xsDown>
               <span style={{width: '24px', height: '24px'}}>
-                <Typography display={'inline'} variant={'body2'} className={classes.title}>{post.title}</Typography>
+                <Typography 
+                  display={'inline'} 
+                  variant={'body2'} 
+                  className={classes.title}
+                  onClick={openPostModal}
+                >
+                  {post.title}
+                </Typography>
               </span>
             </Hidden>
             }
@@ -197,14 +239,30 @@ export const TeamDay = (props) => {
             <CircularProgress className={classes.loading}/>
           </span>
         }
-        <div>
-          {post && post.activityList.map(activity => (
-            <ActivityTile activity={activity} key={'day-activity-'+activity.id}/>
-          ))}
-        </div>
-        {post && post.note &&
-          <Typography className={classes.note} variant={'body2'}>{post.note}</Typography>
+      </div>
+      <div>
+        {post && post.activityList.map(activity => (
+          <ActivityTile activity={activity} key={'day-activity-'+activity.id}/>
+        ))}
+      </div>
+      <div>
+      {post && post.note && cellWidth &&
+          <ShowMoreText
+            lines={12}
+            more={showMore()}
+            less={showLess()}
+            className='show-more-content'
+            anchorClass='show-more-anchor'
+            onClick={handleShowMore}
+            expanded={false}
+            width={cellWidth}
+          >
+            <Typography className={classes.note} variant={'body2'}>{post.note}</Typography>
+          </ShowMoreText>
         }
       </div>
-    </Box>);
+      {/* <div>
+        TODO: Comment Button Like Button
+      </div> */}
+    </Grid>);
 }

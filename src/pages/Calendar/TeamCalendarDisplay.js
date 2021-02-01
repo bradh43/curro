@@ -101,6 +101,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const TeamCalendarDisplay = (props) => {
   const classes = useStyles();
+  const { history } = props;
 
   const previousButton = () => {
     props.setDate(prevDate => {
@@ -127,9 +128,9 @@ export const TeamCalendarDisplay = (props) => {
     return firstDay
   }
 
-  const options = { year: 'numeric', month: 'long' };
-  const calendarTitle = props.date.toLocaleDateString(undefined, options);
   const [firstDayOfWeekView, setFirstDayOfWeekView] = useState(new Date());
+  const options = { year: 'numeric', month: 'long' };
+  const calendarTitle = firstDayOfWeekView.toLocaleDateString(undefined, options);
 
   useEffect(() => {
     let temp = getFirstDayOfWeek()
@@ -158,14 +159,21 @@ export const TeamCalendarDisplay = (props) => {
       <Grid container spacing={0} className={classes.weekLabel}>
         <WeekLabel mondayFirst={props.mondayFirst} key={'week-label'} team={true}/>
       </Grid>
-      <Grid container spacing={0} className={classes.display}>
+      <Grid 
+        container
+        direction="row"
+        alignItems="stretch" 
+        spacing={0} 
+        className={classes.display}
+      >
         {props.data && props.data.getTeamCalendar && props.data.getTeamCalendar.map((userPostMap) => {
           return (<TeamWeek
+            history={history}
             data={userPostMap} 
             loading={props.loading}
             me={props.me}
             firstDay={firstDayOfWeekView} 
-            viewMonth={props.date.getMonth()} 
+            viewMonth={firstDayOfWeekView.getMonth()} 
             key={'week-'+props.date.getDay()+'-'+userPostMap.user.id}
             weekCount={props.data.getTeamCalendar.length}
             setOpenModal={props.setOpenModal}

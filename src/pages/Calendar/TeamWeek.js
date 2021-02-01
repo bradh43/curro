@@ -35,8 +35,9 @@ import { AllowedActivity } from '../../components/Activity/AllowedActivity';
 
 const useStyles = makeStyles((theme) => ({
     week: {
-      minHeight: 144,
-      maxHeight: 384,
+      // minHeight: 144,
+      // maxHeight: 384,
+      // height: '100%'
     },
     cell: {
       height: '100%',
@@ -57,8 +58,15 @@ const useStyles = makeStyles((theme) => ({
 
 export const TeamWeek = (props) => {
   const classes = useStyles();
+  const { history } = props;
 
-  const [weekHeight, setWeekHeight] = useState(128)
+
+  // TODO should be min 120, max 328, or if show more, then the height of longest post, and be careful with setState to not be to small
+  const [weekHeight, setWeekHeight] = useState(354)
+
+  const navigateToUserProfile = () => {
+    history.push('/user/'+props.data.user.id)
+  }
 
   const getPost = (dayDate) => {
     if(props.data && props.data){
@@ -88,18 +96,17 @@ export const TeamWeek = (props) => {
       activityTotals = updateActivityTotals(activityTotals, post)
 
       dayComponents.push(
-        <Grid item xs key={'week-day-'+day.date()}>
-          <TeamDay 
-            post={post}
-            editPost={props.editPost} 
-            setEditPost={props.setEditPost}
-            dayDate={day} 
-            me={props.me}
-            viewMonth={props.viewMonth}
-            setOpenModal={props.setOpenModal}
-            setModalDate={props.setModalDate}
-          />
-        </Grid>)
+        <TeamDay 
+          post={post}
+          editPost={props.editPost} 
+          setEditPost={props.setEditPost}
+          dayDate={day} 
+          me={props.me}
+          viewMonth={props.viewMonth}
+          setOpenModal={props.setOpenModal}
+          setModalDate={props.setModalDate}
+        />
+        )
         day = moment(day).add(1, 'days');
     }
     let totalComponents = []
@@ -111,7 +118,7 @@ export const TeamWeek = (props) => {
 
     return [(<Grid item xs key={'total-week-'+day.format('YYYY-MM-DD')}>
         <Box className={classes.cell}>
-          <Typography className={classes.username}>{props.data.user.username}</Typography>
+          <Typography className={classes.username} onClick={navigateToUserProfile}>{props.data.user.username}</Typography>
           <Hidden mdDown>
             {totalComponents}
           </Hidden>
@@ -163,7 +170,15 @@ export const TeamWeek = (props) => {
   }
 
   return (
-    <Grid container item wrap="wrap" alignItems="stretch" xs={12} spacing={0} className={classes.week} style={{minHeight: 'calc(100%/'+props.weekCount+')', height: weekHeight}}>
+    <Grid 
+      container 
+      item 
+      spacing={0} 
+      direction="row"
+      alignItems="stretch"
+      className={classes.week} 
+      style={{minHeight: 160}}
+    >
       {generateDayComponents()}
     </Grid>);
 }
