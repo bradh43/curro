@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../../auth';
 import { useMutation, gql } from '@apollo/client';
-import { Footer } from '../../components/Footer/Footer';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
@@ -22,7 +21,6 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import Avatar from '@material-ui/core/Avatar';
 import Link from '@material-ui/core/Link';
-
 
 
 export const CreateAccount = props => {
@@ -120,6 +118,7 @@ export const CreateAccount = props => {
     if(imagePos === -1){
       setImagePos(Math.floor(Math.random()*imageList.length))
     }
+    window.scrollTo(0, 0)
   })
 
   const useStyles = makeStyles((theme) => ({
@@ -422,7 +421,5 @@ export const CreateAccount = props => {
         </Card>
 
       </Container>
-
-      <Footer />
     </div>);
 }

@@ -5,7 +5,10 @@ import {Link} from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 
 
-export const PageNotFound = () => {
+export const PageNotFound = (props) => {
+
+  const { history } = props;
+
   return (
   <div>
     <Box display="flex" justifyContent="center">
@@ -15,6 +18,8 @@ export const PageNotFound = () => {
         <Link className="text-link" to='/'><Typography variant="subtitle1">Go back to the home page</Typography></Link>
       </Box>
     </Box>
-    <Footer/>
+    <div style={{position: 'absolute', bottom: 0, width: '100vw'}}>
+      <Footer history={history}/>
+    </div>
   </div>);
 }

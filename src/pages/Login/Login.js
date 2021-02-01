@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../auth';
 import { useMutation, gql } from '@apollo/client';
-import { Footer } from '../../components/Footer/Footer';
 import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -23,6 +22,7 @@ import Link from '@material-ui/core/Link';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
+import { Footer } from '../../components/Footer/Footer';
 
 
 export const Login = props => {
@@ -102,6 +102,7 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
     if(imagePos === -1){
       setImagePos(Math.floor(Math.random()*imageList.length))
     }
+    window.scrollTo(0, 0)
   })
 
   const useStyles = makeStyles((theme) => ({
@@ -134,7 +135,7 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
     content: {
       position: 'absolute',
       zIndex: 1,
-      width: '100vw'
+      width: '100vw',
     },
     image: {
       height: '100vh',
@@ -185,6 +186,12 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
       color: "grey",
 
     },
+    footerContainer: {
+      position: 'absolute',
+      top: 'calc(100vh - 64px)',
+      width: '100vw',
+      zIndex: 1000,
+    }
   }));
 
   const { history } = props;
@@ -315,10 +322,9 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
             </form>
           </CardContent>
         </Card>
-
       </Container>
-      
-      
-      <Footer />
+      <div className={classes.footerContainer}>
+        <Footer history={history}/>
+      </div>
     </div>);
 }
