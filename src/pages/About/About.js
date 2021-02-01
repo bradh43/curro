@@ -94,19 +94,22 @@ export const About = (props) => {
     window.scrollTo(0, 0)
   }, [])
 
+  const tagline = 'Sharing Workouts Made Simple'
+  const aboutText = 'Curro is a lifestyle website and application that connects athletes together. Every day, we are working to provide a community where athletes can log their activities and share them with a community of other athletes. At Curro, we believe now more than ever it is vital to be connected with other motivated and passionate athletes. \nCurro began as a small project amongst computer science runners that identified the need to have space for athletes to share about their training beyond just the simple stats. Space where athletes can answer ‘how did you feel?’, and have space where they can be held accountable to adjust their training.'
+
   return (
     <div>
       <div className={classes.background}>
         <div className={classes.image}/>
         <div className={classes.headerBox}>
-          <Typography variant="h4" className={classes.imageText}>Some great About Us text this is so motivating</Typography>
+          <Typography variant="h4" className={classes.imageText}>{tagline}</Typography>
           <Button variant="contained" className={classes.createAccountButton} style={{borderRadius:'32px'}} color="primary" size="large" onClick={createAccount}>
             Create Account
           </Button>
         </div>
         <div className={classes.aboutSection}>
           <Typography variant="h4" className={classes.sectionTitle}>About Curro</Typography>
-          <Typography variant="body1">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</Typography>
+          <Typography variant="body1">{aboutText}</Typography>
           <Typography variant="h4" className={classes.sectionTitle}>The Team</Typography>
           <Grid
             container

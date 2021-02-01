@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
     },
     username: {
       overflowWrap: 'anywhere',
+      fontWeight: 600,
       cursor: 'pointer',
       '&:hover': {
         color: theme.palette.primary.main,
@@ -118,7 +119,7 @@ export const TeamWeek = (props) => {
 
     return [(<Grid item xs key={'total-week-'+day.format('YYYY-MM-DD')}>
         <Box className={classes.cell}>
-          <Typography className={classes.username} onClick={navigateToUserProfile}>{props.data.user.username}</Typography>
+          <Typography variant={'body2'} className={classes.username} onClick={navigateToUserProfile}>{props.data.user.username}</Typography>
           <Hidden mdDown>
             {totalComponents}
           </Hidden>
