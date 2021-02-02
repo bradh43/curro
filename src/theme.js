@@ -16,6 +16,9 @@ var muiTheme = createMuiTheme({
     background: {
       main: '#EEEFF1',
     },
+    text: {
+      main: '#8AA0BD'
+    }
   },
   font: {
     title: {

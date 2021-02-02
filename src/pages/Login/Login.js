@@ -105,6 +105,7 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
     window.scrollTo(0, 0)
   })
 
+  const textColor = '#8AA0BD'
   const useStyles = makeStyles((theme) => ({
     root: {
       margin: '32px',
@@ -120,7 +121,7 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
       
     },
     container: {
-
+      
     },
     cardContent: {
     },
@@ -137,21 +138,30 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
       zIndex: 1,
       width: '100vw',
     },
-    image: {
+    wrapper:{
       height: '100vh',
       width: '100vw',
-      backgroundRepeat: 'no-repeat',
-      backgroundSize: 'cover',
-      backgroundImage: imagePos !== -1 ? 'url(https://currodevimages.s3.amazonaws.com/background-images/'+imageList[imagePos]+')' : '',
-      zIndex: -1,
-      opacity: 0.6,
-      position: 'absolute',
+      zIndex: -10,
+      backgroundColor: '#1a1a1a',
+      opacity: 0.7,
       overflow: 'hidden',
-      filter: 'grayscale(75%)',
+      position: 'absolute',
       marginTop: -64,
       [theme.breakpoints.down('sm')]: {
         marginTop: -56,
       },
+    },
+    image: {
+      height: '100%',
+      width: '100%',
+      position: 'relative',
+
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'cover',
+      backgroundImage: imagePos !== -1 ? 'url(https://currodevimages.s3.amazonaws.com/background-images/'+imageList[imagePos]+')' : '',
+      zIndex: -1,
+      opacity: 0.5,
+      overflow: 'hidden',
     },
     withoutLabel: {
       marginTop: theme.spacing(3),
@@ -159,16 +169,16 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
     textField: {
       margin: '16px 0 0 0',
       '& label.Mui-focused': {
-        color: theme.palette.secondary.main,
+        color: theme.palette.text.main,
       },
       '& .MuiOutlinedInput-root': {
         '&.Mui-focused fieldset': {
-          borderColor: theme.palette.secondary.main,
+          borderColor: theme.palette.text.main,
         },
       },
     },
     signUp: {
-      margin: '16px auto 0px auto',
+      margin: '32px auto 0px auto',
       borderRadius: '21px',
       display: 'flex',
       color: theme.palette.primary.main,
@@ -183,14 +193,16 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
       textAlign: 'center',
       flexGrow: 1,
       margin: '16px 0 16px 0',
-      color: "grey",
-
+      color: theme.palette.text.main,
     },
     footerContainer: {
       position: 'absolute',
       top: 'calc(100vh - 64px)',
       width: '100vw',
       zIndex: 1000,
+    },
+    textColor: {
+      color: theme.palette.text.main,
     }
   }));
 
@@ -243,7 +255,9 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
 
   return (
     <div className={classes.content}>
-      <div className={classes.image}></div>
+      <div className={classes.wrapper}>
+        <div className={classes.image}></div>
+      </div>
       { props.location.state ?
         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
           <Alert onClose={handleClose} severity="warning">
@@ -264,19 +278,25 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
                 className={classes.textField} 
                 label="Email" 
                 fullWidth
+                size="small" 
                 required
                 helperText={values.emailError ? values.emailErrorMessage : ''}
                 onChange={handleChange('email')}
                 error={values.emailError}
-                variant="outlined" />
+                variant="outlined" 
+                InputLabelProps={{
+                  style: { color: textColor },
+                }}
+              />
               <FormControl 
                 variant="outlined" 
                 fullWidth 
+                size="small" 
                 required 
                 error={values.passwordError} 
                 className={classes.textField} 
               >
-                <InputLabel htmlFor="login-password">Password</InputLabel>
+                <InputLabel htmlFor="login-password" className={classes.textColor}>Password</InputLabel>
                 <OutlinedInput
                   id="login-password"
                   type={values.showPassword ? 'text' : 'password'}
@@ -312,8 +332,8 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
                       color="textSecondary"
                       onClick={forgotPassword}
                     >
-                      Forgot Password?
-                    </Link>  
+                      <span className={classes.textColor}>Forgot Password?</span>
+                  </Link>  
                 </div> 
                 <Divider variant="middle" />
                 <Button className={classes.signUp} variant="contained" color="inherit" size="medium" onClick={newUser}>Sign Up</Button>

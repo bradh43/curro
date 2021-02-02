@@ -21,6 +21,9 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import Avatar from '@material-ui/core/Avatar';
 import Link from '@material-ui/core/Link';
+import Grid from '@material-ui/core/Grid';
+import Divider from '@material-ui/core/Divider';
+import MenuItem from '@material-ui/core/MenuItem';
 
 
 export const CreateAccount = props => {
@@ -54,10 +57,31 @@ export const CreateAccount = props => {
   });
 
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedMonth, setSelectedMonth] = useState(0)
+  const [selectedDay, setSelectedDay] = useState(0)
+  const [selectedYear, setSelectedYear] = useState(0)
+
+  console.log(selectedDate)
 
   const handleDateChange = (date) => {
     setSelectedDate(String(date));
   };
+
+  const handleMonthChange = (event) => {
+    setSelectedMonth(event.target.value)
+    selectedDate.setMonth(event.target.value-1, selectedDate.getDate())
+    setSelectedDate(selectedDate)
+  } 
+  const handleDayChange = (event) => {
+    setSelectedDay(event.target.value)
+    selectedDate.setMonth(selectedDate.getMonth(), event.target.value)
+    setSelectedDate(selectedDate)
+  } 
+  const handleYearChange = (event) => {
+    setSelectedYear(event.target.value)
+    selectedDate.setFullYear(event.target.value)
+    setSelectedDate(selectedDate)
+  } 
 
 
   const handleChange = (prop) => (event) => {
@@ -121,6 +145,7 @@ export const CreateAccount = props => {
     window.scrollTo(0, 0)
   })
 
+  const textColor = '#8AA0BD'
   const useStyles = makeStyles((theme) => ({
     root: {
       margin: '16px',
@@ -144,23 +169,31 @@ export const CreateAccount = props => {
       zIndex: 1,
       width: '100vw'
     },
-    image: {
+    wrapper:{
       height: '100vh',
       width: '100vw',
+      zIndex: -10,
+      backgroundColor: '#1a1a1a',
+      opacity: 0.7,
+      overflow: 'hidden',
+      position: 'fixed',
+      marginTop: -64,
+      [theme.breakpoints.down('sm')]: {
+        marginTop: -56,
+      },
+    },
+    image: {
+      height: '100%',
+      width: '100%',
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'cover',
       backgroundImage: imagePos !== -1 ? 'url(https://currodevimages.s3.amazonaws.com/background-images/'+imageList[imagePos]+')' : '',
       backgroundAttachment: 'fixed',
       backgroundPosition: 'center',
       zIndex: -1,
-      opacity: 0.6,
-      position: 'fixed',
+      position: 'relative',
+      opacity: 0.5,
       overflow: 'hidden',
-      filter: 'grayscale(75%)',
-      marginTop: -64,
-      [theme.breakpoints.down('sm')]: {
-        marginTop: -56,
-      },
     },
     logo: {
       margin: 'auto'
@@ -169,16 +202,16 @@ export const CreateAccount = props => {
       marginTop: theme.spacing(3),
     },
     container: {
-
+      
     },
     textField: {
       margin: '16px 0 0 0',
       '& label.Mui-focused': {
-        color: theme.palette.secondary.main,
+        color: theme.palette.text.main,
       },
       '& .MuiOutlinedInput-root': {
         '&.Mui-focused fieldset': {
-          borderColor: theme.palette.secondary.main,
+          borderColor: theme.palette.text.main,
         },
       },
     },
@@ -187,11 +220,21 @@ export const CreateAccount = props => {
       flexGrow: 1,
       margin: '16px 0 0 0',
       color: "grey",
-
+      fontWeight: 600,
     },
     errorMessage: {
       color: theme.palette.error.main,
     },
+    login: {
+      color: theme.palette.primary.main,
+    },
+    birthdateLabel: {
+      marginTop: 16,
+      marginBottom: 8,
+    },
+    textColor: {
+      color: theme.palette.text.main,
+    }
   }));
 
   const { history } = props;
@@ -267,9 +310,24 @@ export const CreateAccount = props => {
     history.push('login')
   }
 
+  var getDaysInMonth = () => {
+   return new Date(selectedDate.getFullYear(), selectedDate.getMonth()+1, 0).getDate();
+  }
+
+  const monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+  const dayList = [...Array(getDaysInMonth()).keys()]
+
+  const upperBoundYear = new Date().getFullYear()
+  const lowerBoundYear = 1900
+
+  const yearList = [...Array(upperBoundYear+1-lowerBoundYear).keys()]
+
+
   return (
     <div className={classes.content}>
-      <div className={classes.image}></div>      
+      <div className={classes.wrapper}>
+        <div className={classes.image}></div>      
+      </div>
       <Container maxWidth="sm" className={classes.container}>
         <Card className={classes.root}>
           <CardContent>
@@ -278,72 +336,110 @@ export const CreateAccount = props => {
               <Typography variant="h4" className={classes.welcome}>Create your account</Typography>
             </div>
             <form noValidate autoComplete="off" onSubmit={submitForm}>
-              <TextField
-                id="create-first"
-                className={classes.textField}
-                label="First Name"
-                fullWidth
-                required
-                helperText={values.firstError ? values.firstErrorMessage : ''}
-                onChange={handleChange('first')}
-                error={values.firstError}
-                variant="outlined" />
-              <TextField
-                id="create-last"
-                className={classes.textField}
-                label="Last Name"
-                fullWidth
-                required
-                helperText={values.lastError ? values.lastErrorMessage : ''}
-                onChange={handleChange('last')}
-                error={values.lastError}
-                variant="outlined" />
-              <TextField
-                id="create-username"
-                className={classes.textField}
-                label="Username"
-                fullWidth
-                required
-                helperText={values.usernameError ? values.usernameErrorMessage : ''}
-                onChange={handleChange('username')}
-                error={values.usernameError}
-                variant="outlined" />
+              <Grid container direction="row" spacing={3}>
+                <Grid item xs={6}>
+                  <TextField
+                    id="create-first"
+                    className={classes.textField}
+                    label="First Name"
+                    fullWidth
+                    size="small" 
+                    required
+                    helperText={values.firstError ? values.firstErrorMessage : ''}
+                    onChange={handleChange('first')}
+                    error={values.firstError}
+                    variant="outlined" 
+                    InputLabelProps={{
+                      style: { color: textColor },
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    id="create-last"
+                    className={classes.textField}
+                    label="Last Name"
+                    fullWidth
+                    size="small" 
+                    required
+                    helperText={values.lastError ? values.lastErrorMessage : ''}
+                    onChange={handleChange('last')}
+                    error={values.lastError}
+                    variant="outlined" 
+                    InputLabelProps={{
+                      style: { color: textColor },
+                    }}
+                  />
+                </Grid>
+              </Grid>
               <TextField
                 id="create-email"
                 className={classes.textField}
                 label="Email"
                 fullWidth
+                size="small" 
                 required
                 helperText={values.emailError ? values.emailErrorMessage : ''}
                 onChange={handleChange('email')}
                 error={values.emailError}
-                variant="outlined" />
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDatePicker
-                  required
-                  fullWidth
-                  error={values.birthdateError}
-                  helperText={values.birthdateErrorMessage}
-                  format="MM/dd/yyyy"
-                  margin="normal"
-                  id="create-birthdate"
-                  label="Birthdate"
-                  value={selectedDate}
-                  onChange={handleDateChange}
-                  className={classes.textField}
-                  KeyboardButtonProps={{
-                    'aria-label': 'change date',
-                  }}
-                />
-              </MuiPickersUtilsProvider>
+                variant="outlined" 
+                InputLabelProps={{
+                  style: { color: textColor },
+                }}
+              />
+              <Typography variant="body1" color="textSecondary" className={`${classes.textColor} ${classes.birthdateLabel}`}>Birthday</Typography>
+              <Grid container direction="row" spacing={3}>
+                <Grid item xs={6}>
+                  <TextField id="month-select" variant="outlined" error={values.birthdateErrorMessage} value={selectedMonth} onChange={handleMonthChange} select fullWidth size="small">
+                    <MenuItem value={0} disabled><span className={classes.textColor}>Month</span></MenuItem>
+                    {monthList.map((month, value) => {
+                      return <MenuItem value={value+1}>{month}</MenuItem>
+                    })}
+                  </TextField>
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField id="day-select" variant="outlined" error={values.birthdateErrorMessage} value={selectedDay} onChange={handleDayChange} select fullWidth size="small">
+                    <MenuItem value={0} disabled><span className={classes.textColor}>Day</span></MenuItem>
+                    {dayList.map((day) => {
+                      return <MenuItem value={day+1}>{day+1}</MenuItem>
+                    })}
+                  </TextField>
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField id="year-select" variant="outlined" error={values.birthdateErrorMessage} value={selectedYear} onChange={handleYearChange} select fullWidth size="small">
+                  <MenuItem value={0} disabled><span className={classes.textColor}>Year</span></MenuItem>
+                    {yearList.reverse().map((year) => {
+                      return <MenuItem value={year+1900}>{year+1900}</MenuItem>
+                    })}
+                  </TextField>
+                </Grid>
+              </Grid>
+              <Typography variant="caption" className={classes.errorMessage} style={{marginLeft: 14, marginTop: 4}}>{values.birthdateErrorMessage}</Typography>
+              <Divider/>
+              <TextField
+                id="create-username"
+                className={classes.textField}
+                label="Username"
+                fullWidth
+                size="small" 
+                required
+                helperText={values.usernameError ? values.usernameErrorMessage : ''}
+                onChange={handleChange('username')}
+                error={values.usernameError}
+                variant="outlined" 
+                InputLabelProps={{
+                  style: { color: textColor },
+                }}
+              />
               <FormControl
                 variant="outlined"
                 fullWidth
+                size="small" 
                 required
                 error={values.passwordError}
                 className={classes.textField}
               >
-                <InputLabel htmlFor="create-password">Password</InputLabel>
+                <InputLabel htmlFor="create-password" className={classes.textColor}>Password</InputLabel>
                 <OutlinedInput
                   id="create-password"
                   type={values.showPassword ? 'text' : 'password'}
@@ -367,15 +463,16 @@ export const CreateAccount = props => {
                 />
                 <FormHelperText id="create-confirm-error-message">{values.passwordError ? values.passwordErrorMessage : ''}</FormHelperText>
               </FormControl>
-              <Typography variant="body2" color="textSecondary">Password must have 1 lowercase, 1 uppercase, 1 number, 1 special, and be at least 8 long</Typography>
+              <Typography variant="body2" color="textSecondary" className={classes.textColor}>Password must have 1 lowercase, 1 uppercase, 1 number, 1 special, and be at least 8 long</Typography>
               <FormControl
                 variant="outlined"
                 fullWidth
+                size="small" 
                 required
                 error={values.confirmError}
                 className={classes.textField}
               >
-                <InputLabel htmlFor="create-confirm">Confirm Password</InputLabel>
+                <InputLabel htmlFor="create-confirm" className={classes.textColor}>Confirm Password</InputLabel>
                 <OutlinedInput
                   id="create-confirm"
                   type={values.showPassword ? 'text' : 'password'}
@@ -411,10 +508,9 @@ export const CreateAccount = props => {
                     color="textSecondary"
                     onClick={existingUser}
                   > 
-                    Already have an account? Login
+                    <span className={classes.textColor}>Already have an account? </span><span className={classes.login}>Login</span>
                   </Link>  
                 </div>
-                {/* <Button  fullWidth size="medium" onClick={existingUser}>Already have an account? Login</Button> */}
               </div>
             </form>
           </CardContent>

@@ -31,6 +31,7 @@ export const Footer = (props) => {
     },
     textButton: {
       cursor: 'pointer',
+      fontWeight: 600,
       '&:hover': {
         color: theme.palette.primary.main,
       },

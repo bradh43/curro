@@ -83,7 +83,6 @@ const client = new ApolloClient({
         });
       },
       handleFetch: accessToken => {
-        console.log(accessToken)
         if(accessToken){
           localStorage.setItem("token", accessToken)
         } else {
@@ -109,7 +108,6 @@ function App() {
   useEffect(() => {
     let refresh_uri = 'http://localhost:4000/refresh_token';
     if (process.env.NODE_ENV === 'production'){
-      console.log('refresh token')
       refresh_uri = 'https://' + prod_uri_base + '/refresh_token';
     }
     fetch(refresh_uri, {

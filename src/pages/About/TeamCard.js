@@ -37,7 +37,7 @@ export const TeamCard = (props) => {
 
   const useStyles = makeStyles((theme) => ({
     name: {
-      fontWeight: 400,
+      fontWeight: 500,
       textAlign: 'center',
     },
     title: {

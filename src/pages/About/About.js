@@ -40,17 +40,28 @@ export const About = (props) => {
     background: {
       backgroundColor: '#FFFFFF',
     },
-    image: {
-      position: 'absolute',
+    wrapper:{
       width: '100vw',
       height: 384,
+      // zIndex: -10,
+      backgroundColor: '#1a1a1a',
+      overflow: 'hidden',
+      position: 'absolute',
+    },
+    image: {
+      // position: 'absolute',
+      // width: '100vw',
+      // height: 384,
+      position: 'relative',
+      height: '100%',
+      width: '100%',
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'cover',
       backgroundImage: 'url(https://www.ncaa.com/_flysystem/public-s3/styles/stax_large_content_tile/public-s3/tile-images/hero/W1C2019C053.JPG?h=90c7c397&itok=wTDuzmuN)',
       // backgroundImage: 'url(https://currodevimages.s3.amazonaws.com/background-images/DSC_5789.jpg)',
       overflow: 'hidden',
-      opacity: 0.7,
-      filter: 'grayscale(60%)',
+      opacity: 0.5,
+      // filter: 'grayscale(60%)',
       // zIndex: -1
     },
     headerBox: {
@@ -100,7 +111,9 @@ export const About = (props) => {
   return (
     <div>
       <div className={classes.background}>
-        <div className={classes.image}/>
+        <div className={classes.wrapper}>
+          <div className={classes.image}/>
+        </div>
         <div className={classes.headerBox}>
           <Typography variant="h4" className={classes.imageText}>{tagline}</Typography>
           <Button variant="contained" className={classes.createAccountButton} style={{borderRadius:'32px'}} color="primary" size="large" onClick={createAccount}>
