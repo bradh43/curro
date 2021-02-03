@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
       border: "1px solid #E8E8E8",
       padding: 8,
       paddingBottom: 32,
-      backgroundColor: '#F8F2F4'
+      backgroundColor: '#FBFBFB'
     },
 }));
 

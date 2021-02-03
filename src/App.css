@@ -3,12 +3,12 @@
 html, body {
   max-width: 100%;
   overflow-x: hidden;
-  background-color: #EEEFF1;
+  background-color: #F3F3F5;
 }
 
 body {
   /* Do not make 100vh or newsfeed scroll breaks */
-  background-color: #EEEFF1 !important;
+  background-color: #F3F3F5 !important;
 }
 a.show-more-anchor {
   text-decoration: none;

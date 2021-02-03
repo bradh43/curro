@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
 import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -16,7 +17,6 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-import Link from '@material-ui/core/Link';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
@@ -42,6 +42,10 @@ export const Footer = (props) => {
       margin: 'auto',
       marginTop: 8,
       marginBottom: 32,
+    },
+    outsideLink: {
+      color: 'inherit',
+      textDecoration: 'none',
     },
   }));
 
@@ -74,6 +78,9 @@ export const Footer = (props) => {
           <Grid item>
             <Typography variant={'overline'} className={classes.textButton} onClick={() => history.push('/terms')}>Terms of Service</Typography>
           </Grid>
+          <Grid item>
+            <Typography variant={'overline'} className={classes.textButton}><a href={'https://forms.gle/7JdpvaG6YZ657tBv5'} className={classes.outsideLink}>Feedback</a></Typography>
+          </Grid>
         </Grid>
       </Hidden>
       <Hidden mdUp>
@@ -93,6 +100,9 @@ export const Footer = (props) => {
           </Grid>
           <Grid item xs={12}>
             <Typography variant={'overline'} className={classes.textButton} onClick={() => history.push('/terms')}>Terms of Service</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant={'overline'} className={classes.textButton}><a href={'https://forms.gle/7JdpvaG6YZ657tBv5'} className={classes.outsideLink}>Feedback</a></Typography>
           </Grid>
         </Grid>
       </Hidden>

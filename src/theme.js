@@ -14,7 +14,7 @@ var muiTheme = createMuiTheme({
       main: '#8B51FF'
     },
     background: {
-      main: '#EEEFF1',
+      main: '#F3F3F5',
     },
     text: {
       main: '#8AA0BD'
