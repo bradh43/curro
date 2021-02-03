@@ -142,8 +142,6 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
       height: '100vh',
       width: '100vw',
       zIndex: -10,
-      backgroundColor: '#1a1a1a',
-      opacity: 0.7,
       overflow: 'hidden',
       position: 'absolute',
       marginTop: -64,
@@ -155,12 +153,12 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
       height: '100%',
       width: '100%',
       position: 'relative',
-
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'cover',
       backgroundImage: imagePos !== -1 ? 'url(https://currodevimages.s3.amazonaws.com/background-images/'+imageList[imagePos]+')' : '',
       zIndex: -1,
-      opacity: 0.5,
+      filter: 'grayscale(55%)',
+      opacity: 0.9,
       overflow: 'hidden',
     },
     withoutLabel: {

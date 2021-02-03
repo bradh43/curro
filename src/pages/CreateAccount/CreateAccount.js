@@ -171,8 +171,6 @@ export const CreateAccount = props => {
       height: '100vh',
       width: '100vw',
       zIndex: -10,
-      backgroundColor: '#1a1a1a',
-      opacity: 0.7,
       overflow: 'hidden',
       position: 'fixed',
       marginTop: -64,
@@ -190,7 +188,8 @@ export const CreateAccount = props => {
       backgroundPosition: 'center',
       zIndex: -1,
       position: 'relative',
-      opacity: 0.5,
+      filter: 'grayscale(55%)',
+      opacity: 0.9,
       overflow: 'hidden',
     },
     logo: {
@@ -291,7 +290,7 @@ export const CreateAccount = props => {
           last: values.last,
           username: values.username,
           password: values.password,
-          birthdate: birthdate.toISOString().toString()
+          birthdate: birthdate.toISOString().split('T')[0]
         }
       }
       createUserMutation({ variables: userInput })

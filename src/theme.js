@@ -11,7 +11,7 @@ var muiTheme = createMuiTheme({
       main: '#DC1E65'
     },
     secondary: {
-      main: '#8B51FF'
+      main: '#DC1E65'
     },
     background: {
       main: '#F3F3F5',

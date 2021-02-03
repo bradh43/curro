@@ -75,7 +75,7 @@ export const TeamWeek = (props) => {
       for(var i = 0; i < postList.length; i++){
         var postDate = moment(postList[i].postDate)
 
-        if(postDate.month() === dayDate.month() && postDate.date() === dayDate.date()){
+        if(postDate.month() === dayDate.month() && postDate.date() === dayDate.date() && postDate.year() === dayDate.year()){
           return postList[i]
         }
       }
@@ -90,8 +90,6 @@ export const TeamWeek = (props) => {
     var activityTotals = {}
 
     let singleDay = moment(props.date)
-    console.log(props.date)
-    console.log(props.date.getMonth())
 
     // for mobile view only show one day
     dayComponents.push(

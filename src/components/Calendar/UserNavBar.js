@@ -85,6 +85,7 @@ export const UserNavBar = props => {
       right: 72,
     },
     addButton: {
+      padding: '0 16px !important',
       boxShadow: '0px 3px 5px -1px rgba(0,0,0,0.2)',
     },
     addIcon: {

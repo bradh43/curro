@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { gql, useQuery, useLazyQuery } from '@apollo/client';
+import { gql, useQuery, useMutation, useLazyQuery } from '@apollo/client';
 import { WelcomeModal } from '../../components/Modal/WelcomeModal';
 import { UserNavBar } from '../../components/Calendar/UserNavBar';
 import Paper from '@material-ui/core/Paper';
@@ -30,9 +30,16 @@ import List from '@material-ui/core/List';
 import Hidden from '@material-ui/core/Hidden';
 import { ActivityTile } from './ActivityTile';
 import moment from 'moment';
-import { GET_POST_BY_ID_QUERY } from '../../utils/graphql';
+import { GET_POST_BY_ID_QUERY, GET_POST_QUERY } from '../../utils/graphql';
 import ShowMoreText from 'react-show-more-text';
-
+import produce from "immer";
+import Favorite from '@material-ui/icons/Favorite';
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+import FavoriteTwoToneIcon from '@material-ui/icons/FavoriteTwoTone';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormGroup from '@material-ui/core/FormGroup';
+import Checkbox from '@material-ui/core/Checkbox';
+import AddCommentIcon from '@material-ui/icons/AddComment';
 
 const useStyles = makeStyles((theme) => ({
     cell: {
@@ -42,12 +49,14 @@ const useStyles = makeStyles((theme) => ({
       padding: 8,
       backgroundColor: '#ffffff',
       position: 'relative',
+      display: 'flex',
+      flexDirection: 'column',
     },
     previousCell: {
       backgroundColor: '#fbfbfb',
     },
     hoverCell: {
-      cursor: 'pointer',
+      // cursor: 'pointer',
       color: '#1a1a1a',
       '&:hover': {
         backgroundColor: '#f5f5f5',
@@ -92,6 +101,7 @@ const useStyles = makeStyles((theme) => ({
       fontWeight: '600',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
+      cursor: 'pointer',
       '&:hover': {
         color: theme.palette.primary.main,
       }
@@ -114,6 +124,21 @@ const useStyles = makeStyles((theme) => ({
       cursor: 'pointer',
       textDecoration: 'none',
     },
+    postActionBox:{
+      // backgroundColor: 'red',
+      marginTop: 8,
+    },
+    likeButton: {
+      padding: 2,
+      margin: 0,
+    },
+    icon: {
+      height: 16,
+      width: 16,
+    },
+    spacer: {
+      flexGrow: 1
+    }
 }));
 
 const isToday = (someDate) => {
@@ -128,9 +153,79 @@ export const TeamDay = (props) => {
 
   const post = props.post
 
+  const { user } = useContext(AuthContext)
+
+  const didUserLikePost = (likeList) => {
+    var userLiked = false;
+    for(var i = 0; i < likeList.length; i++) {
+        if (likeList[i].user.id === user.id) {
+            userLiked = true;
+            break;
+        }
+    }
+    return userLiked
+  }
+
+  const [likePost, setLikePost] = useState(didUserLikePost((props.post && props.post.likeList) ? props.post.likeList : []))
+
+  const LIKE_POST_MUTATION = gql`
+    mutation likePost($input: LikePostInput!) {
+      likePost(input: $input) {
+        liked
+      }
+    }
+  `;
+
+  const [likePostMutation, { loading: likeLoading }] = useMutation(LIKE_POST_MUTATION, {
+    update(store, { data: { likePost } }) {
+      const data = store.readQuery({
+        query: GET_POST_QUERY
+      })
+
+      var postIndex = data.postList.posts.findIndex((post) => {
+        return post.id === props.post.id
+      })
+
+      const updatedPosts = produce(data.postList.posts, x => {
+        if(likePost.liked){
+          x[postIndex].likeList.push({user: user})
+        } else {
+          x[postIndex].likeList = x[postIndex].likeList.filter(postLike => {
+            return postLike.user.id !== user.id
+          })
+        }
+      })
+      
+      store.writeQuery({
+        query: GET_POST_QUERY,
+        data: {
+          postList: {
+            __typename: "UpdatePost",
+            posts: updatedPosts,
+            hasMore: data.postList.hasMore,
+            cursor: data.postList.cursor
+          },
+        }
+      })
+
+    },
+    onError(error) {
+      console.log(error)
+    }
+  })
+
+  const handleLike = (event) => {
+    const likeInput = {
+      input: {
+        postId: props.post.id
+      }
+    }
+    likePostMutation({ variables: likeInput })
+    setLikePost(event.target.checked)
+  }
+
   const [getPost, { data, loading }] = useLazyQuery(GET_POST_BY_ID_QUERY, {
     onCompleted: (result) => {
-      console.log("done...")
       moreDetailPost[post.id] = result.post
       props.setEditPost(result.post)
       props.setOpenModal(true)
@@ -160,12 +255,16 @@ export const TeamDay = (props) => {
     } else {
       if(post && post.id){
         // TODO View Details of User Post
-        console.log("View User Post: ",post.id)
+        console.log("TODO: View User Post: ",post.id)
       } 
     }
    
   }
-
+  
+  const handleComment = () => {
+    console.log("TODO: open comments")
+    openPostModal()
+  }
   const getCellClass = () => {
     var cellClass = `${classes.cell}`
     if(props.viewMonth !== props.dayDate.month()){
@@ -205,8 +304,6 @@ export const TeamDay = (props) => {
   const [cellWidth, setCellWidth] = useState(null)
   useEffect(() => {
     if(!cellWidth && cellRef.current){
-      // console.log('width', cellRef.current.offsetWidth-19);
-      // console.log("mount")
       setCellWidth(cellRef.current.offsetWidth-19)
     }
   }, [cellRef.current]);
@@ -262,8 +359,24 @@ export const TeamDay = (props) => {
           </ShowMoreText>
         }
       </div>
-      {/* <div>
-        TODO: Comment Button Like Button
-      </div> */}
+      <div className={classes.spacer}/>
+      {post && <Grid container direction='row' justify="space-between" className={classes.postActionBox}>
+        <Grid item>
+          <IconButton aria-label="add-comment" className={classes.likeButton} onClick={handleComment}>
+            <AddCommentIcon fontSize="small"/>
+          </IconButton>
+        </Grid>
+        <Grid item>
+          <Checkbox 
+            icon={<FavoriteBorder fontSize="small"/>} 
+            checkedIcon={<Favorite fontSize="small"/>} 
+            name="like"  
+            className={classes.likeButton}
+            checked={likePost} 
+            onChange={handleLike} 
+            disabled={likeLoading}
+          />
+        </Grid>
+      </Grid>}
     </Grid>);
 }

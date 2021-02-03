@@ -333,7 +333,16 @@ export const TEAM_CALENDAR_QUERY = gql`
               value
           }
         }
+        likeList {
+          user{
+            id
+          }
+        }
+        commentList {
+          ...FeedPageComment
+        }
       }
     }
   }
+  ${COMMENT_FRAGMENT}
 `;

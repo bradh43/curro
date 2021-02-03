@@ -5,7 +5,7 @@ export const TeamInfo = [
     last: 'Hodkinson',
     title: 'Software Engineer',
     profilePictureURL: 'https://avatars.githubusercontent.com/u/39724942?s=460&u=3140403237128bbe7f1daba46e28bb09bec4b2c0&v=4',
-    bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
+    bio: 'Brad is a Software Engineer for Capital One Financial Corporation. He graduated from Pacific Lutheran University with a B.A. in Physics, and continued to Washington University in St. Louis through a 3-2 engineering program, earning a B.S. in Computer Science. He was a member of the IEEE student chapter, and was on the Cross-Country and Track & Field teams, where he was a five time NCAA All-American. He currently lives in Richmond, Virginia, where he enjoys rock climbing, running, and hiking with his beagle-mix, Phoebe. Brad hopes to unite his passion for running with his expertise in software engineering to develop a space where athletes can stay connected to one another.'
   },
   {
     id: 1,
@@ -45,6 +45,6 @@ export const TeamInfo = [
     last: 'Gillespie',
     title: 'iOS & Android Developer',
     profilePictureURL: 'https://media-exp1.licdn.com/dms/image/C4D03AQFGvcm5pF8d9A/profile-displayphoto-shrink_400_400/0/1603810712300?e=1617840000&v=beta&t=Pqg9ton8Sm4XIglAq5PjA8DegCjCe19X0_zR1yttjtw',
-    bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
+    bio: 'Max is a software engineer and entrepreneur. He loves new ideas and building products. He currently lives in Pittsburgh, where in his free time, he enjoys filmmaking, skiing, and running.'
   },
 ]

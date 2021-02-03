@@ -45,7 +45,6 @@ const sundayWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Fri
 
 export const WeekLabel = (props) => {
   const classes = useStyles();
-  console.log(props.date)
 
   return (
     <Grid container item xs={12} spacing={0} className={classes.week}>
