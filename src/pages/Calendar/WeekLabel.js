@@ -45,24 +45,34 @@ const sundayWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Fri
 
 export const WeekLabel = (props) => {
   const classes = useStyles();
-  
+  console.log(props.date)
+
   return (
     <Grid container item xs={12} spacing={0} className={classes.week}>
-      {props.team && <Grid item xs key={'User'}>
+      {props.team && <Grid item xs={4} sm={4} md key={'User'}>
         <Box className={classes.cell}>
           User
         </Box>    
       </Grid>}
-      <Hidden smUp>
-        {(props.mondayFirst ? mondayWeek : sundayWeek).map((dayLabel) => (
-          <Grid item xs key={dayLabel}>
-            <Box className={classes.cell}>
-              {dayLabel[0]}
-            </Box>
-          </Grid>
-        ))}
-      </Hidden>
-      <Hidden xsDown>
+      {!props.team ? 
+        <Hidden smUp>
+          {(props.mondayFirst ? mondayWeek : sundayWeek).map((dayLabel) => (
+            <Grid item xs key={dayLabel}>
+              <Box className={classes.cell}>
+                {dayLabel[0]}
+              </Box>
+            </Grid>
+          ))}
+        </Hidden> : 
+        <Hidden mdUp>
+            <Grid item xs key={props.date.getDay()}>
+              <Box className={classes.cell}>
+                {sundayWeek[props.date.getDay()]}
+              </Box>
+            </Grid>
+        </Hidden> 
+      }
+      {!props.team ? <Hidden xsDown>
         {(props.mondayFirst ? mondayWeek : sundayWeek).map((dayLabel) => (
           <Grid item xs key={dayLabel}>
             <Box className={classes.cell}>
@@ -70,7 +80,16 @@ export const WeekLabel = (props) => {
             </Box>
           </Grid>
         ))}
-      </Hidden>
+      </Hidden> :
+      <Hidden smDown>
+        {(props.mondayFirst ? mondayWeek : sundayWeek).map((dayLabel) => (
+          <Grid item xs key={dayLabel}>
+            <Box className={classes.cell}>
+              {dayLabel}
+            </Box>
+          </Grid>
+        ))}
+      </Hidden>}
       {!props.team && <Hidden mdDown>
         <Grid item xs key={'total'}>
           <Box className={classes.cell}>

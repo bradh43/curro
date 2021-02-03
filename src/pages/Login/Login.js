@@ -108,15 +108,15 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
   const textColor = '#8AA0BD'
   const useStyles = makeStyles((theme) => ({
     root: {
-      margin: '32px',
+      margin: 32,
+      marginTop: -64,
+      transform: 'translate(0%, 50%)',
       padding: '8px 16px 8px 16px',
       alignItems: 'center',
       flexWrap: 'wrap',  
-      transform: 'translate(0%,40%)',
       [theme.breakpoints.down('md')]: {
-        margin: '16px 0 0 0',
+        margin: '-56px 0 0 0',
         padding: '2px 4px 2px 4px',
-        transform: 'translate(0%,15%)',
       },
       
     },
@@ -203,7 +203,11 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
     },
     textColor: {
       color: theme.palette.text.main,
-    }
+    },
+    snackBar: {
+      position: 'absolute',
+      top: 8,
+    },
   }));
 
   const { history } = props;
@@ -259,7 +263,7 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
         <div className={classes.image}></div>
       </div>
       { props.location.state ?
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+        <Snackbar className={classes.snackBar} open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
           <Alert onClose={handleClose} severity="warning">
             Login to view {location} page
         </Alert>

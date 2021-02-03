@@ -28,6 +28,7 @@ import Typography from '@material-ui/core/Typography';
 import { TeamWeek } from './TeamWeek';
 import { WeekLabel } from './WeekLabel';
 import add from 'date-fns/add';
+import Hidden from '@material-ui/core/Hidden';
 
 const WEEKS_TO_DISPLAY_IN_VIEW = 6;
 
@@ -117,6 +118,21 @@ export const TeamCalendarDisplay = (props) => {
     });
   }
 
+  const previousDayButton = () => {
+    props.setDate(prevDate => {
+      let copy = new Date(prevDate);
+      // TODO change to -1
+      return add(copy, {days: -1});
+    });
+  }
+
+  const nextDayButton = () => {
+    props.setDate(nextDate => {
+      let copy = new Date(nextDate);
+      return add(copy, {days: 1});
+    });
+  }
+
   const getFirstDayOfWeek = () => {
     let firstDay = new Date(props.date);
     // Get the first sunday of the week
@@ -142,22 +158,45 @@ export const TeamCalendarDisplay = (props) => {
   return (
     <Paper className={classes.root}>
       <Toolbar className={classes.toolbar}>
-        <Tooltip title={"Previous Week"} enterDelay={400} >
-          <IconButton color="inherit" onClick={previousButton}>
-              <ChevronLeftIcon />
-          </IconButton>
-        </Tooltip>
+        <Hidden smDown>
+          <Tooltip title={"Previous Week"} enterDelay={400} >
+            <IconButton color="inherit" onClick={previousButton}>
+                <ChevronLeftIcon />
+            </IconButton>
+          </Tooltip>
+        </Hidden>
+        <Hidden mdUp>
+          <Tooltip title={"Previous Day"} enterDelay={400} >
+            <IconButton color="inherit" onClick={previousDayButton}>
+                <ChevronLeftIcon />
+            </IconButton>
+          </Tooltip>
+        </Hidden>
         <Typography variant="h5" className={classes.displayCurrent}>
             {calendarTitle}
         </Typography>
-        <Tooltip title={"Next Week"} enterDelay={400} >
-          <IconButton color="inherit" className={classes.iconButton} onClick={nextButton}>
-            <ChevronRightIcon />
-          </IconButton>
-        </Tooltip>
+        <Hidden mdUp>
+          <Tooltip title={"Next Day"} enterDelay={400} >
+            <IconButton color="inherit" className={classes.iconButton} onClick={nextDayButton}>
+              <ChevronRightIcon />
+            </IconButton>
+          </Tooltip>
+        </Hidden>
+        <Hidden smDown>
+          <Tooltip title={"Next Week"} enterDelay={400} >
+            <IconButton color="inherit" className={classes.iconButton} onClick={nextButton}>
+              <ChevronRightIcon />
+            </IconButton>
+          </Tooltip>
+        </Hidden>
       </Toolbar>
       <Grid container spacing={0} className={classes.weekLabel}>
-        <WeekLabel mondayFirst={props.mondayFirst} key={'week-label'} team={true}/>
+        <WeekLabel 
+          mondayFirst={props.mondayFirst} 
+          key={'week-label'} 
+          team={true}
+          date={props.date}
+        />
       </Grid>
       <Grid 
         container
@@ -172,6 +211,7 @@ export const TeamCalendarDisplay = (props) => {
             data={userPostMap} 
             loading={props.loading}
             me={props.me}
+            date={props.date}
             firstDay={firstDayOfWeekView} 
             viewMonth={firstDayOfWeekView.getMonth()} 
             key={'week-'+props.date.getDay()+'-'+userPostMap.user.id}

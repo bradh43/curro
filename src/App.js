@@ -8,6 +8,8 @@ import { UserCalendar } from './pages/Calendar/UserCalendar';
 import { TeamCalendar } from './pages/Calendar/TeamCalendar';
 import { Feed } from './pages/Feed/Feed';
 import { About } from './pages/About/About';
+import { Terms } from './pages/About/Terms';
+import { Privacy } from './pages/About/Privacy';
 import { Explore } from './pages/Explore/Explore';
 import { Settings } from './pages/Settings/Settings';
 import { PageNotFound } from './pages/PageNotFound/PageNotFound';
@@ -131,6 +133,8 @@ function App() {
               <ProtectedRoute exact path='/' component={ UserCalendar }/>
               <Route exact path='/home' component={ Home }/>
               <Route exact path='/about' component={ About }/>
+              <Route exact path='/terms' component={ Terms }/>
+              <Route exact path='/privacy' component={ Privacy }/>
               <Route exact path='/login' component={ Login }/>
               <Route exact path='/create' component={ CreateAccount }/>
               <Route exact path='/createAccount' component={ CreateAccount }/>

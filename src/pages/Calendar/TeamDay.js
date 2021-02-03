@@ -84,9 +84,12 @@ const useStyles = makeStyles((theme) => ({
       whiteSpace: 'nowrap',
       display: 'inline-block',
       marginLeft: 24,
+      width: 'calc(((100vw - 32px) / 8) - 50px)',
+      [theme.breakpoints.down('sm')]: {
+        width: 'calc(((100vw - 32px) * 2 / 3) - 50px)',
+      },
       color: '#1a1a1a',
       fontWeight: '600',
-      width: 'calc(((100vw - 32px) / 8) - 50px)',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       '&:hover': {
@@ -209,7 +212,7 @@ export const TeamDay = (props) => {
   }, [cellRef.current]);
   
   return (
-    <Grid item xs key={'week-day-'+props.dayDate.date()}
+    <Grid item xs={8} sm={8} md key={'week-day-'+props.dayDate.date()}
       className={getCellClass()} 
       zeroMinWidth
       ref={cellRef}
@@ -220,19 +223,17 @@ export const TeamDay = (props) => {
             {today ? <Avatar className={classes.today}>{props.dayDate.date()}</Avatar> : props.dayDate.date()}
           </span>
           {post && 
-            <Hidden xsDown>
-              <span style={{width: '24px', height: '24px'}}>
-                <Typography 
-                  display={'inline'} 
-                  variant={'body2'} 
-                  className={classes.title}
-                  onClick={openPostModal}
-                >
-                  {post.title}
-                </Typography>
-              </span>
-            </Hidden>
-            }
+            <span style={{width: '24px', height: '24px'}}>
+              <Typography 
+                display={'inline'} 
+                variant={'body2'} 
+                className={classes.title}
+                onClick={openPostModal}
+              >
+                {post.title}
+              </Typography>
+            </span>
+          }
         </div>
         {loading && 
           <span className={classes.loadingBox}>
@@ -242,7 +243,7 @@ export const TeamDay = (props) => {
       </div>
       <div>
         {post && post.activityList.map(activity => (
-          <ActivityTile activity={activity} key={'day-activity-'+activity.id}/>
+          <ActivityTile activity={activity} key={'day-activity-'+activity.id} team={true}/>
         ))}
       </div>
       <div>

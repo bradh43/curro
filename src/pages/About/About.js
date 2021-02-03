@@ -105,8 +105,7 @@ export const About = (props) => {
     window.scrollTo(0, 0)
   }, [])
 
-  const tagline = 'Sharing Workouts Made Simple'
-  const aboutText = 'Curro is a lifestyle website and application that connects athletes together. Every day, we are working to provide a community where athletes can log their activities and share them with a community of other athletes. At Curro, we believe now more than ever it is vital to be connected with other motivated and passionate athletes. \nCurro began as a small project amongst computer science runners that identified the need to have space for athletes to share about their training beyond just the simple stats. Space where athletes can answer ‘how did you feel?’, and have space where they can be held accountable to adjust their training.'
+  const tagline = 'Sharing Workouts, Made Simple'
 
   return (
     <div>
@@ -122,7 +121,13 @@ export const About = (props) => {
         </div>
         <div className={classes.aboutSection}>
           <Typography variant="h4" className={classes.sectionTitle}>About Curro</Typography>
-          <Typography variant="body1">{aboutText}</Typography>
+          <Typography variant="body1">
+            Curro was created by athletes, for athletes. Our team of software engineers, developers, and creators wanted to establish a space where <em>team</em> and <em>community</em> work in tandem to provide a platform where athletes from all walks of life can unite behind their shared passion for movement. Our first priority is, and always has been, creating a beautifully clean and usable interface that centers athlete experiences in the context of a greater community of individuals working towards shared goals from across the country. 
+          </Typography>
+          <br/>
+          <Typography variant="body1">
+            As competitive runners and athletes ourselves, our team founded Curro in 2020. Today, it continues to grow and be maintained by software engineers, creators, artists, and users from across the country, all united in a shared love of the intersection of technology and activity. 
+          </Typography>
           <Typography variant="h4" className={classes.sectionTitle}>The Team</Typography>
           <Grid
             container

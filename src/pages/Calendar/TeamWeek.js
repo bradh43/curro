@@ -89,6 +89,26 @@ export const TeamWeek = (props) => {
     let dayComponents = []
     var activityTotals = {}
 
+    let singleDay = moment(props.date)
+    console.log(props.date)
+    console.log(props.date.getMonth())
+
+    // for mobile view only show one day
+    dayComponents.push(
+      <Hidden mdUp>
+        <TeamDay 
+          post={getPost(singleDay)}
+          editPost={props.editPost} 
+          setEditPost={props.setEditPost}
+          dayDate={singleDay} 
+          me={props.me}
+          viewMonth={props.date.getMonth()}
+          setOpenModal={props.setOpenModal}
+          setModalDate={props.setModalDate}
+        />
+      </Hidden>
+    )
+
     for (let i = 0; i < 7; i++) {
       // find post
       var post = getPost(day)
@@ -97,16 +117,18 @@ export const TeamWeek = (props) => {
       activityTotals = updateActivityTotals(activityTotals, post)
 
       dayComponents.push(
-        <TeamDay 
-          post={post}
-          editPost={props.editPost} 
-          setEditPost={props.setEditPost}
-          dayDate={day} 
-          me={props.me}
-          viewMonth={props.viewMonth}
-          setOpenModal={props.setOpenModal}
-          setModalDate={props.setModalDate}
-        />
+        <Hidden smDown>
+          <TeamDay 
+            post={post}
+            editPost={props.editPost} 
+            setEditPost={props.setEditPost}
+            dayDate={day} 
+            me={props.me}
+            viewMonth={props.viewMonth}
+            setOpenModal={props.setOpenModal}
+            setModalDate={props.setModalDate}
+          />
+        </Hidden>
         )
         day = moment(day).add(1, 'days');
     }
@@ -181,5 +203,6 @@ export const TeamWeek = (props) => {
       style={{minHeight: 160}}
     >
       {generateDayComponents()}
-    </Grid>);
+    </Grid>
+  );
 }

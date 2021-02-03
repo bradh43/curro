@@ -152,11 +152,9 @@ export const CreateAccount = props => {
       padding: '8px 16px 8px 16px',
       alignItems: 'center',
       flexWrap: 'wrap',
-      transform: 'translate(0%,7%)',
       [theme.breakpoints.down('md')]: {
         margin: '16px 0 16px 0',
         padding: '2px 4px 2px 4px',
-        transform: 'translate(0%,5%)',
       },
     },
     welcome: {
@@ -336,7 +334,7 @@ export const CreateAccount = props => {
               <Typography variant="h4" className={classes.welcome}>Create your account</Typography>
             </div>
             <form noValidate autoComplete="off" onSubmit={submitForm}>
-              <Grid container direction="row" spacing={3}>
+              <Grid container direction="row" spacing={2}>
                 <Grid item xs={6}>
                   <TextField
                     id="create-first"
@@ -388,16 +386,16 @@ export const CreateAccount = props => {
                 }}
               />
               <Typography variant="body1" color="textSecondary" className={`${classes.textColor} ${classes.birthdateLabel}`}>Birthday</Typography>
-              <Grid container direction="row" spacing={3}>
-                <Grid item xs={6}>
-                  <TextField id="month-select" variant="outlined" error={values.birthdateErrorMessage} value={selectedMonth} onChange={handleMonthChange} select fullWidth size="small">
+              <Grid container direction="row" spacing={2}>
+                <Grid item xs={6} sm={6}>
+                  <TextField id="month-select" variant="outlined" error={values.birthdateErrorMessage ? true : false} value={selectedMonth} onChange={handleMonthChange} select fullWidth size="small">
                     <MenuItem value={0} disabled><span className={classes.textColor}>Month</span></MenuItem>
                     {monthList.map((month, value) => {
                       return <MenuItem value={value+1}>{month}</MenuItem>
                     })}
                   </TextField>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={6} sm={3}>
                   <TextField id="day-select" variant="outlined" error={values.birthdateErrorMessage} value={selectedDay} onChange={handleDayChange} select fullWidth size="small">
                     <MenuItem value={0} disabled><span className={classes.textColor}>Day</span></MenuItem>
                     {dayList.map((day) => {
@@ -405,7 +403,7 @@ export const CreateAccount = props => {
                     })}
                   </TextField>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={6} sm={3}>
                   <TextField id="year-select" variant="outlined" error={values.birthdateErrorMessage} value={selectedYear} onChange={handleYearChange} select fullWidth size="small">
                   <MenuItem value={0} disabled><span className={classes.textColor}>Year</span></MenuItem>
                     {yearList.reverse().map((year) => {
