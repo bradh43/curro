@@ -92,6 +92,19 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.primary.main,
       }
     },
+    todayTitle: {
+      marginLeft: 32,
+      width: 'calc(((100vw - 32px) / 8) - 58px)',
+      whiteSpace: 'nowrap',
+      display: 'inline-block',
+      color: '#1a1a1a',
+      fontWeight: '600',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      '&:hover': {
+        color: theme.palette.primary.main,
+      }
+    },
     loading: {
       position: 'absolute',
       top: 16,
@@ -185,7 +198,7 @@ export const Day = (props) => {
           {post && 
             <Hidden xsDown>
               <span style={{width: '24px', height: '24px'}}>
-                <Typography display={'inline'} variant={'body2'} className={classes.title}>{post.title}</Typography>
+                <Typography display={'inline'} variant={'body2'} className={today ? classes.todayTitle : classes.title}>{post.title}</Typography>
               </span>
             </Hidden>
             }

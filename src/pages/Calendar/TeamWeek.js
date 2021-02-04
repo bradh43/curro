@@ -61,6 +61,7 @@ export const TeamWeek = (props) => {
   const classes = useStyles();
   const { history } = props;
 
+  const { user } = useContext(AuthContext)
 
   // TODO should be min 120, max 328, or if show more, then the height of longest post, and be careful with setState to not be to small
   const [weekHeight, setWeekHeight] = useState(354)
@@ -99,7 +100,7 @@ export const TeamWeek = (props) => {
           editPost={props.editPost} 
           setEditPost={props.setEditPost}
           dayDate={singleDay} 
-          me={props.me}
+          me={props.data.user.id === user.id}
           viewMonth={props.date.getMonth()}
           setOpenModal={props.setOpenModal}
           setModalDate={props.setModalDate}

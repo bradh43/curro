@@ -91,7 +91,16 @@ export const About = (props) => {
       color: theme.palette.primary.main,
       marginTop: 64,
       marginBottom: 32,
-    }
+    },
+    name: {
+      fontSize: '0.8675rem',
+      fontWeight: 600,
+      paddingBottom: 8,
+    },
+    thankYouSection: {
+      paddingTop: 32,
+      paddingBottom: 128,
+    },
   }));
 
   const { history } = props;
@@ -139,7 +148,17 @@ export const About = (props) => {
             {TeamInfo.map((member) => (
               <TeamCard key={member.id} member={member}/>
             ))}
-        </Grid>
+          </Grid>
+          <Typography variant="h4" className={classes.sectionTitle}>Thank You</Typography>
+          <Typography variant="body1">
+            Special thanks to all of these people who have helped contribute to this project and made it possible to be where it is today.
+          </Typography>
+          <div className={classes.thankYouSection}>
+            <Typography variant="h6" className={classes.name}>Evan Han</Typography>
+            <Typography variant="h6" className={classes.name}>Julio Trujillo</Typography>
+            <Typography variant="h6" className={classes.name}>Jacob Quigley</Typography>
+            <Typography variant="h6" className={classes.name}>Marco Quaroni</Typography>
+          </div>
         </div>
       </div>
       <Footer history={history}/>

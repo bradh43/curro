@@ -24,7 +24,7 @@ export const AddActivityButton = props => {
     addButton: {
       width: 84,
       height: 84,
-      color: theme.palette.secondary.main,
+      color: theme.palette.text.main,
       backgroundColor: 'inherit',
       marginTop: '16px',
     },

@@ -22,6 +22,8 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 16
   },  
   notificationArea: {
+    borderRadius: 8,
+    boxShadow: '0 2px 30px 0 rgba(2,33,77,0.15)',
     width: 512,
     position: 'absolute',
     right: 80,
@@ -33,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },  
   results: {
+    borderRadius: 8,
     marginLeft: 'auto',
     marginRight: 'auto',
     marginBottom: 0,

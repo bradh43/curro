@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: '#fbfbfb',
     },
     hoverCell: {
-      // cursor: 'pointer',
+      cursor: 'pointer',
       color: '#1a1a1a',
       '&:hover': {
         backgroundColor: '#f5f5f5',
@@ -81,6 +81,7 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.primary.main,
       height: 24,
       width: 24,
+      marginRight: 8,
       fontSize: '0.875rem',
       display: 'inline-block',
       lineHeight: '24px',
@@ -97,6 +98,23 @@ const useStyles = makeStyles((theme) => ({
       [theme.breakpoints.down('sm')]: {
         width: 'calc(((100vw - 32px) * 2 / 3) - 50px)',
       },
+      color: '#1a1a1a',
+      fontWeight: '600',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      cursor: 'pointer',
+      '&:hover': {
+        color: theme.palette.primary.main,
+      }
+    },
+    todayTitle: {
+      marginLeft: 32,
+      width: 'calc(((100vw - 32px) / 8) - 58px)',
+      [theme.breakpoints.down('sm')]: {
+        width: 'calc(((100vw - 32px) * 2 / 3) - 58px)',
+      },
+      whiteSpace: 'nowrap',
+      display: 'inline-block',
       color: '#1a1a1a',
       fontWeight: '600',
       overflow: 'hidden',
@@ -274,7 +292,7 @@ export const TeamDay = (props) => {
     // if(props.me || post){
     //   cellClass = props.viewMonth !== props.dayDate.month() ? `${classes.cell} ${classes.previousCell} ${classes.hoverCell}` : `${classes.cell} ${classes.hoverCell}`
     // }
-    if(props.me || post){
+    if(props.me || !post){
       cellClass =  `${cellClass} ${classes.hoverCell}`
     }
     if(post){
@@ -304,13 +322,14 @@ export const TeamDay = (props) => {
   const [cellWidth, setCellWidth] = useState(null)
   useEffect(() => {
     if(!cellWidth && cellRef.current){
-      setCellWidth(cellRef.current.offsetWidth-19)
+      setCellWidth(cellRef.current.offsetWidth-20)
     }
   }, [cellRef.current]);
-  
+  console.log(props.me)
   return (
     <Grid item xs={8} sm={8} md key={'week-day-'+props.dayDate.date()}
       className={getCellClass()} 
+      onClick={(props.me || !post) ? openPostModal : () => {}}
       zeroMinWidth
       ref={cellRef}
     >
@@ -324,7 +343,7 @@ export const TeamDay = (props) => {
               <Typography 
                 display={'inline'} 
                 variant={'body2'} 
-                className={classes.title}
+                className={today ? classes.todayTitle : classes.title}
                 onClick={openPostModal}
               >
                 {post.title}

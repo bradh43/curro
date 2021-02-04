@@ -140,9 +140,7 @@ export const UserNavBar = props => {
   
   const [currentPage, setCurrentPage] = useState('/calendar')
   useEffect(() => {
-    console.log("mount")
     if(props.me){
-      console.log("getting me")
       getUser()
     } else {
       const input = {
@@ -150,8 +148,6 @@ export const UserNavBar = props => {
           id: props.userid
         }
       }
-      console.log("getting user")
-      console.log(props.userid)
       getUser(input)
     }
     

@@ -43,6 +43,14 @@ const useStyles = makeStyles((theme) => ({
   },
   textField: {
     margin: '16px 0 0 0',
+    '& label.Mui-focused': {
+      color: theme.palette.text.main,
+    },
+    '& .MuiOutlinedInput-root': {
+      '&.Mui-focused fieldset': {
+        borderColor: theme.palette.text.main,
+      },
+    },
   },
   spacer: {
     flexGrow: 1,
@@ -50,6 +58,14 @@ const useStyles = makeStyles((theme) => ({
   },
   inputField: {
     marginBottom: 16,
+    '& label.Mui-focused': {
+      color: theme.palette.text.main,
+    },
+    '& .MuiOutlinedInput-root': {
+      '&.Mui-focused fieldset': {
+        borderColor: theme.palette.text.main,
+      },
+    },
   },
   distanceField: {
     flexGrow: 1,

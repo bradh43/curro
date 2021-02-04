@@ -54,7 +54,7 @@ const Header = props => {
       display: 'none',
     },
     dismissModal: {
-      
+
     },
     drawerPaper: {
       width: 240,

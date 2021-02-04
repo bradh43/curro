@@ -32,10 +32,10 @@ var muiTheme = createMuiTheme({
     MuiInput: {
       underline: {  
         '&:after': {
-          borderBottom: '2px solid #8B51FF',
+          borderBottom: '2px solid #8AA0BD',
         },
         '&$focused:after': {
-          borderBottomColor: '#8B51FF',
+          borderBottomColor: '#8AA0BD',
         },
       },
     },

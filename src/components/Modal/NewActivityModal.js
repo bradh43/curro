@@ -51,11 +51,11 @@ const useStyles = makeStyles((theme) => ({
   textField: {
     margin: '16px 0 0 0',
     '& label.Mui-focused': {
-      color: theme.palette.secondary.main,
+      color: theme.palette.text.main,
     },
     '& .MuiOutlinedInput-root': {
       '&.Mui-focused fieldset': {
-        borderColor: theme.palette.secondary.main,
+        borderColor: theme.palette.text.main,
       },
     },
   },
@@ -340,7 +340,7 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
   })
 
   const validatePost = (callback) => {
-    var postDate = selectedDate.toISOString()
+    var postDate = selectedDate.toISOString().split('T')[0]
 
     const postTitleValid = post.title.length > 0
     const selectedDateValid = selectedDate !== null
@@ -407,7 +407,7 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
           ...postInput,
           input: {
             ...postInput.input,
-            postDate: selectedDate.toISOString(),
+            postDate: selectedDate.toISOString().split('T')[0],
           }
         }
         
