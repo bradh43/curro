@@ -256,7 +256,7 @@ export const TeamDay = (props) => {
     },
     onError: (error) => console.log(error)
   })
-
+  
 
   const openPostModal = () => {
 
@@ -278,17 +278,14 @@ export const TeamDay = (props) => {
       }
     } else {
       if(post && post.id){
-        // TODO View Details of User Post
-        props.openModalPost(post)
-        console.log("TODO: View User Post: ", post.id)
+        props.openModalPost(post, false)
       } 
     }
    
   }
   
   const handleComment = () => {
-    console.log("TODO: open comments")
-    props.openModalPost(post)
+    props.openModalPost(post, true)
   }
   const getCellClass = () => {
     var cellClass = `${classes.cell}`

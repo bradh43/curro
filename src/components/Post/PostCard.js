@@ -272,7 +272,7 @@ export const PostCard = props => {
         </div>
         : <div className={classes.commentSection}>
           {(props.post.commentList.length > 0) && <Comments postId={props.post.id} comments={props.post.commentList} history={history}/>}
-          <AddComment postId={props.post.id}/>
+          <AddComment postId={props.post.id} isCommenting={props.isCommenting}/>
           <Typography variant="body2" color="textSecondary" style={{marginBottom:8, marginTop:8}}>
             {formatDate(props.post.postDate)}
           </Typography>

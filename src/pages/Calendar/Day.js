@@ -131,7 +131,6 @@ export const Day = (props) => {
 
   const [getPost, { data, loading }] = useLazyQuery(GET_POST_BY_ID_QUERY, {
     onCompleted: (result) => {
-      console.log("done...")
       moreDetailPost[post.id] = result.post
       props.setEditPost(result.post)
       props.setOpenModal(true)

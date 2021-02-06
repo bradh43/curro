@@ -13,7 +13,7 @@ import { PostModal } from '../../components/Modal/PostModal';
 import { TeamNavBar } from '../../components/Calendar/TeamNavBar';
 import { TeamCalendarDisplay } from './TeamCalendarDisplay';
 import { Team } from '../Team/Team';
-import { TEAM_CALENDAR_QUERY } from '../../utils/graphql';
+import { TEAM_CALENDAR_QUERY, GET_POST_BY_ID_QUERY } from '../../utils/graphql';
 import Moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
@@ -32,6 +32,7 @@ const OVERVIEW_VIEW_VALUE = 1
 var previousUserid = null
 var previousView = null
 var previousDate = null
+var moreDetailPost = {}
 
 export const TeamCalendar = (props) => {
     const classes = useStyles();
@@ -40,11 +41,13 @@ export const TeamCalendar = (props) => {
     const [welcome, setWelcome] = useState(false);
     const [viewPost, setViewPost] = useState(false);
     const [openModal, setOpenModal] = useState(false);
+    const [modalPost, setModalPost] = useState(null)
     const [editPost, setEditPost] = useState(null)
     const [modalDate, setModalDate] = useState(new Date());
     const [viewValue, setViewValue] = React.useState((location.state && location.state.calendar) ? CALENDAR_VIEW_VALUE : OVERVIEW_VIEW_VALUE);
     const [date, setDate] = useState(new Date());
     const [mondayFirst, setMondayFirst] = useState(true)
+    const [isCommenting, setIsCommenting] = useState(false)
 
     const { teamid } = props.match.params
 
@@ -66,10 +69,29 @@ export const TeamCalendar = (props) => {
         }
     })
 
-    const openModalPost = (post) => {
-        console.log("Opening post")
-        console.log(post)
-        setViewPost(true)
+    const [getUserPost, { data: userPostData, loading: userPostLoading }] = useLazyQuery(GET_POST_BY_ID_QUERY, {
+        onCompleted: (result) => {
+            moreDetailPost[result.post.id] = result.post
+            setModalPost(result.post)
+            setViewPost(true)
+            return 
+        },
+        onError: (error) => console.log(error)
+    })
+
+    const openModalPost = (post, commentOnPost) => {
+        setIsCommenting(commentOnPost)
+        // get post data
+        getUserPost({
+            variables: {id: post.id},
+        })
+        if(userPostData && userPostData.post && !userPostLoading){
+            setModalPost(userPostData.post)
+            setViewPost(true)
+        }
+        // TODO use lazy query to get additional info and open modal
+        // setModalPost(post)
+        // setViewPost(true)
     }
     
     return (
@@ -92,7 +114,7 @@ export const TeamCalendar = (props) => {
                     teamid={teamid} 
                     date={date} 
                     data={data}
-                    loading={loading}
+                    loading={loading || userPostLoading}
                     setDate={setDate} 
                     mondayFirst={mondayFirst}
                     setOpenModal={setOpenModal}
@@ -114,6 +136,6 @@ export const TeamCalendar = (props) => {
                     </span> 
                 </Hidden>}
             <WelcomeModal open={welcome} handleClose={() => setWelcome(false)}/>
-            <PostModal open={viewPost} handleClose={() => setViewPost(false)}/>
+            <PostModal open={viewPost} loading={userPostLoading} isCommenting={isCommenting} handleClose={() => setViewPost(false)} post={modalPost} history={history} openEditPostModal={() => setOpenModal(false)} setEditPost={setEditPost}/>
         </div>);
 }

@@ -136,6 +136,7 @@ export const AddComment = props => {
           onChange={handleChange}
           label="Add Comment"
           multiline
+          autoFocus={props.isCommenting}
           rowsMax={3}
           endAdornment={
             <React.Fragment>
