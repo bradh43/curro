@@ -161,6 +161,7 @@ export const Day = (props) => {
       if(post && post.id){
         // TODO View Details of User Post
         console.log("View User Post: ",post.id)
+        props.openModalPost(post, false)
       } 
     }
    

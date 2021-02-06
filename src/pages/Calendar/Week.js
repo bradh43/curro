@@ -90,6 +90,7 @@ export const Week = (props) => {
             viewMonth={props.viewMonth}
             setOpenModal={props.setOpenModal}
             setModalDate={props.setModalDate}
+            openModalPost={props.openModalPost}
           />
         </Grid>)
         day = moment(day).add(1, 'days');

@@ -8,7 +8,6 @@ import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { gql, useQuery, useLazyQuery } from '@apollo/client';
-import { WelcomeModal } from '../../components/Modal/WelcomeModal';
 import { PostModal } from '../../components/Modal/PostModal';
 import { TeamNavBar } from '../../components/Calendar/TeamNavBar';
 import { TeamCalendarDisplay } from './TeamCalendarDisplay';
@@ -38,7 +37,6 @@ export const TeamCalendar = (props) => {
     const classes = useStyles();
     const { history, location } = props;
 
-    const [welcome, setWelcome] = useState(false);
     const [viewPost, setViewPost] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [modalPost, setModalPost] = useState(null)
@@ -60,15 +58,6 @@ export const TeamCalendar = (props) => {
 
     const {data, loading, error} = useQuery(TEAM_CALENDAR_QUERY, {variables: {teamId: teamid, date: dateInput}})
 
-    useEffect(() => {
-        // Open Welcome modal if react router passes welcome as true
-        if(location.state && location.state.welcome){
-            setWelcome(location.state.welcome)
-            // make sure only see welcome modal once
-            location.state.welcome = false
-        }
-    })
-
     const [getUserPost, { data: userPostData, loading: userPostLoading }] = useLazyQuery(GET_POST_BY_ID_QUERY, {
         onCompleted: (result) => {
             moreDetailPost[result.post.id] = result.post
@@ -89,9 +78,6 @@ export const TeamCalendar = (props) => {
             setModalPost(userPostData.post)
             setViewPost(true)
         }
-        // TODO use lazy query to get additional info and open modal
-        // setModalPost(post)
-        // setViewPost(true)
     }
     
     return (
@@ -135,7 +121,6 @@ export const TeamCalendar = (props) => {
                         </Fab>
                     </span> 
                 </Hidden>}
-            <WelcomeModal open={welcome} handleClose={() => setWelcome(false)}/>
             <PostModal open={viewPost} loading={userPostLoading} isCommenting={isCommenting} handleClose={() => setViewPost(false)} post={modalPost} history={history} openEditPostModal={() => setOpenModal(false)} setEditPost={setEditPost}/>
         </div>);
 }

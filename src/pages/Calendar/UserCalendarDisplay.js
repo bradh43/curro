@@ -201,6 +201,7 @@ export const UserCalendarDisplay = (props) => {
             editPost={props.editPost} 
             setEditPost={props.setEditPost}
             setModalDate={props.setModalDate}
+            openModalPost={props.openModalPost}
           />);
         })}
       </Grid>
