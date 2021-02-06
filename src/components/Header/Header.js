@@ -163,7 +163,6 @@ const Header = props => {
   const logoutUser = (history, client) => {
     handleMenuClose()
     client.cache.reset()
-    logout()
     signOut()
     history.push('/login');
   };
@@ -176,6 +175,7 @@ const Header = props => {
 
   const [signOut, { loading: signOutLoading}] = useMutation(MUTATION_SIGNOUT, {
     update(_, {data: {signOut: success}}) {
+      logout()
       console.log(success)
     },
     onError(error) {

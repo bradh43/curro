@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLazyQuery, gql } from '@apollo/client';
 import { Footer } from '../../components/Footer/Footer';
 import { makeStyles } from '@material-ui/core/styles';
@@ -66,7 +66,6 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 16,
     display: 'block',
   },
- 
 }));
 
 const USER_SEARCH_QUERY = gql`
@@ -95,6 +94,7 @@ const TEAM_SEARCH_QUERY = gql`
   }
 `;
 
+var firstSearch = false
 
 export const Explore = (props) => {
 
@@ -145,6 +145,26 @@ export const Explore = (props) => {
       searchTeamQuery(searchInput)
     }
   }
+  const emptySearch = () => {
+    const searchInput = {
+      variables: {
+        search: 'a'
+      }
+    }
+    if(filters.includes("Users")){
+      searchUserQuery(searchInput)
+    } else if (filters.includes("Teams")){
+      searchTeamQuery(searchInput)
+    }
+  }
+
+  useEffect(() => {
+    if(!firstSearch){
+      emptySearch()
+      firstSearch = true
+    }
+  })
+
   const classes = useStyles();
 
   return (
@@ -195,6 +215,6 @@ export const Explore = (props) => {
       {/* <div className={classes.pagination}>
         <Pagination count={10} color="secondary" className={classes.paginationControl}/>
       </div> */}
-      <Footer />
+      <Footer history={history}/>
     </div>);
 }

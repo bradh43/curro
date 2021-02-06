@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../../auth';
 import { useMutation, gql } from '@apollo/client';
-import { LikeButton } from './LikeButton';
 import { makeStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -12,19 +11,19 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import { GET_POST_QUERY } from '../../utils/graphql';
 import produce from "immer";
 
-export const Comment = props => {
+export const CalendarComment = props => {
 
   const useStyles = makeStyles((theme) => ({
     comment: {
       padding: 0,
     },
     profilePicture: {
-      width: 32,
-      height: 32,
+      width: 24,
+      height: 24,
       cursor: 'pointer',
     },
     avatar: {
-      minWidth: 48,
+      minWidth: 32,
     },
     likeCommentSection: {
       top: 42,
@@ -33,6 +32,7 @@ export const Comment = props => {
     },
     profileClick: {
       cursor: 'pointer',
+      overflowWrap: 'anywhere',
       userSelect: 'none',
       "&:hover": {
         textDecoration: 'underline',

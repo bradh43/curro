@@ -92,15 +92,18 @@ export const TeamWeek = (props) => {
 
     let singleDay = moment(props.date)
 
+    const me = props.data.user.id === user.id
+
     // for mobile view only show one day
     dayComponents.push(
       <Hidden mdUp>
         <TeamDay 
+          history={history}
           post={getPost(singleDay)}
           editPost={props.editPost} 
           setEditPost={props.setEditPost}
           dayDate={singleDay} 
-          me={props.data.user.id === user.id}
+          me={me}
           viewMonth={props.date.getMonth()}
           setOpenModal={props.setOpenModal}
           setModalDate={props.setModalDate}
@@ -122,7 +125,7 @@ export const TeamWeek = (props) => {
             editPost={props.editPost} 
             setEditPost={props.setEditPost}
             dayDate={day} 
-            me={props.me}
+            me={me}
             viewMonth={props.viewMonth}
             setOpenModal={props.setOpenModal}
             setModalDate={props.setModalDate}

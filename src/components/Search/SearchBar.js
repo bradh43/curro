@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLazyQuery, gql } from '@apollo/client';
 import { makeStyles } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
@@ -109,6 +109,8 @@ const TEAM_SEARCH_QUERY = gql`
   }
 `;
 
+var firstSearch = false
+
 export const SearchBar = (props) => {
 
   const { history } = props;
@@ -165,19 +167,28 @@ export const SearchBar = (props) => {
   const [searchTeamQuery, {data: teamSearchData, loading: teamSearchLoading}] = useLazyQuery(TEAM_SEARCH_QUERY)
 
   const submitSearch = (searchString, userSearch) => {
+    var query = searchString.length === 0 ? 'a' : searchString
     const searchInput = {
       variables: {
-        search: searchString
+        search: query
       }
     }
-    if(searchString){
-      if(userSearch){
-        searchUserQuery(searchInput)
-      } else {
-        searchTeamQuery(searchInput)
-      }
+    if(userSearch){
+      searchUserQuery(searchInput)
+    } else {
+      searchTeamQuery(searchInput)
     }
+    
   }
+
+
+  useEffect(() => {
+    if(!firstSearch){
+      console.log("emptySearch")
+      submitSearch(searchQuery, filters.includes("Users"));
+      firstSearch = true
+    }
+  })
   const classes = useStyles();
 
   return (

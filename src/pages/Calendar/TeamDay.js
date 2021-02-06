@@ -9,6 +9,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { gql, useQuery, useMutation, useLazyQuery } from '@apollo/client';
 import { WelcomeModal } from '../../components/Modal/WelcomeModal';
 import { UserNavBar } from '../../components/Calendar/UserNavBar';
+import { CalendarComments } from '../../components/Calendar/CalendarComments';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import AppBar from '@material-ui/core/AppBar';
@@ -156,7 +157,10 @@ const useStyles = makeStyles((theme) => ({
     },
     spacer: {
       flexGrow: 1
-    }
+    },
+    commentSection: {
+
+    },
 }));
 
 const isToday = (someDate) => {
@@ -169,6 +173,7 @@ export const TeamDay = (props) => {
   const classes = useStyles();
   const today = isToday(props.dayDate)
 
+  const { history } = props;
   const post = props.post
 
   const { user } = useContext(AuthContext)
@@ -254,6 +259,7 @@ export const TeamDay = (props) => {
 
 
   const openPostModal = () => {
+
     if(props.me){
       if(post && post.id){
         // get post data
@@ -281,7 +287,7 @@ export const TeamDay = (props) => {
   
   const handleComment = () => {
     console.log("TODO: open comments")
-    openPostModal()
+    // openPostModal()
   }
   const getCellClass = () => {
     var cellClass = `${classes.cell}`
@@ -292,7 +298,7 @@ export const TeamDay = (props) => {
     // if(props.me || post){
     //   cellClass = props.viewMonth !== props.dayDate.month() ? `${classes.cell} ${classes.previousCell} ${classes.hoverCell}` : `${classes.cell} ${classes.hoverCell}`
     // }
-    if(props.me || !post){
+    if(props.me && !post){
       cellClass =  `${cellClass} ${classes.hoverCell}`
     }
     if(post){
@@ -325,11 +331,11 @@ export const TeamDay = (props) => {
       setCellWidth(cellRef.current.offsetWidth-20)
     }
   }, [cellRef.current]);
-  console.log(props.me)
+
   return (
     <Grid item xs={8} sm={8} md key={'week-day-'+props.dayDate.date()}
       className={getCellClass()} 
-      onClick={(props.me || !post) ? openPostModal : () => {}}
+      onClick={props.me && !post ? openPostModal : () => {}}
       zeroMinWidth
       ref={cellRef}
     >
@@ -379,23 +385,28 @@ export const TeamDay = (props) => {
         }
       </div>
       <div className={classes.spacer}/>
-      {post && <Grid container direction='row' justify="space-between" className={classes.postActionBox}>
-        <Grid item>
-          <IconButton aria-label="add-comment" className={classes.likeButton} onClick={handleComment}>
-            <AddCommentIcon fontSize="small"/>
-          </IconButton>
+      {post && <>
+        <Grid container direction='row' justify="space-between" className={classes.postActionBox}>
+          <Grid item>
+            <IconButton aria-label="add-comment" className={classes.likeButton} onClick={handleComment}>
+              <AddCommentIcon fontSize="small"/>
+            </IconButton>
+          </Grid>
+          <Grid item>
+            <Checkbox 
+              icon={<FavoriteBorder fontSize="small"/>} 
+              checkedIcon={<Favorite fontSize="small"/>} 
+              name="like"  
+              className={classes.likeButton}
+              checked={likePost} 
+              onChange={handleLike} 
+              disabled={likeLoading}
+            />
+          </Grid>
         </Grid>
-        <Grid item>
-          <Checkbox 
-            icon={<FavoriteBorder fontSize="small"/>} 
-            checkedIcon={<Favorite fontSize="small"/>} 
-            name="like"  
-            className={classes.likeButton}
-            checked={likePost} 
-            onChange={handleLike} 
-            disabled={likeLoading}
-          />
-        </Grid>
-      </Grid>}
+        <div className={classes.commentSection}>
+          {(post.commentList.length > 0) && <CalendarComments postId={props.post.id} comments={props.post.commentList} history={history}/>}
+        </div>
+      </>}
     </Grid>);
 }
