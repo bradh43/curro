@@ -93,6 +93,7 @@ const getTotalMin = (totalMs) => {
 }
 
 const getTotalTimeFormat = (totalMs) => {
+  console.log(totalMs)
   const hour = Math.floor(totalMs/(60000* 60))
   const min = getTotalMin(totalMs-(hour*(60000* 60)))
 
@@ -100,6 +101,10 @@ const getTotalTimeFormat = (totalMs) => {
   const minFormat = min === 0 ? '' : `${min} min`
 
   return `${hourFormat}${minFormat}`
+}
+
+const getTotalDistanceFormat = (totalDistance) => {
+  return totalDistance.toFixed(1)
 }
 
 
@@ -150,11 +155,11 @@ export const ActivityTile = (props) => {
         {props.activity && props.activity.type && getActivityTypeIcon(props.activity.type)}
       </span>
     </span>
-    <Hidden only={'xs'}>
+    {!props.team && <Hidden only={'xs'}>
       <Hidden lgUp>
         <Typography display={'inline'} variant={'body2'} className={classes.details}>{props.activity.type}</Typography>
       </Hidden>
-    </Hidden>
+    </Hidden>}
     {props.team ? 
       <>
         {isTotal && <span className={classes.totalList}>
@@ -166,20 +171,20 @@ export const ActivityTile = (props) => {
           {isActivityTotalDistance && 
           <div>
             <span className={classes.middleDot}>&#183;</span>
-            <Typography display={'inline'} variant={'body2'} className={classes.details}>{props.activity.total.distance.value + ' ' + props.activity.total.distance.unit}</Typography>
+            <Typography display={'inline'} variant={'body2'} className={classes.details}>{getTotalDistanceFormat(props.activity.total.distance.value) + ' ' + props.activity.total.distance.unit}</Typography>
           </div>}
         </span>}
-        {props.activity && props.activity.duration && props.activity.duration !== 0 && 
+        {(props.activity && props.activity.duration && props.activity.duration !== 0) ? 
           <>
             <span className={classes.middleDot}>&#183;</span>
             <Typography display={'inline'} variant={'body2'} className={classes.details}>{getTotalMin(props.activity.duration) + ' min'}</Typography>
-          </>
+          </> : <></>
         }
-        {props.activity && props.activity.distance && props.activity.distance.value !== 0 && 
+        {(props.activity && props.activity.distance && props.activity.distance.value !== 0) ? 
           <>
             <span className={classes.middleDot}>&#183;</span>
-            <Typography display={'inline'} variant={'body2'} className={classes.details}>{props.activity.distance.value + ' ' + props.activity.distance.unit}</Typography>
-          </>
+            <Typography display={'inline'} variant={'body2'} className={classes.details}>{getTotalDistanceFormat(props.activity.distance.value) + ' ' + props.activity.distance.unit}</Typography>
+          </> : <></>
         } 
       </> :
       <Hidden mdDown>
@@ -192,7 +197,7 @@ export const ActivityTile = (props) => {
         {isActivityTotalDistance && 
         <div>
           <span className={classes.middleDot}>&#183;</span>
-          <Typography display={'inline'} variant={'body2'} className={classes.details}>{props.activity.total.distance.value + ' ' + props.activity.total.distance.unit}</Typography>
+          <Typography display={'inline'} variant={'body2'} className={classes.details}>{getTotalDistanceFormat(props.activity.total.distance.value) + ' ' + props.activity.total.distance.unit}</Typography>
         </div>}
       </span>}
       {props.activity && props.activity.duration && props.activity.duration !== 0 && 
@@ -204,7 +209,7 @@ export const ActivityTile = (props) => {
       {props.activity && props.activity.distance && props.activity.distance.value !== 0 && 
         <>
           <span className={classes.middleDot}>&#183;</span>
-          <Typography display={'inline'} variant={'body2'} className={classes.details}>{props.activity.distance.value + ' ' + props.activity.distance.unit}</Typography>
+          <Typography display={'inline'} variant={'body2'} className={classes.details}>{getTotalDistanceFormat(props.activity.distance.value) + ' ' + props.activity.distance.unit}</Typography>
         </>
       }
     </Hidden>

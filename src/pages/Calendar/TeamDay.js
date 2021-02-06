@@ -279,7 +279,8 @@ export const TeamDay = (props) => {
     } else {
       if(post && post.id){
         // TODO View Details of User Post
-        console.log("TODO: View User Post: ",post.id)
+        props.openModalPost(post)
+        console.log("TODO: View User Post: ", post.id)
       } 
     }
    
@@ -287,7 +288,7 @@ export const TeamDay = (props) => {
   
   const handleComment = () => {
     console.log("TODO: open comments")
-    // openPostModal()
+    props.openModalPost(post)
   }
   const getCellClass = () => {
     var cellClass = `${classes.cell}`

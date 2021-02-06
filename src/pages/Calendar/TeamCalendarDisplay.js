@@ -220,6 +220,7 @@ export const TeamCalendarDisplay = (props) => {
             editPost={props.editPost} 
             setEditPost={props.setEditPost}
             setModalDate={props.setModalDate}
+            openModalPost={props.openModalPost}
           />);
         })}
       </Grid>

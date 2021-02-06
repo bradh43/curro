@@ -9,6 +9,7 @@ import Fab from '@material-ui/core/Fab';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { gql, useQuery, useLazyQuery } from '@apollo/client';
 import { WelcomeModal } from '../../components/Modal/WelcomeModal';
+import { PostModal } from '../../components/Modal/PostModal';
 import { TeamNavBar } from '../../components/Calendar/TeamNavBar';
 import { TeamCalendarDisplay } from './TeamCalendarDisplay';
 import { Team } from '../Team/Team';
@@ -37,6 +38,7 @@ export const TeamCalendar = (props) => {
     const { history, location } = props;
 
     const [welcome, setWelcome] = useState(false);
+    const [viewPost, setViewPost] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [editPost, setEditPost] = useState(null)
     const [modalDate, setModalDate] = useState(new Date());
@@ -64,6 +66,12 @@ export const TeamCalendar = (props) => {
         }
     })
 
+    const openModalPost = (post) => {
+        console.log("Opening post")
+        console.log(post)
+        setViewPost(true)
+    }
+    
     return (
         <div className={classes.root}>
             <TeamNavBar 
@@ -89,6 +97,7 @@ export const TeamCalendar = (props) => {
                     mondayFirst={mondayFirst}
                     setOpenModal={setOpenModal}
                     setModalDate={setModalDate}
+                    openModalPost={openModalPost}
                 />}
             {viewValue === OVERVIEW_VIEW_VALUE && <Team teamid={teamid} history={history}/>}
             <NewActivityModal openModal={openModal} handleClose={() => setOpenModal(false)} modalDate={modalDate} editPost={editPost} setEditPost={setEditPost}/>
@@ -105,5 +114,6 @@ export const TeamCalendar = (props) => {
                     </span> 
                 </Hidden>}
             <WelcomeModal open={welcome} handleClose={() => setWelcome(false)}/>
+            <PostModal open={viewPost} handleClose={() => setViewPost(false)}/>
         </div>);
 }

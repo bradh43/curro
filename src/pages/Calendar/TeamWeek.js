@@ -107,6 +107,7 @@ export const TeamWeek = (props) => {
           viewMonth={props.date.getMonth()}
           setOpenModal={props.setOpenModal}
           setModalDate={props.setModalDate}
+          openModalPost={props.openModalPost}
         />
       </Hidden>
     )
@@ -129,6 +130,7 @@ export const TeamWeek = (props) => {
             viewMonth={props.viewMonth}
             setOpenModal={props.setOpenModal}
             setModalDate={props.setModalDate}
+            openModalPost={props.openModalPost}
           />
         </Hidden>
         )
