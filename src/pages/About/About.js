@@ -112,7 +112,6 @@ export const About = (props) => {
   }
 
   const { user } = useContext(AuthContext)
-  console.log(user)
 
   useEffect(() => {
     window.scrollTo(0, 0)

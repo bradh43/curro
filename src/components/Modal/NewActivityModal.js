@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../../auth';
 import { useMutation, gql } from '@apollo/client';
 import { ActivityTile } from '../Activity/ActivityTile';
 import { ActivityDetail } from '../Activity/ActivityDetail';
@@ -105,6 +106,8 @@ export const NewActivityModal = (props) => {
   const [selectedActivity, setSelectedActivity] = useState(AllowedActivity[0])
   const [editActivity, setEditActivity] = useState(false)
   const [openConfirmDelete, setOpenConfirmDelete] = React.useState(false);
+
+  const { user } = useContext(AuthContext)
 
   const getUserCalendarDateFormat = () => {
     var temp = Moment(selectedDate).format('YYYY-MM-DD')
@@ -234,7 +237,19 @@ export const NewActivityModal = (props) => {
           },
           getProfileCalendar: (existingFieldData, { toReference }) => {
             return [toReference(cacheId), ...existingFieldData]
-          }
+          },
+          getTeamCalendar: (existingFieldData, { readField, toReference }) => {
+            return existingFieldData.map((userPostMapRef) => {
+              if(readField('id', userPostMapRef['user']) === user.id) {
+                return {
+                  ...userPostMapRef,
+                  posts: [toReference(cacheId), ...userPostMapRef['posts']]
+                }
+              } else {
+                return userPostMapRef
+              }
+            })
+          },
         }
       })
 
@@ -311,9 +326,7 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
             return {
               __typename: "DeletePost",
               posts: existingFieldData.posts.filter((postRef) => {
-                if(toReference(cacheId)['__ref'] !== postRef['__ref']){
-                  return postRef
-                }
+                return toReference(cacheId)['__ref'] !== postRef['__ref']
               }),
               hasMore: existingFieldData.hasMore,
               cursor: existingFieldData.cursor,
@@ -321,11 +334,23 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
           },
           getProfileCalendar: (existingFieldData, { toReference }) => {
             return existingFieldData.filter((postRef) => {
-              if(toReference(cacheId)['__ref'] !== postRef['__ref']){
-                return postRef
+              return toReference(cacheId)['__ref'] !== postRef['__ref']
+            })
+          },
+          getTeamCalendar: (existingFieldData, { readField, toReference }) => {
+            return existingFieldData.map((userPostMapRef) => {
+              if(readField('id', userPostMapRef['user']) === user.id) {
+                return {
+                  ...userPostMapRef,
+                  posts: userPostMapRef['posts'].filter(postRef => {
+                    return toReference(cacheId)['__ref'] !== postRef['__ref']
+                  })
+                }
+              } else {
+                return userPostMapRef
               }
             })
-          }
+          },
         }
       })
 
