@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../../auth';
 import { makeStyles } from '@material-ui/core/styles';
 import { useQuery, useLazyQuery, useMutation, gql } from '@apollo/client';
 import Typography from '@material-ui/core/Typography';
@@ -9,9 +10,13 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
 import { TEAM_QUERY } from '../../utils/graphql';
 import { UserListModal } from "../../components/Modal/UserList"
+import { CreateTeamModal } from "../../components/Modal/CreateTeamModal"
 
+var previousTeamId = null
 export const TeamCard = props => {
 
   const useStyles = makeStyles((theme) => ({
@@ -46,6 +51,9 @@ export const TeamCard = props => {
   const [requestPending, setRequestPending] = useState(false);
   const [openMemberModal, setOpenMemberModal] = useState(false);
   const [userList, setUserList] = useState([])
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [editTeam, setEditTeam] = useState(null)
+  const [openEditTeamModal, setOpenEditTeamModal] = useState(false)
 
   const ME_QUERY = gql`
     query {
@@ -284,6 +292,33 @@ export const TeamCard = props => {
     setOpenMemberModal(true)
   }
 
+  const handleEditTeam = () => {
+    setEditTeam(props.data.team)
+    setOpenEditTeamModal(true)
+  }
+
+  const { user } = useContext(AuthContext)
+
+  useEffect(() => {
+    if(props.data && props.data.team && props.data.team.adminList && previousTeamId !== props.data.team.id){
+      previousTeamId = props.data.team.id
+      console.log(props.data.team.adminList)
+      var adminFound = false
+      for(var i = 0; i < props.data.team.adminList.length; i++){
+        if(props.data.team.adminList[i].id === user.id){
+          console.log("your an admin!")
+          adminFound = true
+          setIsAdmin(true)
+          break;
+        }
+      }
+      if(!adminFound){
+        setIsAdmin(false)
+      }
+      
+    }
+  })
+
 
   const classes = useStyles();
 
@@ -295,6 +330,13 @@ export const TeamCard = props => {
     <div>
       <Card className={classes.card}>
         <CardHeader
+          action={
+            (props.loading || !isAdmin) ? <></> : (
+              <IconButton aria-label="edit" onClick={handleEditTeam}>
+                <EditIcon />
+              </IconButton>
+            )
+          }
           title={
             props.loading ? (
               <Skeleton animation="wave" width="80%" />
@@ -362,5 +404,11 @@ export const TeamCard = props => {
         openModal={openMemberModal} 
         handleClose={() => setOpenMemberModal(false)}/>
       }
+      <CreateTeamModal
+        edit={true}
+        team={editTeam}
+        openModal={openEditTeamModal}
+        handleClose={() => setOpenEditTeamModal(false)}
+      />
     </div>);
 }

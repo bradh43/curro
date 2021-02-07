@@ -117,8 +117,9 @@ export const UserListModal = (props) => {
               )) :
               <span>No Users Found</span> )
             }
-            {(props.data) ? 
-            (props.data.team.adminList.length >= 1 ||  props.data.team.memberList.length >= 1?
+            {/* TODO can remove this if render team member in team card instead */}
+            {(props.data && props.data.team) ? 
+            (props.data.team.adminList.length >= 1 ||  props.data.team.memberList.length >= 1 ?
               [...props.data.team.adminList, ...props.data.team.memberList].map((user) => (
                 <UserTile key={props.data.team.id+"-userTile-" + user.id} user={user} history={props.history} handleClose={props.handleClose}/>
               )) :

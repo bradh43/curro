@@ -367,7 +367,7 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
 
   const validatePost = (callback) => {
     console.log(selectedDate)
-    var postDate = selectedDate.format("YYYY-MM-DD")
+    var postDate = Moment(selectedDate).format("YYYY-MM-DD")
     console.log(postDate)
 
     const postTitleValid = post.title.length > 0

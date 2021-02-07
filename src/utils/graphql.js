@@ -143,12 +143,23 @@ export const CREATE_TEAM_MUTATION = gql`
   }
   ${TEAM_FRAGMENT}
 `;
+export const UPDATE_TEAM_MUTATION = gql`
+  mutation updateTeam($input: UpdateTeamInput!) {
+    updateTeam(input: $input) {
+      ...TeamData
+    }
+  }
+  ${TEAM_FRAGMENT}
+`;
 
 export const TEAM_QUERY = gql`
   query getTeam($id: ID!){
     team(id: $id) {
       ...TeamData
       createdAt
+      adminList {
+        id
+      }
       memberList {
         id
       }

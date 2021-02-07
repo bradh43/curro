@@ -24,7 +24,6 @@ import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
 import { Footer } from '../../components/Footer/Footer';
 
-
 export const Login = props => {
 
   var _isMounted = true
@@ -69,6 +68,8 @@ export const Login = props => {
   };
 
   const context = useContext(AuthContext)
+  const { user } = useContext(AuthContext)
+
 
   const SIGNIN_USER_MUTATION = gql`
     mutation signIn($input: SignInInput!){
@@ -99,10 +100,13 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
   const imageList = ['DSC_0811.jpg', 'DSC_1021.jpg', 'DSC_5789.jpg', 'DSC_8474.jpg', 'DSC_9056.jpg', 'IWU-44.jpg', 'MiniMeet2017-58.jpg', '_DSC3252.jpg', '_DSC5131.jpg']
 
   useEffect(() => {
+    if(user){
+      history.push("/")
+    }
     if(imagePos === -1){
       setImagePos(Math.floor(Math.random()*imageList.length))
+      window.scrollTo(0, 0)
     }
-    window.scrollTo(0, 0)
   })
 
   const textColor = '#8AA0BD'

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { ImagePicker } from '../Form/ImagePicker';
 import Modal from '@material-ui/core/Modal';
@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Toolbar from '@material-ui/core/Toolbar';
 import { useMutation } from '@apollo/client';
-import { CREATE_TEAM_MUTATION, ME_QUERY } from '../../utils/graphql';
+import { CREATE_TEAM_MUTATION, UPDATE_TEAM_MUTATION, ME_QUERY } from '../../utils/graphql';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 
@@ -57,6 +57,9 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   }
 }));
+
+var previousTeamId = null
+
 export const CreateTeamModal = (props) => {
 
   const [file, setFile] = useState(null);
@@ -87,12 +90,28 @@ export const CreateTeamModal = (props) => {
       });
     },
     onError(error) {
-      console.log(error)
+      console.log(error.message)
+    }
+  })
+
+  const [updateTeamMutation, { loading: updateTeamLoading }] = useMutation(UPDATE_TEAM_MUTATION, {
+    update(_, result) {
+      // previousTeamId = null
+      props.handleClose();
+      setState({
+        name: result.data.updateTeam.name,
+        private: result.data.updateTeam.private,
+        description: result.data.updateTeam.description,
+        profilePictureURL: result.data.updateTeam.profilePictureURL,
+      });
+    },
+    onError(error) {
       console.log(error.message)
     }
   })
 
   const classes = useStyles();
+  console.log(props.team)
   const [state, setState] = useState({
     name: "",
     private: false,
@@ -104,16 +123,30 @@ export const CreateTeamModal = (props) => {
     var nameValid = state.name.length > 0;
     
     if (nameValid) {
-      var userInput = {
-        input: {
-          name: state.name,
-          private: state.private,
-          description: state.description,
-          file: file
+      if(props.edit){
+        var userInput = {
+          input: {
+            teamId: props.team.id,
+            name: state.name,
+            private: state.private,
+            description: state.description,
+            file: file
+          }
         }
+        console.log("TODO save edits")
+        updateTeamMutation({ variables: userInput })
 
+      } else {
+        var userInput = {
+          input: {
+            name: state.name,
+            private: state.private,
+            description: state.description,
+            file: file
+          }
+        }
+        createTeamMutation({ variables: userInput })
       }
-      createTeamMutation({ variables: userInput })
 
     }
   }
@@ -133,20 +166,32 @@ export const CreateTeamModal = (props) => {
   const handleCheckbox = (prop) => (event) => {
     setState({ ...state, [prop]: event.target.checked });
   };
+
+  useEffect(() => {
+    if(props.edit && props.team && (previousTeamId !== props.team.id || state.name === "")){
+      previousTeamId = props.team.id
+      setState({
+        name: props.team.name,
+        private: props.team.private,
+        description: props.team.description,
+        profilePictureURL: props.team.profilePictureURL
+    });
+    }
+  })
+
   const body = (
     <div className={classes.paper}>
       <Toolbar disableGutters>
         <Button onClick={cancel}>Cancel</Button>
-        <Typography variant="h6" className={classes.spacer}>{"Create a Team"}</Typography>
+        <Typography variant="h6" className={classes.spacer}>{props.edit ? "Edit Team" : "Create a Team"}</Typography>
         <Button onClick={save} color="primary" disabled={loading}>
           SAVE
-          {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+          {(loading || updateTeamLoading) && <CircularProgress size={24} className={classes.buttonProgress} />}
         </Button>
       </Toolbar>
       <form onSubmit={save}>
         <TextField 
           required 
-          id="standard-basic" 
           variant="outlined"
           fullWidth 
           className={classes.textField} 
@@ -164,14 +209,13 @@ export const CreateTeamModal = (props) => {
         />
         <Typography variant="body2" color='textSecondary'>Team Image</Typography>
         <ImagePicker 
-          preview={null}
+          preview={(props.edit && props.team) ? props.team.profilePictureURL : null}
           fileToUpload={file} 
           setFileToUpload={setFile} 
         />
 
         <TextField 
           required 
-          id="standard-basic" 
           variant="outlined"
           fullWidth 
           className={classes.textField} 
