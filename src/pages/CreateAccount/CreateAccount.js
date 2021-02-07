@@ -24,7 +24,8 @@ import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import MenuItem from '@material-ui/core/MenuItem';
-
+import Checkbox from '@material-ui/core/Checkbox';
+import Moment from 'moment';
 
 export const CreateAccount = props => {
   var _isMounted = true
@@ -56,12 +57,16 @@ export const CreateAccount = props => {
     errorMessage: ''
   });
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(Moment);
   const [selectedMonth, setSelectedMonth] = useState(0)
   const [selectedDay, setSelectedDay] = useState(0)
   const [selectedYear, setSelectedYear] = useState(0)
 
-  console.log(selectedDate)
+  const [agree, setAgree] = React.useState(false);
+
+  const handleTermsChange = (event) => {
+    setAgree(event.target.checked);
+  };
 
   const handleDateChange = (date) => {
     setSelectedDate(String(date));
@@ -69,17 +74,17 @@ export const CreateAccount = props => {
 
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value)
-    selectedDate.setMonth(event.target.value-1, selectedDate.getDate())
+    selectedDate.set('month', event.target.value-1)
     setSelectedDate(selectedDate)
   } 
   const handleDayChange = (event) => {
     setSelectedDay(event.target.value)
-    selectedDate.setMonth(selectedDate.getMonth(), event.target.value)
+    selectedDate.set('date', event.target.value)
     setSelectedDate(selectedDate)
   } 
   const handleYearChange = (event) => {
     setSelectedYear(event.target.value)
-    selectedDate.setFullYear(event.target.value)
+    selectedDate.set('year', event.target.value)
     setSelectedDate(selectedDate)
   } 
 
@@ -130,10 +135,7 @@ export const CreateAccount = props => {
   })
 
   const calculateAge = (date) => {
-    var birthdate = new Date(date)
-    var difference = Date.now() - birthdate.getTime()
-    var ageDate = new Date(difference);
-    return Math.abs(ageDate.getUTCFullYear() - 1970)
+    return Moment().diff(date, 'years')
   }
 
   const imageList = ['DSC_0811.jpg', 'DSC_1021.jpg', 'DSC_5789.jpg', 'DSC_8474.jpg', 'DSC_9056.jpg', 'IWU-44.jpg', 'MiniMeet2017-58.jpg', '_DSC3252.jpg', '_DSC5131.jpg']
@@ -231,7 +233,20 @@ export const CreateAccount = props => {
     },
     textColor: {
       color: theme.palette.text.main,
-    }
+    },
+    link: {
+      textDecoration: 'none',
+    },
+    agreeTerms: {
+      display: 'inline-block',
+      marginTop: 8,
+      marginLeft: 8,
+      width: 'calc(100% - 50px)',
+    },
+    agreeBox: {
+      display: 'inline-block',
+      verticalAlign: 'top',
+    },
   }));
 
   const { history } = props;
@@ -271,9 +286,10 @@ export const CreateAccount = props => {
       birthdateError: !birthdateValid, birthdateErrorMessage: !birthdateValid ? birthdateErrorMessage : '',
       passwordError: !passwordValid, passwordErrorMessage: passwordErrorMessage,
       confirmError: !confirmValid, confirmErrorMessage: confirmErrorMessage,
+      errorMessage: agree ? '' : 'Must agree to Terms of Service and Privacy Policy to create an account'
     });
 
-    if (emailValid && passwordValid && confirmValid && birthdateValid && usernameValid && firstValid && lastValid) {
+    if (emailValid && passwordValid && confirmValid && birthdateValid && usernameValid && firstValid && lastValid && agree) {
       callback()
     }
   }
@@ -281,7 +297,7 @@ export const CreateAccount = props => {
 
   const createUser = () => {
     validateForm(() => {
-      var birthdate = new Date(selectedDate)
+      var birthdate = selectedDate.format('YYYY-MM-DD')
       
       var userInput = {
         input: {
@@ -290,7 +306,7 @@ export const CreateAccount = props => {
           last: values.last,
           username: values.username,
           password: values.password,
-          birthdate: birthdate.toISOString().split('T')[0]
+          birthdate: birthdate
         }
       }
       createUserMutation({ variables: userInput })
@@ -308,13 +324,13 @@ export const CreateAccount = props => {
   }
 
   var getDaysInMonth = () => {
-   return new Date(selectedDate.getFullYear(), selectedDate.getMonth()+1, 0).getDate();
+   return selectedDate.daysInMonth()
   }
 
   const monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
   const dayList = [...Array(getDaysInMonth()).keys()]
 
-  const upperBoundYear = new Date().getFullYear()
+  const upperBoundYear = parseInt(Moment().format('YYYY'))
   const lowerBoundYear = 1900
 
   const yearList = [...Array(upperBoundYear+1-lowerBoundYear).keys()]
@@ -493,6 +509,12 @@ export const CreateAccount = props => {
                 />
                 <FormHelperText id="create-confirm-error-message">{values.confirmError ? values.confirmErrorMessage : ''}</FormHelperText>
               </FormControl>
+              <Checkbox
+                checked={agree}
+                onChange={handleTermsChange}
+                className={classes.agreeBox}
+              />
+              <Typography variant="subtitle1" className={classes.agreeTerms}>I agree to the <a href={'https://curro.us/terms'} className={classes.link}>Terms of Service</a> and <a href={'https://curro.us/privacy'} className={classes.link}>Privacy Policy</a></Typography>
               <div>
                 <Typography variant="subtitle1" className={classes.errorMessage}>{values.errorMessage}</Typography>
                 <Button variant="contained" className={classes.textField} style={{borderRadius:'32px'}} color="primary" fullWidth size="large" onClick={createUser} disabled={loading}>

@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../../auth';
 import { Link } from "react-router-dom";
+import { useMutation, gql, useApolloClient } from '@apollo/client';
 import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -52,6 +54,32 @@ export const Footer = (props) => {
   const classes = useStyles();
 
   const { history } = props;
+  const { user, logout } = useContext(AuthContext)
+
+  const client = useApolloClient();
+
+
+  const logoutUser = (history, client) => {
+    client.cache.reset()
+    signOut()
+    history.push('/login');
+  };
+
+  const MUTATION_SIGNOUT = gql`
+    mutation {
+      signOut
+    }
+  `;
+
+  const [signOut, { loading: signOutLoading}] = useMutation(MUTATION_SIGNOUT, {
+    update(_, {data: {signOut: success}}) {
+      logout()
+      console.log(success)
+    },
+    onError(error) {
+      console.log(error.message)
+    }
+  });
 
 
   return (
@@ -66,9 +94,14 @@ export const Footer = (props) => {
           direction="row"
           justify="space-evenly"
         >
-          <Grid item>
-            <Typography variant={'overline'} className={classes.textButton} onClick={() => history.push('/login')}>Login</Typography>
-          </Grid>
+          {user ? 
+            <Grid item>
+              <Typography variant={'overline'} className={classes.textButton} onClick={() => logoutUser(history, client)}>Logout</Typography>
+            </Grid>: 
+            <Grid item>
+              <Typography variant={'overline'} className={classes.textButton} onClick={() => history.push('/login')}>Login</Typography>
+            </Grid>
+          }
           <Grid item>
             <Typography variant={'overline'} className={classes.textButton} onClick={() => history.push('/about')}>About Us</Typography>
           </Grid>
@@ -89,9 +122,14 @@ export const Footer = (props) => {
           direction="row"
           justify="space-evenly"
         >
-          <Grid item xs={12}>
-            <Typography variant={'overline'} className={classes.textButton} onClick={() => history.push('/login')}>Login</Typography>
-          </Grid>
+         {user ? 
+            <Grid item xs={12}>
+              <Typography variant={'overline'} className={classes.textButton} onClick={() => logoutUser(history, client)}>Logout</Typography>
+            </Grid>: 
+            <Grid item xs={12}>
+              <Typography variant={'overline'} className={classes.textButton} onClick={() => history.push('/login')}>Login</Typography>
+            </Grid>
+          }
           <Grid item xs={12}>
             <Typography variant={'overline'} className={classes.textButton} onClick={() => history.push('/about')}>About Us</Typography>
           </Grid>

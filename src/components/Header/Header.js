@@ -168,10 +168,10 @@ const Header = props => {
   };
 
   const MUTATION_SIGNOUT = gql`
-  mutation {
-    signOut
-  }
-`;
+    mutation {
+      signOut
+    }
+  `;
 
   const [signOut, { loading: signOutLoading}] = useMutation(MUTATION_SIGNOUT, {
     update(_, {data: {signOut: success}}) {

@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     maxHeight: "60vh",
     overflowY: 'scroll',
+    borderRadius: 14,
   },
   pagination: {
     width: '100%',
@@ -66,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
     right: 160,
     top: 56,
     background: 'white',
+    borderRadius: 14,
     [theme.breakpoints.down('sm')]: {
       width: 256,
     },
