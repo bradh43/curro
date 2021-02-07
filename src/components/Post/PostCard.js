@@ -24,8 +24,8 @@ import List from '@material-ui/core/List';
 // import ReportIcon from '@material-ui/icons/Report';
 import EditIcon from '@material-ui/icons/Edit';
 import { GET_POST_QUERY } from '../../utils/graphql';
-import produce from "immer";
-
+import produce from 'immer';
+import Moment from 'moment';
 
 
 export const PostCard = props => {
@@ -105,36 +105,20 @@ export const PostCard = props => {
 
   const [likePostMutation, { loading: likeLoading }] = useMutation(LIKE_POST_MUTATION, {
     update(store, { data: { likePost } }) {
-      const data = store.readQuery({
-        query: GET_POST_QUERY
-      })
-
-      var postIndex = data.postList.posts.findIndex((post) => {
-        return post.id === props.post.id
-      })
-
-      const updatedPosts = produce(data.postList.posts, x => {
-        if(likePost.liked){
-          x[postIndex].likeList.push({user: user})
-        } else {
-          x[postIndex].likeList = x[postIndex].likeList.filter(postLike => {
-            return postLike.user.id !== user.id
-          })
-        }
-      })
-      
-      store.writeQuery({
-        query: GET_POST_QUERY,
-        data: {
-          postList: {
-            __typename: "UpdatePost",
-            posts: updatedPosts,
-            hasMore: data.postList.hasMore,
-            cursor: data.postList.cursor
+      store.modify({
+        id: store.identify(props.post),
+        fields: {
+          likeList(cachedLikeList, { readField }) {
+            if(likePost.liked){
+              return [...cachedLikeList, {user: user}]
+            } else {
+              return cachedLikeList.filter(
+                likeRef => user.id !== readField('user', likeRef).id
+              );
+            }
           },
-        }
-      })
-
+        },
+      });
     },
     onError(error) {
       console.log(error)
@@ -157,9 +141,9 @@ export const PostCard = props => {
 
   const formatDate = (postDate) => {
     var options = { year: 'numeric', month: 'long', day: 'numeric' };
-    var date = new Date(postDate) 
+    var date = Moment(postDate) 
 
-    return date.toLocaleDateString("en-US", options)
+    return date.format("LL")
   }
 
   const navigateToUserProfile = () => { 
@@ -272,7 +256,7 @@ export const PostCard = props => {
         </div>
         : <div className={classes.commentSection}>
           {(props.post.commentList.length > 0) && <Comments postId={props.post.id} comments={props.post.commentList} history={history}/>}
-          <AddComment postId={props.post.id} isCommenting={props.isCommenting}/>
+          <AddComment post={props.post} isCommenting={props.isCommenting}/>
           <Typography variant="body2" color="textSecondary" style={{marginBottom:8, marginTop:8}}>
             {formatDate(props.post.postDate)}
           </Typography>

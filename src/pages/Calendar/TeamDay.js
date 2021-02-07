@@ -64,9 +64,7 @@ const useStyles = makeStyles((theme) => ({
       }
     },
     postCell: {
-      [theme.breakpoints.down('xs')]: {
-        backgroundColor: '#F8F2F4',
-      },
+      
     },
     date: {
       color: '#8C8C8C',
@@ -201,36 +199,20 @@ export const TeamDay = (props) => {
 
   const [likePostMutation, { loading: likeLoading }] = useMutation(LIKE_POST_MUTATION, {
     update(store, { data: { likePost } }) {
-      const data = store.readQuery({
-        query: GET_POST_QUERY
-      })
-
-      var postIndex = data.postList.posts.findIndex((post) => {
-        return post.id === props.post.id
-      })
-
-      const updatedPosts = produce(data.postList.posts, x => {
-        if(likePost.liked){
-          x[postIndex].likeList.push({user: user})
-        } else {
-          x[postIndex].likeList = x[postIndex].likeList.filter(postLike => {
-            return postLike.user.id !== user.id
-          })
-        }
-      })
-      
-      store.writeQuery({
-        query: GET_POST_QUERY,
-        data: {
-          postList: {
-            __typename: "UpdatePost",
-            posts: updatedPosts,
-            hasMore: data.postList.hasMore,
-            cursor: data.postList.cursor
+      store.modify({
+        id: store.identify(props.post),
+        fields: {
+          likeList(cachedLikeList, { readField }) {
+            if(likePost.liked){
+              return [...cachedLikeList, {user: user}]
+            } else {
+              return cachedLikeList.filter(
+                likeRef => user.id !== readField('user', likeRef).id
+              );
+            }
           },
-        }
-      })
-
+        },
+      });
     },
     onError(error) {
       console.log(error)

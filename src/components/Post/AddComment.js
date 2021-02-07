@@ -59,32 +59,18 @@ export const AddComment = props => {
 
   const [createCommentMutation, { loading }] = useMutation(CREATE_COMMENT_MUTATION, {
     update(store, { data: { createComment } }) {
-
-      const data = store.readQuery({
-        query: GET_POST_QUERY
-      })
-
-      var postIndex = data.postList.posts.findIndex((post) => {
-        return post.id === props.postId
-      })
-
-      const updatedPosts = produce(data.postList.posts, x => {
-        x[postIndex].commentList.push(createComment)
-      })
-      
-      store.writeQuery({
-        query: GET_POST_QUERY,
-        data: {
-          postList: {
-            __typename: "UpdatePost",
-            posts: updatedPosts,
-            hasMore: data.postList.hasMore,
-            cursor: data.postList.cursor
+      store.modify({
+        id: store.identify(props.post),
+        fields: {
+          commentList(cachedCommentList) {
+            if(cachedCommentList){
+              return [...cachedCommentList, createComment]
+            } else {
+              return [createComment]
+            }
           },
-        }
-      })
-
-
+        },
+      });
     },
     onError(error) {
       console.log(error)
@@ -109,7 +95,7 @@ export const AddComment = props => {
       const userInput = {
         input: {
           note: comment,
-          postId: props.postId
+          postId: props.post.id
         }
       }
       createCommentMutation({variables: userInput})
@@ -131,7 +117,7 @@ export const AddComment = props => {
     <form noValidate autoComplete="off" onSubmit={submitForm}>
       <FormControl fullWidth className={classes.textField} variant="outlined">
         <OutlinedInput
-          id={"outlined-post-comment"+props.postId}
+          id={"outlined-post-comment"+props.post.id}
           value={comment}
           onChange={handleChange}
           label="Add Comment"
@@ -157,7 +143,7 @@ export const AddComment = props => {
           }
           labelwidth={70}
         />
-        <InputLabel htmlFor={"outlined-post-comment"+props.postId}>Add Comment</InputLabel>
+        <InputLabel htmlFor={"outlined-post-comment"+props.post.id}>Add Comment</InputLabel>
       </FormControl>
     </form>
     );

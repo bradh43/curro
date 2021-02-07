@@ -93,7 +93,6 @@ const getTotalMin = (totalMs) => {
 }
 
 const getTotalTimeFormat = (totalMs) => {
-  console.log(totalMs)
   const hour = Math.floor(totalMs/(60000* 60))
   const min = getTotalMin(totalMs-(hour*(60000* 60)))
 

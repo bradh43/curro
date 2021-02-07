@@ -97,7 +97,7 @@ var _previousPostId = ''
 
 export const NewActivityModal = (props) => {
   const classes = useStyles();
-  const [selectedDate, setSelectedDate] = React.useState(props.modalDate ? props.modalDate : new Date());
+  const [selectedDate, setSelectedDate] = React.useState(props.modalDate ? props.modalDate : Moment());
   const [activityData, setActivityData] = React.useState([]);
   const [openSelectActivityModal, setOpenSelectActivityModal] = useState(false)
   const [openActivityDetailModal, setOpenActivityDetailModal] = useState(false)
@@ -108,6 +108,7 @@ export const NewActivityModal = (props) => {
 
   const getUserCalendarDateFormat = () => {
     var temp = Moment(selectedDate).format('YYYY-MM-DD')
+    console.log(temp.toString())
     return temp.toString()
   }
 
@@ -170,7 +171,7 @@ export const NewActivityModal = (props) => {
       title: props.editPost.title,
       note: props.editPost.note,
     })
-    setSelectedDate(new Date(props.editPost.postDate))
+    setSelectedDate(Moment(props.editPost.postDate))
     var activityList = props.editPost.activityList.map((activity)=>{
       var formatActivity = {
         ...activity,
@@ -200,7 +201,7 @@ export const NewActivityModal = (props) => {
       props.setEditPost(null)
     }
     setActivityData([])
-    setSelectedDate(new Date())
+    setSelectedDate(Moment())
     setPost(defaultPost)
     _previousPostId = ''
   }
@@ -212,8 +213,8 @@ export const NewActivityModal = (props) => {
 
   const formatDate = () => {
     var options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'};
-    var date = props.editPost ? new Date(props.editPost.postDate) : new Date(selectedDate)
-    return date.toLocaleDateString("en-US", options)
+    var date = props.editPost ? Moment(props.editPost.postDate) : Moment(selectedDate)
+    return date.format('dddd, LL')
   }
 
   const [createPostMutation, {loading}] = useMutation(CREATE_POST_MUTATION, {
@@ -340,7 +341,9 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
   })
 
   const validatePost = (callback) => {
-    var postDate = selectedDate.toISOString().split('T')[0]
+    console.log(selectedDate)
+    var postDate = selectedDate.format("YYYY-MM-DD")
+    console.log(postDate)
 
     const postTitleValid = post.title.length > 0
     const selectedDateValid = selectedDate !== null

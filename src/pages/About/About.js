@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../../auth';
 import { Footer } from '../../components/Footer/Footer';
 import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -110,6 +111,9 @@ export const About = (props) => {
     history.push('/createAccount')
   }
 
+  const { user } = useContext(AuthContext)
+  console.log(user)
+
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -124,9 +128,9 @@ export const About = (props) => {
         </div>
         <div className={classes.headerBox}>
           <Typography variant="h4" className={classes.imageText}>{tagline}</Typography>
-          <Button variant="contained" className={classes.createAccountButton} style={{borderRadius:'32px'}} color="primary" size="large" onClick={createAccount}>
+          {!user && <Button variant="contained" className={classes.createAccountButton} style={{borderRadius:'32px'}} color="primary" size="large" onClick={createAccount}>
             Create Account
-          </Button>
+          </Button>}
         </div>
         <div className={classes.aboutSection}>
           <Typography variant="h4" className={classes.sectionTitle}>About Curro</Typography>
