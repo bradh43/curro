@@ -195,6 +195,7 @@ export const ActivityDetail = (props) => {
 
   return (
     <div>
+      {!loading && data && data.me ? 
       <Modal
         style={{display:'flex', alignItems:'center', justifyContent:'center'}}
         open={props.openModal}
@@ -220,7 +221,7 @@ export const ActivityDetail = (props) => {
           <Typography variant="h6" className={classes.spacer} >{props.activity.type + " Details"}</Typography>
           <Button onClick={saveActivity} color="secondary">Save</Button>
         </Toolbar>
-        { props.activity.durationAllowed ? 
+        { props.activity.durationAllowed && data.me ? 
           <div className={classes.distanceField}>
             <Grid container spacing={1}>
               <Grid item xs>
@@ -241,7 +242,7 @@ export const ActivityDetail = (props) => {
           </div>
           : <></>
         }
-        { props.activity.distanceAllowed ? 
+        { props.activity.distanceAllowed && data.me ? 
           <div className={classes.distanceField}>
             <Grid container spacing={1}>
               <Grid item xs>
@@ -346,7 +347,7 @@ export const ActivityDetail = (props) => {
         }
       </div>
       
-      </Modal>
-    </div>
+      </Modal> : <></>}
+    </div> 
   );
 }

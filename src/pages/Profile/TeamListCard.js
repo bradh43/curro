@@ -42,7 +42,7 @@ export const TeamListCard = props => {
 
   var teamListRender = [];
   var teamCount = 0
-  if (!props.loading) {
+  if (!props.loading && props.data && (props.data.me || props.data.user)) {
     teamListRender = (props.me ? props.data.me.teamList : props.data.user.teamList).map((e) => 
       ((e.type === props.type) && <TeamListItem 
         key={"profile-team-"+e.id} 
