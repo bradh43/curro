@@ -27,12 +27,14 @@ import { setContext } from '@apollo/client/link/context';
 import { cache } from './cache';
 import { theme } from './theme';
 
-let prod_uri_base = "devcloud.curro.us"
-// let prod_uri_base = "curro-api.herokuapp.com"
-// Connect to deployed backend if in production. Else localhost.
+let prod_uri_base = "production.curro.us"
+let dev_uri_base = "devcloud.curro.us"
+
 let uri = 'http://localhost:4000/graphql';
 if (process.env.NODE_ENV === 'production'){
   uri = 'https://' + prod_uri_base + '/graphql';
+} else if (process.env.NODE_ENV === 'development'){
+  refresh_uri = 'https://' + dev_uri_base + '/graphql';
 }
 
 const httpLink = createUploadLink({
@@ -78,6 +80,8 @@ const client = new ApolloClient({
         let refresh_uri = 'http://localhost:4000/refresh_token';
         if (process.env.NODE_ENV === 'production'){
           refresh_uri = 'https://' + prod_uri_base + '/refresh_token';
+        } else if (process.env.NODE_ENV === 'development'){
+          refresh_uri = 'https://' + dev_uri_base + '/refresh_token';
         }
         return fetch(refresh_uri, {
           method: "POST",
@@ -111,6 +115,8 @@ function App() {
     let refresh_uri = 'http://localhost:4000/refresh_token';
     if (process.env.NODE_ENV === 'production'){
       refresh_uri = 'https://' + prod_uri_base + '/refresh_token';
+    } else if (process.env.NODE_ENV === 'development'){
+      refresh_uri = 'https://' + dev_uri_base + '/refresh_token';
     }
     fetch(refresh_uri, {
       method: "POST",
