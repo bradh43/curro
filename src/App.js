@@ -34,7 +34,7 @@ let uri = 'http://localhost:4000/graphql';
 if (process.env.NODE_ENV === 'production'){
   uri = 'https://' + prod_uri_base + '/graphql';
 } else if (process.env.NODE_ENV === 'development'){
-  refresh_uri = 'https://' + dev_uri_base + '/graphql';
+  uri = 'https://' + dev_uri_base + '/graphql';
 }
 
 const httpLink = createUploadLink({
