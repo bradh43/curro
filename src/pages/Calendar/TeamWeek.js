@@ -143,7 +143,7 @@ export const TeamWeek = (props) => {
       );
     })
 
-    return [(<Grid item xs key={'total-week-'+day.format('YYYY-MM-DD')}>
+    return [(<Grid item xs={4} sm={4} md key={'total-week-'+day.format('YYYY-MM-DD')}>
         <Box className={classes.cell}>
           <Typography variant={'body2'} className={classes.username} onClick={navigateToUserProfile}>{props.data.user.username}</Typography>
           <Hidden mdDown>
