@@ -280,7 +280,7 @@ export const ActivityDetail = (props) => {
           </div>
           : <></>
         }
-        { (props.activity.equipmentAllowed && !loading) && (
+        { (props.activity.equipmentAllowed && !loading && data.me) && (
           <FormControl variant="outlined" fullWidth className={classes.inputField}>
             <InputLabel id="equipment-select">{props.activity.equipmentAllowed}</InputLabel>
             <Select
