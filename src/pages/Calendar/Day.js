@@ -115,8 +115,6 @@ export const Day = (props) => {
   useEffect(() => {
     if(today){
       if(!props.todayPost){
-        console.log("Setting callback function")
-
         props.setTodayPost(post)
       }
       

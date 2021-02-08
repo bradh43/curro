@@ -27,7 +27,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import { Week } from './Week';
 import { WeekLabel } from './WeekLabel';
-import add from 'date-fns/add';
+import Moment from 'moment';
 
 const WEEKS_TO_DISPLAY_IN_VIEW = 6;
 
@@ -105,56 +105,47 @@ export const UserCalendarDisplay = (props) => {
 
   const previousButton = () => {
     props.setDate(prevDate => {
-      let copy = new Date(prevDate);
-      return add(copy, {months: -1});
+      let copy = Moment(prevDate);
+      return copy.subtract(1, 'months');
     });
   }
 
   const nextButton = () => {
     props.setDate(nextDate => {
-      let copy = new Date(nextDate);
-      return add(copy, {months: 1});
+      let copy = Moment(nextDate);
+      return copy.add(1, 'months');
     });
   }
 
   const getFirstDayOfMonthView = () => {
-    // Get the first day of the month and get the first Sunday of that week.
-    let dayOne = new Date(props.date.getFullYear(), props.date.getMonth());
-    let firstSunday = new Date(dayOne);
-    firstSunday.setDate(-1 * dayOne.getDay() + 1);
-
-    let firstDayOfMonthView = firstSunday;
+    let dayOne = Moment(props.date).startOf('month').startOf('week');
     if(props.mondayFirst){
-      // Edge case: if the first day of a month is sunday, I want to go back a week.  
-      if (dayOne.getDay() === 0) {
-        firstDayOfMonthView.setDate(firstDayOfMonthView.getDate() - 7);
+      if(dayOne.month() === props.date.month){
+        dayOne.subtract(6, 'days')
+      } else {
+        dayOne.add(1, 'days')
       }
-      firstDayOfMonthView.setDate(firstDayOfMonthView.getDate() + 1);
-    }
-    
-    return firstDayOfMonthView
+    } 
+    return Moment(dayOne)
   }
 
   const getFirstDaysOfMonthView = () => {
-    let weekIndex = getFirstDayOfMonthView();
-
+    let weekIndex = Moment(getFirstDayOfMonthView());
     let firstDaysOfMonthView = [];
     for (let i = 0; i < WEEKS_TO_DISPLAY_IN_VIEW; i++) {
-      let copy = new Date(weekIndex);
+      let copy = Moment(weekIndex);
       firstDaysOfMonthView.push(copy);
-      weekIndex.setDate(weekIndex.getDate() + 7);
-      copy = new Date(weekIndex);
-      if(props.date.getMonth() !== copy.getMonth()){
+      weekIndex.add(7, 'days')
+      copy = Moment(weekIndex);
+      if(props.date.month() !== copy.month()){
         break;
       }
-     
     }
 
     return firstDaysOfMonthView;
   }
 
-  const options = { year: 'numeric', month: 'long' };
-  const calendarTitle = props.date.toLocaleDateString(undefined, options);
+  const calendarTitle = props.date.format('MMMM YYYY')
 
   const [firstDaysOfMonthView, setFirstDaysOfMonthView] = useState([]);
 
@@ -195,10 +186,10 @@ export const UserCalendarDisplay = (props) => {
             todayPost={props.todayPost}
             setTodayPost={props.setTodayPost}
             firstDay={firstDay} 
-            viewMonth={props.date.getMonth()} 
+            viewMonth={props.date.month()} 
             weekCount={firstDaysOfMonthView.length} 
             weekNumber={weekNumber} 
-            key={'week-'+props.date.getMonth()+'-'+weekNumber}
+            key={'week-'+props.date.month()+'-'+weekNumber}
             setOpenModal={props.setOpenModal}
             editPost={props.editPost} 
             setEditPost={props.setEditPost}

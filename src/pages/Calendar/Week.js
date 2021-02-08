@@ -100,7 +100,7 @@ export const Week = (props) => {
     let totalComponents = []
     totalComponents = Object.entries(activityTotals).map(entry => {
       return (
-        <ActivityTile activity={entry[1]} key={'total-'+entry[0]+props.firstDay.getDate()+'-'+props.firstDay.getMonth()}/>
+        <ActivityTile activity={entry[1]} key={'total-'+entry[0]+props.firstDay.format('YYYY-MM-DD')}/>
       );
     })
 

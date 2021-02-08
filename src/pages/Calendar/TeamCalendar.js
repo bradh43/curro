@@ -119,7 +119,7 @@ export const TeamCalendar = (props) => {
                 <Hidden smUp>
                     <span className={classes.addFab}>
                         <Fab color="primary" aria-label="add" size="small" className={classes.addButton} onClick={() => {
-                                setModalDate(new Date())
+                                setModalDate(Moment())
                                 setOpenModal(true)
                             }
                         }>
