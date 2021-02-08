@@ -137,7 +137,12 @@ export const TeamCalendarDisplay = (props) => {
     let firstDay = Moment(props.date).startOf('week');
     // if monday first just go back 6 days
     if(props.mondayFirst){
-      firstDay.subtract(6, 'days')
+      // if today is monday, just return today
+      if(props.date.day() === 1){
+        return Moment(props.date)
+      } else {
+        firstDay.subtract(6, 'days')
+      }
     } 
     return firstDay
   }
