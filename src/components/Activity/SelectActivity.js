@@ -1,6 +1,6 @@
 import React from 'react';
-import {AllowedActivity} from './AllowedActivity';
-import {makeStyles} from '@material-ui/core/styles';
+import { AllowedActivity } from './AllowedActivity';
+import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'scroll',
     overflowX: 'hidden',
     [theme.breakpoints.down('sm')]: {
-      height: '100%',
+      height: '100%', 
       width: '100%',
     },
   },
@@ -42,61 +42,54 @@ const useStyles = makeStyles((theme) => ({
     height: '84px',
     backgroundColor: theme.palette.background.main,
   },
-  
+
 }));
 
-export const SelectActivity = ({
-                                 setEditActivity,
-                                 setSelectedActivity,
-                                 setOpenActivityDetailModal,
-                                 editActivityValues,
-                                 setEditActivityValues,
-                                 openModal,
-                                 handleClose
-                               }) => {
-  const {activityOption, modalStyle, paper, spacer} = useStyles();
-  
-  function ActivityOption({activity}) {
+export const SelectActivity = (props) => {
+  const classes = useStyles();
+
+  function ActivityOption(props) {
     return (
       <Grid item xs={6}>
-        <Button className={activityOption} fullWidth onClick={() => selectActivity(activity)}>
-          <Typography variant="h6">{activity.type}</Typography>
+        <Button className={classes.activityOption} fullWidth onClick={() => selectActivity(props.activity)}>
+          <Typography variant="h6">{props.activity.type}</Typography>
         </Button>
       </Grid>
     );
   }
-  
+
   const selectActivity = (activity) => {
-    const {defaultUnit} = activity;
-    setEditActivity(false)
-    setSelectedActivity(activity)
-    setOpenActivityDetailModal(true)
-    if (defaultUnit) {
-      setEditActivityValues({...editActivityValues, distanceUnit: defaultUnit})
+    props.setEditActivity(false)
+    props.setSelectedActivity(activity)
+    props.setOpenActivityDetailModal(true)
+    if(activity.defaultUnit){
+      props.setEditActivityValues({ ...props.editActivityValues, distanceUnit: activity.defaultUnit})
     }
   };
-  
+
   return (
     <div>
       <Modal
-        style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
-        open={openModal}
-        onClose={handleClose}
+        style={{display:'flex', alignItems:'center', justifyContent:'center'}}
+        open={props.openModal}
+        onClose={props.handleClose}
         disableBackdropClick
         hideBackdrop
       >
-        <div style={modalStyle} className={paper}>
-          <Toolbar disableGutters>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Typography variant="h6" className={spacer}>Select Activity</Typography>
-            <span style={{width: '64px'}}/>
-          </Toolbar>
-          <Grid container spacing={1}>
-            {
-              AllowedActivity.map((activity) => <ActivityOption key={activity.type} activity={activity}/>)
-            }
-          </Grid>
-        </div>
+      <div style={classes.modalStyle} className={classes.paper}>
+        <Toolbar disableGutters>
+          <Button onClick={props.handleClose}>Cancel</Button>
+          <Typography variant="h6" className={classes.spacer} >Select Activity</Typography>
+          <span style={{width: '64px'}}/>
+        </Toolbar>
+        <Grid container spacing={1}>
+          {AllowedActivity.map((activity) => (
+            <ActivityOption key={activity.type} activity={activity}/>
+          ))}
+        </Grid>
+        
+      </div>
+      
       </Modal>
     </div>
   );
