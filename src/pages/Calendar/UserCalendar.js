@@ -44,9 +44,9 @@ export const UserCalendar = (props) => {
     const [openModal, setOpenModal] = useState(false);
     const [modalPost, setModalPost] = useState(null)
     const [editPost, setEditPost] = useState(null)
-    const [modalDate, setModalDate] = useState(new Date());
+    const [modalDate, setModalDate] = useState(Moment());
     const [viewValue, setViewValue] = React.useState((location.state && location.state.calendar) ? CALENDAR_VIEW_VALUE : PROFILE_VIEW_VALUE);
-    const [date, setDate] = useState(new Date());
+    const [date, setDate] = useState(Moment());
     const [mondayFirst, setMondayFirst] = useState(true)
     const [isCommenting, setIsCommenting] = useState(false)
     const [todayPost, setTodayPost] = useState(null)
@@ -90,7 +90,7 @@ export const UserCalendar = (props) => {
         // Check if calendar or profile view
         if(previousUserid != userid || (location.state && location.state.calendar !== null)){
             previousUserid = userid
-            setDate(new Date())
+            setDate(Moment())
 
             if(location.state && location.state.calendar){
                 setViewValue(CALENDAR_VIEW_VALUE)
@@ -167,7 +167,7 @@ export const UserCalendar = (props) => {
                 <Hidden smUp>
                     <span className={classes.addFab}>
                         <Fab color="primary" aria-label="add" size="small" className={classes.addButton} onClick={() => {
-                                setModalDate(new Date())
+                                setModalDate(Moment())
                                 setOpenModal(true)
                             }
                         }>

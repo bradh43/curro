@@ -143,7 +143,6 @@ export const TeamCalendarDisplay = (props) => {
   }
 
   const [firstDayOfWeekView, setFirstDayOfWeekView] = useState(Moment());
-  const options = { year: 'numeric', month: 'long' };
   const calendarTitle = firstDayOfWeekView.format('MMMM YYYY')
 
   useEffect(() => {
@@ -206,7 +205,7 @@ export const TeamCalendarDisplay = (props) => {
         {props.data && props.data.getTeamCalendar && props.data.getTeamCalendar.map((userPostMap) => {
           return (<TeamWeek
             history={history}
-            todayPost={props.todayPost}
+             todayPost={props.todayPost}
             setTodayPost={props.setTodayPost}
             data={userPostMap} 
             loading={props.loading}
