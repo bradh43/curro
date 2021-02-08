@@ -43,6 +43,7 @@ import TeamSelectDropdown from './TeamSelectDropdown';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
+import Moment from 'moment';
 
 const CALENDAR_VIEW_VALUE = 0
 
@@ -219,6 +220,16 @@ const LEAVE_TEAM = gql`
     setOpenSettingsMenu(false)
   }
 
+  const openNewPost = () => {
+    if(props.todayPost){
+      console.log("TODO: tell user they already have a post for that day")
+      props.openModalPost(props.todayPost, false)
+    } else {
+      props.setModalDate(Moment())
+      props.setOpenModal(true)
+    }
+  }
+
   // const joinTeam = () => {
   //   const userInput = {
   //     input: {
@@ -281,11 +292,7 @@ const LEAVE_TEAM = gql`
           <Hidden xsDown>
             <span className={classes.addFab}>
               <Tooltip title="Post Today" enterDelay={400}>
-                <Fab color="primary" aria-label="add" size="small" variant="extended" className={classes.addButton} onClick={() => {
-                    props.setModalDate(new Date())
-                    props.setOpenModal(true)
-                  }
-                }>
+                <Fab color="primary" aria-label="add" size="small" variant="extended" className={classes.addButton} onClick={openNewPost}>
                   <AddIcon className={classes.addIcon}/>
                   Post
                 </Fab>

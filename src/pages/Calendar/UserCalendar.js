@@ -49,7 +49,7 @@ export const UserCalendar = (props) => {
     const [date, setDate] = useState(new Date());
     const [mondayFirst, setMondayFirst] = useState(true)
     const [isCommenting, setIsCommenting] = useState(false)
-
+    const [todayPost, setTodayPost] = useState(null)
 
     var { userid } = props.match.params
     const { user } = useContext(AuthContext)
@@ -134,6 +134,9 @@ export const UserCalendar = (props) => {
                 setViewValue={setViewValue} 
                 setModalDate={setModalDate}
                 setOpenModal={setOpenModal}
+                openModalPost={openModalPost}
+                todayPost={todayPost}
+                setTodayPost={setTodayPost}
                 history={history} 
                 me={me} 
                 userid={userid} 
@@ -145,6 +148,8 @@ export const UserCalendar = (props) => {
                     history={history} 
                     editPost={editPost}
                     setEditPost={setEditPost}
+                    todayPost={todayPost}
+                    setTodayPost={setTodayPost}
                     me={me} 
                     userid={userid} 
                     date={date} 
@@ -171,6 +176,6 @@ export const UserCalendar = (props) => {
                     </span> 
                 </Hidden>}
             <WelcomeModal open={welcome} handleClose={() => setWelcome(false)}/>
-            <PostModal open={viewPost} loading={userPostLoading} isCommenting={isCommenting} handleClose={() => setViewPost(false)} post={modalPost} history={history} openEditPostModal={() => setOpenModal(false)} setEditPost={setEditPost}/>
+            <PostModal open={viewPost} loading={userPostLoading} isCommenting={isCommenting} handleClose={() => setViewPost(false)} post={modalPost} history={history} openEditPostModal={() => { setOpenModal(true); setViewPost(false);}} setEditPost={setEditPost}/>
         </div>);
 }

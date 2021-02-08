@@ -41,11 +41,12 @@ export const TeamCalendar = (props) => {
     const [openModal, setOpenModal] = useState(false);
     const [modalPost, setModalPost] = useState(null)
     const [editPost, setEditPost] = useState(null)
-    const [modalDate, setModalDate] = useState(new Date());
+    const [modalDate, setModalDate] = useState(Moment());
     const [viewValue, setViewValue] = React.useState((location.state && location.state.calendar) ? CALENDAR_VIEW_VALUE : OVERVIEW_VIEW_VALUE);
-    const [date, setDate] = useState(new Date());
+    const [date, setDate] = useState(Moment());
     const [mondayFirst, setMondayFirst] = useState(true)
     const [isCommenting, setIsCommenting] = useState(false)
+    const [todayPost, setTodayPost] = useState(null)
 
     const { teamid } = props.match.params
 
@@ -87,6 +88,9 @@ export const TeamCalendar = (props) => {
                 setViewValue={setViewValue} 
                 setModalDate={setModalDate}
                 setOpenModal={setOpenModal}
+                openModalPost={openModalPost}
+                todayPost={todayPost}
+                setTodayPost={setTodayPost}
                 history={history} 
                 teamid={teamid} 
                 mondayFirst={mondayFirst} 
@@ -98,6 +102,8 @@ export const TeamCalendar = (props) => {
                     editPost={editPost}
                     setEditPost={setEditPost}
                     teamid={teamid} 
+                    todayPost={todayPost}
+                    setTodayPost={setTodayPost}
                     date={date} 
                     data={data}
                     loading={loading || userPostLoading}
@@ -121,6 +127,6 @@ export const TeamCalendar = (props) => {
                         </Fab>
                     </span> 
                 </Hidden>}
-            <PostModal open={viewPost} loading={userPostLoading} isCommenting={isCommenting} handleClose={() => setViewPost(false)} post={modalPost} history={history} openEditPostModal={() => setOpenModal(false)} setEditPost={setEditPost}/>
+            <PostModal open={viewPost} loading={userPostLoading} isCommenting={isCommenting} handleClose={() => setViewPost(false)} post={modalPost} history={history} openEditPostModal={() => { setOpenModal(true); setViewPost(false);}} setEditPost={setEditPost}/>
         </div>);
 }

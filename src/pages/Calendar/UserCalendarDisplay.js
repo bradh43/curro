@@ -192,6 +192,8 @@ export const UserCalendarDisplay = (props) => {
             data={props.data} 
             loading={props.loading}
             me={props.me}
+            todayPost={props.todayPost}
+            setTodayPost={props.setTodayPost}
             firstDay={firstDay} 
             viewMonth={props.date.getMonth()} 
             weekCount={firstDaysOfMonthView.length} 

@@ -1,44 +1,17 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import { AuthContext } from '../../auth';
-import { NewActivityModal } from '../../components/Modal/NewActivityModal';
-import { ToolBar } from './ToolBar';
 import { makeStyles } from '@material-ui/core/styles';
-import AddIcon from '@material-ui/icons/Add';
-import Fab from '@material-ui/core/Fab';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { gql, useQuery, useMutation, useLazyQuery } from '@apollo/client';
-import { WelcomeModal } from '../../components/Modal/WelcomeModal';
-import { UserNavBar } from '../../components/Calendar/UserNavBar';
+import { gql, useMutation } from '@apollo/client';
 import { CalendarComments } from '../../components/Calendar/CalendarComments';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import TodayIcon from '@material-ui/icons/Today';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import NativeSelect from '@material-ui/core/NativeSelect';
-import Box from '@material-ui/core/Box';
-import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
-import List from '@material-ui/core/List';
-import Hidden from '@material-ui/core/Hidden';
 import { ActivityTile } from './ActivityTile';
 import moment from 'moment';
-import { GET_POST_BY_ID_QUERY, GET_POST_QUERY } from '../../utils/graphql';
 import ShowMoreText from 'react-show-more-text';
-import produce from "immer";
 import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
-import FavoriteTwoToneIcon from '@material-ui/icons/FavoriteTwoTone';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormGroup from '@material-ui/core/FormGroup';
 import Checkbox from '@material-ui/core/Checkbox';
 import AddCommentIcon from '@material-ui/icons/AddComment';
 
@@ -123,16 +96,6 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.primary.main,
       }
     },
-    loading: {
-      position: 'absolute',
-      top: 16,
-    },
-    loadingBox: {
-      width: 40,
-      display: 'block',
-      margin: 'auto',
-      position: 'relative'
-    },
     note: {
       marginTop: 8,
     },
@@ -164,8 +127,6 @@ const useStyles = makeStyles((theme) => ({
 const isToday = (someDate) => {
   return someDate.isSame(moment(), 'day')
 }
-
-var moreDetailPost = {}
 
 export const TeamDay = (props) => {
   const classes = useStyles();
@@ -229,30 +190,12 @@ export const TeamDay = (props) => {
     setLikePost(event.target.checked)
   }
 
-  const [getPost, { data, loading }] = useLazyQuery(GET_POST_BY_ID_QUERY, {
-    onCompleted: (result) => {
-      moreDetailPost[post.id] = result.post
-      props.setEditPost(result.post)
-      props.setOpenModal(true)
-      return 
-    },
-    onError: (error) => console.log(error)
-  })
-  
-
   const openPostModal = () => {
 
     if(props.me){
       if(post && post.id){
-        // get post data
-        getPost({
-          variables: {id: post.id},
-        })
-        // if already seen before
-        if(data && data.post){
-          props.setEditPost(data.post)
-          props.setOpenModal(true)
-        }
+        //View Own Post
+        props.openModalPost(post, false)
       } else {
         // create new post
         props.setModalDate(props.dayDate)
@@ -310,7 +253,13 @@ export const TeamDay = (props) => {
     if(!cellWidth && cellRef.current){
       setCellWidth(cellRef.current.offsetWidth-20)
     }
-  }, [cellRef.current]);
+    if(today && props.me){
+      if(!props.todayPost){
+        props.setTodayPost(post)
+      }
+      
+    }
+  }, [cellWidth]);
 
   return (
     <Grid item xs={8} sm={8} md key={'week-day-'+props.dayDate.date()}
@@ -337,11 +286,6 @@ export const TeamDay = (props) => {
             </span>
           }
         </div>
-        {loading && 
-          <span className={classes.loadingBox}>
-            <CircularProgress className={classes.loading}/>
-          </span>
-        }
       </div>
       <div>
         {post && post.activityList.map(activity => (

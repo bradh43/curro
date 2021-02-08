@@ -16,7 +16,6 @@ export const cache = new InMemoryCache({
         postList: {
           keyArgs: false,
           merge(existing = {posts: []}, incoming) {
-            console.log("post list cache")
 
             const {posts: newPosts} = incoming
 

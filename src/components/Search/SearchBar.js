@@ -186,7 +186,6 @@ export const SearchBar = (props) => {
 
   useEffect(() => {
     if(!firstSearch){
-      console.log("emptySearch")
       submitSearch(searchQuery, filters.includes("Users"));
       firstSearch = true
     }

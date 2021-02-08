@@ -83,6 +83,8 @@ export const Week = (props) => {
         <Grid item xs key={'day-'+day.date()}>
           <Day 
             post={post}
+            todayPost={props.todayPost}
+            setTodayPost={props.setTodayPost}
             editPost={props.editPost} 
             setEditPost={props.setEditPost}
             dayDate={day} 

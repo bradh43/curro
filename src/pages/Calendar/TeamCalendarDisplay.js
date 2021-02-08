@@ -27,8 +27,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import { TeamWeek } from './TeamWeek';
 import { WeekLabel } from './WeekLabel';
-import add from 'date-fns/add';
 import Hidden from '@material-ui/core/Hidden';
+import Moment from 'moment';
 
 const WEEKS_TO_DISPLAY_IN_VIEW = 6;
 
@@ -106,47 +106,45 @@ export const TeamCalendarDisplay = (props) => {
 
   const previousButton = () => {
     props.setDate(prevDate => {
-      let copy = new Date(prevDate);
-      return add(copy, {days: -7});
+      let copy = Moment(prevDate);
+      return copy.subtract(7, 'days');
     });
   }
 
   const nextButton = () => {
     props.setDate(nextDate => {
-      let copy = new Date(nextDate);
-      return add(copy, {days: 7});
+      let copy = Moment(nextDate);
+      return copy.add(7, 'days');
     });
   }
 
   const previousDayButton = () => {
     props.setDate(prevDate => {
-      let copy = new Date(prevDate);
-      // TODO change to -1
-      return add(copy, {days: -1});
+      let copy = Moment(prevDate);
+      return copy.subtract(1, 'days');
     });
   }
 
   const nextDayButton = () => {
     props.setDate(nextDate => {
-      let copy = new Date(nextDate);
-      return add(copy, {days: 1});
+      let copy = Moment(nextDate);
+      return copy.add(1, 'days');
     });
   }
 
   const getFirstDayOfWeek = () => {
-    let firstDay = new Date(props.date);
     // Get the first sunday of the week
-    firstDay.setDate(props.date.getDate()-props.date.getDay());
-    // if monday first just add one day
+    let firstDay = Moment(props.date).startOf('week');
+    // if monday first just go back 6 days
     if(props.mondayFirst){
-      firstDay.setDate(firstDay.getDate()+1);
+      firstDay.subtract(6, 'days')
     } 
     return firstDay
   }
 
-  const [firstDayOfWeekView, setFirstDayOfWeekView] = useState(new Date());
+  const [firstDayOfWeekView, setFirstDayOfWeekView] = useState(Moment());
   const options = { year: 'numeric', month: 'long' };
-  const calendarTitle = firstDayOfWeekView.toLocaleDateString(undefined, options);
+  const calendarTitle = firstDayOfWeekView.format('MMMM YYYY')
 
   useEffect(() => {
     let temp = getFirstDayOfWeek()
@@ -208,13 +206,15 @@ export const TeamCalendarDisplay = (props) => {
         {props.data && props.data.getTeamCalendar && props.data.getTeamCalendar.map((userPostMap) => {
           return (<TeamWeek
             history={history}
+            todayPost={props.todayPost}
+            setTodayPost={props.setTodayPost}
             data={userPostMap} 
             loading={props.loading}
             me={props.me}
             date={props.date}
             firstDay={firstDayOfWeekView} 
-            viewMonth={firstDayOfWeekView.getMonth()} 
-            key={'week-'+props.date.getDay()+'-'+userPostMap.user.id}
+            viewMonth={firstDayOfWeekView.month()} 
+            key={'week-'+props.date.day()+'-'+userPostMap.user.id}
             weekCount={props.data.getTeamCalendar.length}
             setOpenModal={props.setOpenModal}
             editPost={props.editPost} 

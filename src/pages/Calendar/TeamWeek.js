@@ -99,12 +99,14 @@ export const TeamWeek = (props) => {
       <Hidden mdUp>
         <TeamDay 
           history={history}
+          todayPost={props.todayPost}
+          setTodayPost={props.setTodayPost}
           post={getPost(singleDay)}
           editPost={props.editPost} 
           setEditPost={props.setEditPost}
           dayDate={singleDay} 
           me={me}
-          viewMonth={props.date.getMonth()}
+          viewMonth={props.date.month()}
           setOpenModal={props.setOpenModal}
           setModalDate={props.setModalDate}
           openModalPost={props.openModalPost}
@@ -123,6 +125,8 @@ export const TeamWeek = (props) => {
         <Hidden smDown>
           <TeamDay 
             post={post}
+            todayPost={props.todayPost}
+            setTodayPost={props.setTodayPost}
             editPost={props.editPost} 
             setEditPost={props.setEditPost}
             dayDate={day} 
@@ -139,7 +143,7 @@ export const TeamWeek = (props) => {
     let totalComponents = []
     totalComponents = Object.entries(activityTotals).map(entry => {
       return (
-        <ActivityTile activity={entry[1]} key={'user-total-'+entry[0]+props.firstDay.getDate()+'-'+props.firstDay.getMonth()} primary={true}/>
+        <ActivityTile activity={entry[1]} key={'user-total-'+entry[0]+props.firstDay.format('YYYY-DD-MM')} primary={true}/>
       );
     })
 

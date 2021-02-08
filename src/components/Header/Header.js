@@ -176,7 +176,6 @@ const Header = props => {
   const [signOut, { loading: signOutLoading}] = useMutation(MUTATION_SIGNOUT, {
     update(_, {data: {signOut: success}}) {
       logout()
-      console.log(success)
     },
     onError(error) {
       console.log(error.message)

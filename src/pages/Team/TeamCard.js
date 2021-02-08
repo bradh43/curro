@@ -50,7 +50,6 @@ export const TeamCard = props => {
   const [joined, setJoined] = useState(false);
   const [requestPending, setRequestPending] = useState(false);
   const [openMemberModal, setOpenMemberModal] = useState(false);
-  const [userList, setUserList] = useState([])
   const [isAdmin, setIsAdmin] = useState(false)
   const [editTeam, setEditTeam] = useState(null)
   const [openEditTeamModal, setOpenEditTeamModal] = useState(false)
@@ -130,8 +129,8 @@ export const TeamCard = props => {
     }
     //if already in team list, don't need to check requestedTeamList as well
     if(!foundTeamFlag) {
-      for(var i=0; i<data.me.requestedTeamList.length; i++){
-        if(data.me.requestedTeamList[i].id === props.data.team.id){
+      for(var j=0; j<data.me.requestedTeamList.length; j++){
+        if(data.me.requestedTeamList[j].id === props.data.team.id){
           requestedTeamFlag = true
           break;
         }
@@ -203,16 +202,14 @@ export const TeamCard = props => {
     }
   })
 
-  const [leaveTeamMutation, { loading: leaveLoading }] = useMutation(LEAVE_TEAM, {
+  const [leaveTeamMutation] = useMutation(LEAVE_TEAM, {
     update(store, {data: result}) {
       const data = store.readQuery({
         query: ME_QUERY
       })
       if(result.leaveTeam.success){
-        const updatedTeamList = data.me.teamList.filter((team) => {
-          if(team.id !== props.data.team.id){
-            return team
-          }
+        const updatedTeamList = data.me.teamList.filter(team => {
+          return team.id !== props.data.team.id
         })
 
         setRequestPending(false)
@@ -224,9 +221,7 @@ export const TeamCard = props => {
         }) 
         const updatedMemberCount = team_data.team.memberCount - 1
         const updatedMemberList = team_data.team.memberList.filter((member) => {
-          if(member.id !== data.me.id){
-            return member
-          }
+          return member.id !== data.me.id          
         })
         store.writeQuery({
           query: TEAM_QUERY,
@@ -302,11 +297,9 @@ export const TeamCard = props => {
   useEffect(() => {
     if(props.data && props.data.team && props.data.team.adminList && previousTeamId !== props.data.team.id){
       previousTeamId = props.data.team.id
-      console.log(props.data.team.adminList)
       var adminFound = false
       for(var i = 0; i < props.data.team.adminList.length; i++){
         if(props.data.team.adminList[i].id === user.id){
-          console.log("your an admin!")
           adminFound = true
           setIsAdmin(true)
           break;
@@ -317,7 +310,7 @@ export const TeamCard = props => {
       }
       
     }
-  })
+  }, [props.data, user.id])
 
 
   const classes = useStyles();

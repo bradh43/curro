@@ -111,7 +111,7 @@ export const CreateTeamModal = (props) => {
   })
 
   const classes = useStyles();
-  console.log(props.team)
+
   const [state, setState] = useState({
     name: "",
     private: false,
@@ -133,7 +133,6 @@ export const CreateTeamModal = (props) => {
             file: file
           }
         }
-        console.log("TODO save edits")
         updateTeamMutation({ variables: userInput })
 
       } else {

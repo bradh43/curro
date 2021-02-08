@@ -1,36 +1,11 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { AuthContext } from '../../auth';
-import { NewActivityModal } from '../../components/Modal/NewActivityModal';
-import { ToolBar } from './ToolBar';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import AddIcon from '@material-ui/icons/Add';
-import Fab from '@material-ui/core/Fab';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { gql, useQuery, useLazyQuery } from '@apollo/client';
-import { WelcomeModal } from '../../components/Modal/WelcomeModal';
-import { UserNavBar } from '../../components/Calendar/UserNavBar';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import TodayIcon from '@material-ui/icons/Today';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import NativeSelect from '@material-ui/core/NativeSelect';
 import Box from '@material-ui/core/Box';
-import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
-import List from '@material-ui/core/List';
 import Hidden from '@material-ui/core/Hidden';
 import { ActivityTile } from './ActivityTile';
 import moment from 'moment';
-import { GET_POST_BY_ID_QUERY } from '../../utils/graphql';
 
 const useStyles = makeStyles((theme) => ({
     cell: {
@@ -105,53 +80,18 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.primary.main,
       }
     },
-    loading: {
-      position: 'absolute',
-      top: 16,
-    },
-    loadingBox: {
-      width: 40,
-      display: 'block',
-      margin: 'auto',
-      position: 'relative'
-    },
 }));
 
-const isToday = (someDate) => {
-  return someDate.isSame(moment(), 'day')
-}
 
-var moreDetailPost = {}
 
 export const Day = (props) => {
-  const classes = useStyles();
-  const today = isToday(props.dayDate)
 
   const post = props.post
-
-  const [getPost, { data, loading }] = useLazyQuery(GET_POST_BY_ID_QUERY, {
-    onCompleted: (result) => {
-      moreDetailPost[post.id] = result.post
-      props.setEditPost(result.post)
-      props.setOpenModal(true)
-      return 
-    },
-    onError: (error) => console.log(error)
-  })
-
 
   const openPostModal = () => {
     if(props.me){
       if(post && post.id){
-        // get post data
-        getPost({
-          variables: {id: post.id},
-        })
-        // if already seen before
-        if(data && data.post){
-          props.setEditPost(data.post)
-          props.setOpenModal(true)
-        }
+        props.openModalPost(post, false)
       } else {
         // create new post
         props.setModalDate(props.dayDate)
@@ -164,6 +104,24 @@ export const Day = (props) => {
     }
    
   }
+
+  const isToday = (someDate) => { 
+    return someDate.isSame(moment(), 'day')
+  }
+
+  const classes = useStyles();
+  const today = isToday(props.dayDate)
+
+  useEffect(() => {
+    if(today){
+      if(!props.todayPost){
+        console.log("Setting callback function")
+
+        props.setTodayPost(post)
+      }
+      
+    }
+  })
 
   const getCellClass = () => {
     var cellClass = `${classes.cell}`
@@ -201,11 +159,6 @@ export const Day = (props) => {
             </Hidden>
             }
         </div>
-        {loading && 
-          <span className={classes.loadingBox}>
-            <CircularProgress className={classes.loading}/>
-          </span>
-        }
         <div>
           {post && post.activityList.map(activity => (
             <ActivityTile activity={activity} key={'day-activity-'+activity.id}/>

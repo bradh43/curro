@@ -5,6 +5,10 @@ import { Waypoint } from 'react-waypoint';
 import { NewActivityModal } from '../../components/Modal/NewActivityModal';
 import { makeStyles } from '@material-ui/core/styles';
 import { PostCard } from '../../components/Post/PostCard';
+import { RecommendedUsers } from '../../components/RecommendedUsers/RecommendedUsers';
+import Typography from '@material-ui/core/Typography';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -52,6 +56,11 @@ const useStyles = makeStyles((theme) => ({
     position: 'fixed',
     bottom: 16,
     right: 16,
+  },
+  noPost: {
+    padding: 16,
+    margin: 16,
+    textAlign: 'center',
   },
   
 }));
@@ -107,7 +116,10 @@ export const Feed = (props) => {
       }
     }
   }
-
+  const openNewPost = () => {
+    console.log("TODO: Check if user already has a post for today")
+    setOpenModal(true)
+  }
   const classes = useStyles();
   const { history } = props;
 
@@ -136,6 +148,16 @@ export const Feed = (props) => {
     <div className={classes.mainContent}>
       {
       <List className={classes.list}>
+        {data.postList.posts.length === 0 && 
+          <React.Fragment key={"no-posts"}>
+          <ListItem className={classes.listItem}>
+            <Typography variant={'h5'} className={classes.noPost}>Looks like there are no posts yet. Try making a new post or following users.</Typography>
+          </ListItem>
+          <ListItem className={classes.listItem}>
+            <RecommendedUsers history={history}/>
+          </ListItem>
+        </React.Fragment>
+        }
         {data.postList.posts.map((post, index) => (
           <React.Fragment key={"post" + post.id}>
             <ListItem className={classes.listItem}>
@@ -157,7 +179,7 @@ export const Feed = (props) => {
     </div>
     <NewActivityModal openModal={openModal} handleClose={() => setOpenModal(false)} editPost={editPost} setEditPost={setEditPost}/>
     <span className={classes.addFab}>
-        <Fab color="primary" aria-label="add" onClick={() => setOpenModal(true)}>
+        <Fab color="primary" aria-label="add" onClick={openNewPost}>
             <AddIcon />
         </Fab>
     </span>

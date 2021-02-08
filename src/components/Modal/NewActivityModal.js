@@ -110,9 +110,7 @@ export const NewActivityModal = (props) => {
   const { user } = useContext(AuthContext)
 
   const getUserCalendarDateFormat = () => {
-    var temp = Moment(selectedDate).format('YYYY-MM-DD')
-    console.log(temp.toString())
-    return temp.toString()
+    return Moment(selectedDate).format('YYYY-MM-DD')
   }
 
   useEffect(() => {
@@ -366,9 +364,7 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
   })
 
   const validatePost = (callback) => {
-    console.log(selectedDate)
     var postDate = Moment(selectedDate).format("YYYY-MM-DD")
-    console.log(postDate)
 
     const postTitleValid = post.title.length > 0
     const selectedDateValid = selectedDate !== null

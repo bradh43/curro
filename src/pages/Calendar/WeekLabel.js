@@ -64,9 +64,9 @@ export const WeekLabel = (props) => {
           ))}
         </Hidden> : 
         <Hidden mdUp>
-            <Grid item xs key={props.date.getDay()}>
+            <Grid item xs key={props.date.day()}>
               <Box className={classes.cell}>
-                {sundayWeek[props.date.getDay()]}
+                {sundayWeek[props.date.day()]}
               </Box>
             </Grid>
         </Hidden> 
