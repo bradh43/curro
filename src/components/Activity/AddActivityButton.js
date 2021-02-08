@@ -36,7 +36,7 @@ export const AddActivityButton = props => {
   return (
     <Card className={classes.card}>
       <CardContent className={classes.cardContent}>
-        <IconButton className={classes.addButton} onClick={() => props.openSelectActivity()}>
+        <IconButton title={'openIcon'} className={classes.addButton} onClick={() => props.openSelectActivity()}>
           <AddCircleOutlineIcon style={{height: '64px', width: '64px'}} />
         </IconButton>
         <Typography variant="h6" >Add Activity</Typography>
