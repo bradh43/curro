@@ -431,10 +431,10 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
           ...postInput,
           input: {
             ...postInput.input,
-            postDate: selectedDate.toISOString().split('T')[0],
+            postDate: selectedDate.format("YYYY-MM-DD"),
           }
         }
-        
+        console.log(selectedDate.format("YYYY-MM-DD"))
         createPostMutation({ variables: creatPostInput })
       }
       
