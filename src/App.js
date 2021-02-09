@@ -97,11 +97,13 @@ const client = new ApolloClient({
       },
       handleError: error => {
         console.error(error);
+        localStorage.removeItem('token')
       }
     }),
     onError(({ graphQLErrors, networkError }) => {
       console.log(graphQLErrors);
       console.log(networkError);
+      localStorage.removeItem('token')
     }),
     authLink,
     httpLink
