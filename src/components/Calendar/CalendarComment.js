@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import { GET_POST_QUERY } from '../../utils/graphql';
 import produce from "immer";
+import Moment from 'moment';
 
 export const CalendarComment = props => {
 
@@ -122,14 +123,40 @@ export const CalendarComment = props => {
     setLikeComment(event.target.checked)
   }
 
-  const formatDate = (createdAt) => {
-    var options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+  const formatComment = (createdAt) => {
 
-    var date = new Date(1970,0,1)
-    date.setMilliseconds(createdAt)
- 
-    var old_return = date.toLocaleDateString("en-US", options)
-    return '1 hr ago'
+    var end = Moment()
+    var start = Moment.unix(createdAt/1000)
+    var timeSinceComment = Moment.duration(end.diff(start))
+
+    if(timeSinceComment.years()){
+      return timeSinceComment.years() + ' year' + (timeSinceComment.years() === 1 ? ' ago' : 's ago')
+    }
+    if(timeSinceComment.months()){
+      return timeSinceComment.months() + ' month' + (timeSinceComment.months() === 1 ? ' ago' : 's ago')
+    }
+    const daySinceComment = timeSinceComment.days()
+    if(daySinceComment){
+      if(daySinceComment === 1){
+        return daySinceComment + ' day ago'
+      } else if(daySinceComment < 7){
+        return daySinceComment + ' days ago'
+      } else {
+        const weekSinceComment = Math.ceil(daySinceComment / 7)
+        if(weekSinceComment === 1){
+          return weekSinceComment + ' week ago'
+        } else {
+          return weekSinceComment + ' weeks ago'
+        }
+      }
+    }
+    if(timeSinceComment.hours()){
+      return timeSinceComment.hours() + ' hour' + (timeSinceComment.hours() === 1 ? ' ago' : 's ago')
+    }
+    if(timeSinceComment.minutes()){
+      return timeSinceComment.minutes() + ' min ago'
+    }
+    return ''
   }
 
   const navigateToUserProfile = () => {
@@ -154,7 +181,7 @@ export const CalendarComment = props => {
             >
               {props.comment.note}
             </Typography>
-            {' ' + formatDate(props.comment.createdAt)}
+            {' ' + formatComment(props.comment.createdAt)}
           </React.Fragment>
         }
         
