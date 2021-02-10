@@ -160,7 +160,7 @@ export const CalendarComment = props => {
   }
 
   const navigateToUserProfile = () => {
-    history.push('user/'+props.comment.author.id)
+    history.push('/user/'+props.comment.author.id)
   }
 
   const classes = useStyles();

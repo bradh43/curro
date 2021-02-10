@@ -10,7 +10,6 @@ import EditEquipmentModal from '../../components/Modal/EditEquipmentModal';
 import { CreateEquipmentModal } from '../../components/Modal/CreateEquipmentModal';
 import { ME_QUERY, USER_QUERY } from '../../utils/graphql';
 import { CreateTeamModal } from '../../components/Modal/CreateTeamModal';
-import UserStats from './Stats/UserStats';
 
 
 export const Profile = (props) => {
@@ -75,35 +74,24 @@ export const Profile = (props) => {
           <Grid item xs={12}>
             <ProfileCard loading={loading} error={error} history={history} data={data} me={me}/>
           </Grid>
+        </Grid>
+        <Grid item xs={12} sm={12} md={8} lg={8}>
           <Grid item xs={12}>
-            <TeamListCard 
-              me={me}
-              data={data}
-              loading={loading}
-              error={error}
-              setOpenTeamModal={setOpenEquipmentModal} 
-              setEditEquipmentData={setEditEquipmentData} 
-              setOpenCreateTeamModal={setOpenCreateTeamModal}
-              history={history}
-            />
-          </Grid>
-          <Grid item xs={12}>
-          <EquipmentCard 
-            me={me}
-            type="SHOE" 
-            data={data}
-            loading={loading}
-            error={error}
-            setOpenEquipmentModal={setOpenEquipmentModal} 
-            setEditEquipmentData={setEditEquipmentData} 
-            setOpenCreateEquipmentModal={setOpenCreateEquipmentModal} 
-            setCreateEquipmentType={setCreateEquipmentType}
-          />
-          </Grid>
-          <Grid item xs={12}>
+              <TeamListCard 
+                me={me}
+                data={data}
+                loading={loading}
+                error={error}
+                setOpenTeamModal={setOpenEquipmentModal} 
+                setEditEquipmentData={setEditEquipmentData} 
+                setOpenCreateTeamModal={setOpenCreateTeamModal}
+                history={history}
+              />
+            </Grid>
+            <Grid item xs={12}>
             <EquipmentCard 
               me={me}
-              type="BIKE" 
+              type="SHOE" 
               data={data}
               loading={loading}
               error={error}
@@ -112,14 +100,20 @@ export const Profile = (props) => {
               setOpenCreateEquipmentModal={setOpenCreateEquipmentModal} 
               setCreateEquipmentType={setCreateEquipmentType}
             />
+            </Grid>
+            <Grid item xs={12}>
+              <EquipmentCard 
+                me={me}
+                type="BIKE" 
+                data={data}
+                loading={loading}
+                error={error}
+                setOpenEquipmentModal={setOpenEquipmentModal} 
+                setEditEquipmentData={setEditEquipmentData} 
+                setOpenCreateEquipmentModal={setOpenCreateEquipmentModal} 
+                setCreateEquipmentType={setCreateEquipmentType}
+              />
           </Grid>
-        </Grid>
-        <Grid item xs={12} sm={12} md={8} lg={8}>
-
-        {!error && !loading && data &&
-          (<Grid container item xs={12} lg={12}>
-              <UserStats userid={data.me?.id || data.user?.id}/>
-          </Grid>)}
         </Grid>
       </Grid>
       {me && <EditEquipmentModal data={editEquipmentData} openModal={openEquipmentModal} handleClose={() => setOpenEquipmentModal(false)}/>}

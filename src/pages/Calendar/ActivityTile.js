@@ -162,16 +162,16 @@ export const ActivityTile = (props) => {
     {props.team ? 
       <>
         {isTotal && <span className={classes.totalList}>
-          {isActivityTotalDuration && 
+          {isActivityTotalDuration ? 
           <div>
             <span className={classes.middleDot}>&#183;</span>
             <Typography display={'inline'} variant={'body2'} className={classes.details}>{getTotalTimeFormat(props.activity.total.duration)}</Typography>
-          </div>}
-          {isActivityTotalDistance && 
+          </div> : <></>}
+          {isActivityTotalDistance ? 
           <div>
             <span className={classes.middleDot}>&#183;</span>
             <Typography display={'inline'} variant={'body2'} className={classes.details}>{getTotalDistanceFormat(props.activity.total.distance.value) + ' ' + props.activity.total.distance.unit}</Typography>
-          </div>}
+          </div> : <></>}
         </span>}
         {(props.activity && props.activity.duration && props.activity.duration !== 0) ? 
           <>
@@ -188,16 +188,16 @@ export const ActivityTile = (props) => {
       </> :
       <Hidden mdDown>
       {isTotal && <span className={classes.totalList}>
-        {isActivityTotalDuration && 
+        {isActivityTotalDuration ? 
         <div>
           <span className={classes.middleDot}>&#183;</span>
           <Typography display={'inline'} variant={'body2'} className={classes.details}>{getTotalTimeFormat(props.activity.total.duration)}</Typography>
-        </div>}
-        {isActivityTotalDistance && 
+        </div> : <></>}
+        {isActivityTotalDistance ? 
         <div>
           <span className={classes.middleDot}>&#183;</span>
           <Typography display={'inline'} variant={'body2'} className={classes.details}>{getTotalDistanceFormat(props.activity.total.distance.value) + ' ' + props.activity.total.distance.unit}</Typography>
-        </div>}
+        </div> : <></>}
       </span>}
       {props.activity && props.activity.duration && props.activity.duration !== 0 && 
         <>
