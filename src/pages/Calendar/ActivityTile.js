@@ -199,17 +199,17 @@ export const ActivityTile = (props) => {
           <Typography display={'inline'} variant={'body2'} className={classes.details}>{getTotalDistanceFormat(props.activity.total.distance.value) + ' ' + props.activity.total.distance.unit}</Typography>
         </div> : <></>}
       </span>}
-      {props.activity && props.activity.duration && props.activity.duration !== 0 && 
+      {props.activity && props.activity.duration && props.activity.duration !== 0 ? 
         <>
           <span className={classes.middleDot}>&#183;</span>
           <Typography display={'inline'} variant={'body2'} className={classes.details}>{getTotalMin(props.activity.duration) + ' min'}</Typography>
-        </>
+        </> : <></>
       }
-      {props.activity && props.activity.distance && props.activity.distance.value !== 0 && 
+      {props.activity && props.activity.distance && props.activity.distance.value !== 0 ? 
         <>
           <span className={classes.middleDot}>&#183;</span>
           <Typography display={'inline'} variant={'body2'} className={classes.details}>{getTotalDistanceFormat(props.activity.distance.value) + ' ' + props.activity.distance.unit}</Typography>
-        </>
+        </> : <></>
       }
     </Hidden>
     } 
