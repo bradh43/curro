@@ -49,6 +49,9 @@ export const Footer = (props) => {
       color: 'inherit',
       textDecoration: 'none',
     },
+    secondaryText: {
+      fontWeight: 300,
+    }
   }));
 
   const classes = useStyles();
@@ -114,6 +117,9 @@ export const Footer = (props) => {
           <Grid item>
             <Typography variant={'overline'} className={classes.textButton}><a href={'https://forms.gle/7JdpvaG6YZ657tBv5'} className={classes.outsideLink}>Feedback</a></Typography>
           </Grid>
+          <Grid item xs={12}>
+            <Typography variant={'caption'} className={classes.secondaryText}>All rights reserved &copy;</Typography>
+          </Grid>
         </Grid>
       </Hidden>
       <Hidden mdUp>
@@ -141,6 +147,9 @@ export const Footer = (props) => {
           </Grid>
           <Grid item xs={12}>
             <Typography variant={'overline'} className={classes.textButton}><a href={'https://forms.gle/7JdpvaG6YZ657tBv5'} className={classes.outsideLink}>Feedback</a></Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant={'caption'} className={classes.secondaryText}>All rights reserved &copy;</Typography>
           </Grid>
         </Grid>
       </Hidden>

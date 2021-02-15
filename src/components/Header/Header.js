@@ -387,13 +387,13 @@ const Header = props => {
             <ListItemIcon><AccountBoxIcon /></ListItemIcon>
             <ListItemText primary={"Profile"} />
           </ListItem>
-          {/* <ListItem button key={"About"} onClick={() => {
+          <ListItem button key={"About"} onClick={() => {
             handleDrawerClose()
-            history.push('/home');
+            history.push('/about');
           }}>
-            <ListItemIcon><InfoIcon /></ListItemIcon>
+          <ListItemIcon><InfoIcon /></ListItemIcon>
             <ListItemText primary={"About"} />
-          </ListItem> */}
+          </ListItem>
         </List>
         {/* <Divider />
         <List>
