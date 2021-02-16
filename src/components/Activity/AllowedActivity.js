@@ -78,4 +78,4 @@ export const AllowedActivity = [
     additionalInfoAllowed: true,
     defaultUnit: "mi"
   },
-]
+];
