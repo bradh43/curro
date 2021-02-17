@@ -11,30 +11,7 @@ import { IconButton, ListItemSecondaryAction } from '@material-ui/core';
 import Hidden from '@material-ui/core/Hidden';
 
 
-const useStyles = makeStyles((theme) => ({
-  inline: {
-    display: 'inline',
-  },
-  resultItem: {
-    backgroundColor: "#ffffff",
-    cursor: 'pointer',
-    "&:hover": {
-      backgroundColor: '#fafafa',
-    },
-  }, 
-  buttonRow: {
-    display: 'block',
-    width: '100%',
-    marginTop: 8,
-    marginBottom: -16
-    
-  },
-  followButton: {
-    [theme.breakpoints.up('sm')]: {
-      paddingTop: 16
-    },
-  }
-}));
+
 
 
 
@@ -95,3 +72,28 @@ export const UserTile = (props) => {
 
       </ListItem>);
 }
+
+const useStyles = makeStyles((theme) => ({
+  inline: {
+    display: 'inline',
+  },
+  resultItem: {
+    backgroundColor: "#ffffff",
+    cursor: 'pointer',
+    "&:hover": {
+      backgroundColor: '#fafafa',
+    },
+  },
+  buttonRow: {
+    display: 'block',
+    width: '100%',
+    marginTop: 8,
+    marginBottom: -16
+    
+  },
+  followButton: {
+    [theme.breakpoints.up('sm')]: {
+      paddingTop: 16
+    },
+  }
+}));
