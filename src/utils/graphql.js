@@ -357,3 +357,26 @@ export const TEAM_CALENDAR_QUERY = gql`
   }
   ${COMMENT_FRAGMENT}
 `;
+
+export const ME_EQUIPMENT_QUERY = gql`
+    query {
+      me {
+        id
+        equipmentList{
+          id
+          name
+          type
+          usage{
+            value
+            unit
+          }
+          limit {
+            value
+            unit
+          }
+          active
+          createdAt
+        }
+      }
+    }
+  `;
