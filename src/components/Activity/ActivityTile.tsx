@@ -1,7 +1,7 @@
 import React from 'react';
 import TimeHelper from '../../utils/TimeHelper'
 import DistanceHelper from '../../utils/DistanceHelper'
-import {AllowedActivity} from './AllowedActivity';
+import {Activity, AllowedActivity} from './AllowedActivity';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -12,7 +12,17 @@ import EditIcon from '@material-ui/icons/Edit';
 import Tooltip from '@material-ui/core/Tooltip';
 import PropTypes from 'prop-types';
 
-export const ActivityTile = ({
+type ActivityTileProps = {
+  activity: Activity;
+  edit: boolean;
+  setEditActivity: (x: boolean) => void;
+  setEditActivityId: (x: string) => void;
+  setEditActivityValues: (x: object) => void;
+  setOpenActivityDetailModal: (x: boolean) => void;
+  setSelectedActivity: (x: Activity) => void;
+}
+
+export const ActivityTile: React.FC<ActivityTileProps> = ({
                                activity,
                                edit,
                                setEditActivity,
@@ -27,7 +37,7 @@ export const ActivityTile = ({
       width: '100%',
       height: '100%',
       marginBottom: 0,
-      backgroundColor: theme.palette.background.main,
+      backgroundColor: theme.palette.background.primary,
       "&:last-child": {
         paddingBottom: 0
       }
@@ -39,7 +49,9 @@ export const ActivityTile = ({
     
   }));
   
-  const editActivity = ({id, distance, duration, additionalInfo, type, equipment}) => {
+  const editActivity = ({id, distance, duration, additionalInfo, type, equipment}:
+                            {id: string; distance: object; duration: object; additionalInfo: object; type: string; equipment: object}
+  ) => {
     const {averageHeartRate, elevationGain, calories} = additionalInfo;
     setEditActivity(true);
     setEditActivityId(id);
