@@ -1,4 +1,15 @@
-export const AllowedActivity = [
+export type Activity = {
+  id: number;
+  type: string;
+  durationAllowed: boolean;
+  distanceAllowed: boolean;
+  equipmentAllowed: string | boolean;
+  equipmentName?: string;
+  additionalInfoAllowed: boolean;
+  defaultUnit?: string;
+}
+
+export const AllowedActivity: Activity[] = [
   {
     id: 0,
     type: "Run",
@@ -77,5 +88,5 @@ export const AllowedActivity = [
     equipmentAllowed: "SHOE",
     additionalInfoAllowed: true,
     defaultUnit: "mi"
-  },
+  }
 ];

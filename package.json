@@ -15,6 +15,12 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "@types/jest": "^26.0.20",
+    "@types/material-ui": "^0.21.8",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.1",
+    "@types/react-tap-event-plugin": "^0.0.30",
+    "@typescript-eslint/parser": "^4.15.1",
     "apollo-link": "^1.2.14",
     "apollo-link-error": "^1.1.13",
     "apollo-link-token-refresh": "^0.3.2",
@@ -38,7 +44,8 @@
     "react-show-more-text": "^1.4.6",
     "react-swipeable": "^5.5.1",
     "react-waypoint": "^9.0.3",
-    "recharts": "^1.8.5"
+    "recharts": "^1.8.5",
+    "typescript": "^4.1.5"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -61,5 +68,8 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "source-map-loader": "^2.0.1",
+    "ts-loader": "^8.0.17"
+  }
 }
