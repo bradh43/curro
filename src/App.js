@@ -31,9 +31,9 @@ let prod_uri_base = "production.curro.us"
 let dev_uri_base = "devcloud.curro.us"
 
 let uri = 'http://localhost:4000/graphql';
-if (process.env.NODE_ENV === 'production'){
+if (process.env.REACT_APP_STAGE === 'production'){
   uri = 'https://' + prod_uri_base + '/graphql';
-} else if (process.env.NODE_ENV === 'development'){
+} else if (process.env.REACT_APP_STAGE === 'development'){
   uri = 'https://' + dev_uri_base + '/graphql';
 }
 
@@ -78,9 +78,9 @@ const client = new ApolloClient({
       },
       fetchAccessToken: () => {
         let refresh_uri = 'http://localhost:4000/refresh_token';
-        if (process.env.NODE_ENV === 'production'){
+        if (process.env.REACT_APP_STAGE === 'production'){
           refresh_uri = 'https://' + prod_uri_base + '/refresh_token';
-        } else if (process.env.NODE_ENV === 'development'){
+        } else if (process.env.REACT_APP_STAGE === 'development'){
           refresh_uri = 'https://' + dev_uri_base + '/refresh_token';
         }
         return fetch(refresh_uri, {
@@ -114,9 +114,9 @@ function App() {
 
   useEffect(() => {
     let refresh_uri = 'http://localhost:4000/refresh_token';
-    if (process.env.NODE_ENV === 'production'){
+    if (process.env.REACT_APP_STAGE === 'production'){
       refresh_uri = 'https://' + prod_uri_base + '/refresh_token';
-    } else if (process.env.NODE_ENV === 'development'){
+    } else if (process.env.REACT_APP_STAGE === 'development'){
       refresh_uri = 'https://' + dev_uri_base + '/refresh_token';
     }
     fetch(refresh_uri, {
