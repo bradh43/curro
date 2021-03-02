@@ -1,8 +1,13 @@
 version: 0.2
 
+env:
+  variables:
+    API_BASE: $API_BASE 
+
 phases:
   pre_build:
     commands:
+      - printenv > .env
       - npm install
   build:
     commands:
