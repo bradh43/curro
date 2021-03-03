@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    API_BASE: $API_BASE 
+    REACT_APP_API_BASE: $REACT_APP_API_BASE 
 
 phases:
   pre_build:
