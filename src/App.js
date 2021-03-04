@@ -28,15 +28,10 @@ import { cache } from './cache';
 import { theme } from './theme';
 
 
-let prod_uri_base = "production.curro.us"
-let dev_uri_base = "devcloud.curro.us"
-
 let uri = 'http://localhost:4000/graphql';
 
-// const codeBuildEnv = env.config({ path: `.env` }).parsed;
-console.log(process.env)
 const API_BASE = process.env.REACT_APP_API_BASE
-console.log(API_BASE)
+
 if (API_BASE){
   uri = 'https://' + API_BASE + '/graphql';
 } 
