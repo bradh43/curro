@@ -1,17 +1,19 @@
 import React from 'react';
 import {render, screen} from '@testing-library/react';
 import {ActivityTile} from './ActivityTile';
+import {Activity} from "../../types";
 
 const mockActivityId = 'someActivityId';
-const mockFullActivity = {
+const mockFullActivity: Activity = {
   id: mockActivityId,
+  activityId: 'someActivityId',
   type: 'Run',
   distance: {
     value: 2,
     unit: 'mi'
   },
   duration: 600000,
-  equpiment: {
+  equipment: {
     id: 'someId'
   },
   additionalInfo: {

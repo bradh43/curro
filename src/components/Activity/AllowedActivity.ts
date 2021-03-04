@@ -1,4 +1,4 @@
-export type Activity = {
+export type AllowedActivityType = {
   id: number;
   type: string;
   durationAllowed: boolean;
@@ -9,7 +9,7 @@ export type Activity = {
   defaultUnit?: string;
 }
 
-export const AllowedActivity: Activity[] = [
+export const AllowedActivity: AllowedActivityType[] = [
   {
     id: 0,
     type: "Run",

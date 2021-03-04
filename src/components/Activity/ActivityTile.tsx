@@ -1,7 +1,7 @@
 import React from 'react';
 import TimeHelper from '../../utils/TimeHelper'
 import DistanceHelper from '../../utils/DistanceHelper'
-import {Activity, AllowedActivity} from './AllowedActivity';
+import {AllowedActivityType, AllowedActivity} from './AllowedActivity';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -10,7 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CardHeader from '@material-ui/core/CardHeader';
 import EditIcon from '@material-ui/icons/Edit';
 import Tooltip from '@material-ui/core/Tooltip';
-import PropTypes from 'prop-types';
+import {Activity} from "../../types";
 
 type ActivityTileProps = {
   activity: Activity;
@@ -19,7 +19,7 @@ type ActivityTileProps = {
   setEditActivityId: (x: string) => void;
   setEditActivityValues: (x: object) => void;
   setOpenActivityDetailModal: (x: boolean) => void;
-  setSelectedActivity: (x: Activity) => void;
+  setSelectedActivity: (x: AllowedActivityType) => void;
 }
 
 export const ActivityTile: React.FC<ActivityTileProps> = ({
@@ -37,7 +37,7 @@ export const ActivityTile: React.FC<ActivityTileProps> = ({
       width: '100%',
       height: '100%',
       marginBottom: 0,
-      backgroundColor: theme.palette.background.primary,
+      backgroundColor: theme.palette.background.default,
       "&:last-child": {
         paddingBottom: 0
       }
@@ -50,14 +50,15 @@ export const ActivityTile: React.FC<ActivityTileProps> = ({
   }));
   
   const editActivity = ({id, distance, duration, additionalInfo, type, equipment}:
-                            {id: string; distance: object; duration: object; additionalInfo: object; type: string; equipment: object}
+                            Activity
   ) => {
-    const {averageHeartRate, elevationGain, calories} = additionalInfo;
+    const {averageHeartRate, elevationGain, calories} = additionalInfo || {};
+    const {value: distanceValue, unit: distanceUnit} = distance || {};
     setEditActivity(true);
     setEditActivityId(id);
     setEditActivityValues({
-      distanceValue: distance.value ? distance.value : 0,
-      distanceUnit: distance.unit.toLowerCase(),
+      distanceValue: distanceValue ? distanceValue : 0,
+      distanceUnit: distanceUnit ? distanceUnit.toLowerCase() : 'mi',
       duration: TimeHelper.formatTimeString(duration),
       equipmentId: equipment && equipment.id ? equipment.id : '',
       heartRate: averageHeartRate ? averageHeartRate : 0,
@@ -71,11 +72,14 @@ export const ActivityTile: React.FC<ActivityTileProps> = ({
         break
       }
     }
-    setSelectedActivity(selectedActivity);
+    if (selectedActivity !== null){
+      setSelectedActivity(selectedActivity);
+    }
     setOpenActivityDetailModal(true);
   };
   const {card, cardContent} = useStyles();
   const {type, duration, distance} = activity;
+  const {value: distanceValue, unit: distanceUnit} = distance || {};
   
   return (
     <Card className={card}>
@@ -96,10 +100,10 @@ export const ActivityTile: React.FC<ActivityTileProps> = ({
           {duration ? TimeHelper.formatTimeMs(duration) : ""}
         </Typography>
         {
-          distance.value &&
+          distanceValue &&
             <div>
               <Typography variant="body1" component="p">
-                {distance.value + ' ' + distance.unit.toLowerCase()}
+                {distanceValue + ' ' + (distanceUnit ? distanceUnit.toLowerCase() : 'mi')}
               </Typography>
               {
                 duration &&
@@ -113,14 +117,4 @@ export const ActivityTile: React.FC<ActivityTileProps> = ({
       </CardContent>
     </Card>
   );
-};
-
-ActivityTile.propTypes = {
-  activity: PropTypes.object,
-  edit: PropTypes.bool,
-  setEditActivity: PropTypes.func,
-  setEditActivityId: PropTypes.func,
-  setEditActivityValues: PropTypes.func,
-  setOpenActivityDetailModal: PropTypes.func,
-  setSelectedActivity: PropTypes.func
 };

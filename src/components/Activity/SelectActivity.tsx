@@ -1,5 +1,5 @@
 import React from 'react';
-import {Activity, AllowedActivity} from './AllowedActivity';
+import {AllowedActivityType, AllowedActivity} from './AllowedActivity';
 import {makeStyles} from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Typography from '@material-ui/core/Typography';
@@ -16,7 +16,7 @@ type SelectActivityProps = {
   setEditActivity: (x: boolean) => void;
   setEditActivityValues: (x: object) => void;
   setOpenActivityDetailModal: (x: boolean) => void;
-  setSelectedActivity: (x: Activity) => void;
+  setSelectedActivity: (x: AllowedActivityType) => void;
 }
 
 export const SelectActivity: React.FC<SelectActivityProps> = ({
@@ -30,7 +30,7 @@ export const SelectActivity: React.FC<SelectActivityProps> = ({
                                }) => {
   const {activityOption, modal, paper, spacer} = useStyles();
   
-  function ActivityOption({activity}: {activity: Activity}) {
+  function ActivityOption({activity}: {activity: AllowedActivityType}) {
     return (
       <Grid item xs={6}>
         <Button className={activityOption} fullWidth onClick={() => selectActivity(activity)}>
@@ -40,7 +40,7 @@ export const SelectActivity: React.FC<SelectActivityProps> = ({
     );
   }
   
-  const selectActivity = (activity: Activity) => {
+  const selectActivity = (activity: AllowedActivityType) => {
     setEditActivity(false);
     setSelectedActivity(activity);
     setOpenActivityDetailModal(true);
