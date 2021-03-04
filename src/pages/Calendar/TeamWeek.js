@@ -135,6 +135,7 @@ export const TeamWeek = (props) => {
             setOpenModal={props.setOpenModal}
             setModalDate={props.setModalDate}
             openModalPost={props.openModalPost}
+            history={history}
           />
         </Hidden>
         )

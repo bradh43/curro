@@ -27,15 +27,14 @@ import { setContext } from '@apollo/client/link/context';
 import { cache } from './cache';
 import { theme } from './theme';
 
-let prod_uri_base = "production.curro.us"
-let dev_uri_base = "devcloud.curro.us"
 
 let uri = 'http://localhost:4000/graphql';
-if (process.env.NODE_ENV === 'production'){
-  uri = 'https://' + prod_uri_base + '/graphql';
-} else if (process.env.NODE_ENV === 'development'){
-  uri = 'https://' + dev_uri_base + '/graphql';
-}
+
+const API_BASE = process.env.REACT_APP_API_BASE
+
+if (API_BASE){
+  uri = 'https://' + API_BASE + '/graphql';
+} 
 
 const httpLink = createUploadLink({
   uri: uri,
@@ -78,11 +77,9 @@ const client = new ApolloClient({
       },
       fetchAccessToken: () => {
         let refresh_uri = 'http://localhost:4000/refresh_token';
-        if (process.env.NODE_ENV === 'production'){
-          refresh_uri = 'https://' + prod_uri_base + '/refresh_token';
-        } else if (process.env.NODE_ENV === 'development'){
-          refresh_uri = 'https://' + dev_uri_base + '/refresh_token';
-        }
+        if (API_BASE){
+          refresh_uri = 'https://' + API_BASE + '/refresh_token';
+        } 
         return fetch(refresh_uri, {
           method: "POST",
           credentials: "include"
@@ -115,10 +112,8 @@ function App() {
 
   useEffect(() => {
     let refresh_uri = 'http://localhost:4000/refresh_token';
-    if (process.env.NODE_ENV === 'production'){
-      refresh_uri = 'https://' + prod_uri_base + '/refresh_token';
-    } else if (process.env.NODE_ENV === 'development'){
-      refresh_uri = 'https://' + dev_uri_base + '/refresh_token';
+    if (API_BASE){
+      refresh_uri = 'https://' + API_BASE + '/refresh_token';
     }
     fetch(refresh_uri, {
       method: "POST",

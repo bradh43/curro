@@ -135,13 +135,12 @@ export const TeamCalendarDisplay = (props) => {
   const getFirstDayOfWeek = () => {
     // Get the first sunday of the week
     let firstDay = Moment(props.date).startOf('week');
-    // if monday first just go back 6 days
     if(props.mondayFirst){
-      // if today is monday, just return today
-      if(props.date.day() === 1){
-        return Moment(props.date)
+      // if today is sunday, need to return previous Monday, else just add 1 day
+      if(props.date.day() === 0){
+        return firstDay.subtract(6, 'days')
       } else {
-        firstDay.subtract(6, 'days')
+        firstDay.add(1, 'days')
       }
     } 
     return firstDay
@@ -210,7 +209,7 @@ export const TeamCalendarDisplay = (props) => {
         {props.data && props.data.getTeamCalendar && props.data.getTeamCalendar.map((userPostMap) => {
           return (<TeamWeek
             history={history}
-             todayPost={props.todayPost}
+            todayPost={props.todayPost}
             setTodayPost={props.setTodayPost}
             data={userPostMap} 
             loading={props.loading}
