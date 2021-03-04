@@ -5,6 +5,8 @@ export type Distance = {
 
 export type Equipment = {
     id: string;
+    type?: string;
+    name?: string;
 }
 
 export type AdditionalInfo = {
@@ -15,7 +17,7 @@ export type AdditionalInfo = {
 
 export type Activity = {
     id: string;
-    activityId: string;
+    activityId: number;
     type: string;
     duration?: number;
     distance?: Distance;

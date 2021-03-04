@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ChangeEvent, ReactNode} from 'react';
 import {useQuery} from '@apollo/client';
 import TimeHelper from '../../utils/TimeHelper'
 import DistanceHelper from '../../utils/DistanceHelper'
@@ -17,20 +17,23 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Toolbar from '@material-ui/core/Toolbar';
 import Select from '@material-ui/core/Select';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import PropTypes from 'prop-types';
 import {ME_EQUIPMENT_QUERY} from "../../utils/graphql";
-import {Activity, EditActivityValues} from "../../types";
+import {Activity, AllowedActivityType, EditActivityValues, Equipment} from "../../types";
+import classnames from 'classnames';
 
 type ActivityDetailProps = {
-  activity: Activity;
+  activity: AllowedActivityType;
   activityData: Activity[];
   editActivity: boolean;
-  editActivityId: unknown;
+  editActivityId: string;
   editActivityValues: EditActivityValues;
   handleClose: () => void;
   handleCloseSelect: () => void;
-  handleEditActivityChange: unknown;
-  openModal: unknown;
+  handleEditActivityChange: (prop: string) => (event: ChangeEvent) => void;
+  handleEditActivityChangeSelect: (prop: string) => (event: ChangeEvent<{
+    name?: string | undefined;
+    value: unknown; }>, child: ReactNode) => void;
+  openModal: boolean;
   setActivityData: (x: Activity[]) => void;
   setEditActivityDefaultValues: () => void;
 }
@@ -44,6 +47,7 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({
                                                                 handleClose,
                                                                 handleCloseSelect,
                                                                 handleEditActivityChange,
+                                                                handleEditActivityChangeSelect,
                                                                 openModal,
                                                                 setActivityData,
                                                                 setEditActivityDefaultValues
@@ -82,7 +86,7 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({
           unit: distanceUnit.toUpperCase()
         },
         equipment: {
-          id: equipmentId || '',
+          id: equipmentId || ''
         },
         additionalInfo: {
           averageHeartRate: heartRate ? parseInt(heartRate) : 0,
@@ -159,7 +163,7 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({
           hideBackdrop
           title={'activityDetailModal'}
         >
-          <div style={classes.modalStyle} className={classes.paper}>
+          <div className={classnames(classes.paper, classes.modal)}>
             <Toolbar disableGutters>
               {
                 editActivity ?
@@ -228,7 +232,7 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({
                         labelId="distance-unit-select"
                         id="distance-unit-select-id"
                         value={editActivityValues.distanceUnit}
-                        onChange={handleEditActivityChange('distanceUnit')}
+                        onChange={handleEditActivityChangeSelect('distanceUnit')}
                         label="Distance"
                       >
                         <MenuItem value={"mi"}>mi</MenuItem>
@@ -249,15 +253,17 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({
                   labelId="equipment-select"
                   id="equipment-select-id"
                   value={editActivityValues.equipmentId}
-                  onChange={handleEditActivityChange('equipmentId')}
+                  onChange={handleEditActivityChangeSelect('equipmentId')}
                   label={activity.equipmentAllowed}
                 >
                   <MenuItem key="none" value=""><em>None</em></MenuItem>
-                  {data.me.equipmentList.map((equipment) => {
-                    if (equipment.type === activity.equipmentName) {
-                      return <MenuItem key={equipment.id} value={equipment.id}>{equipment.name}</MenuItem>
-                    }
-                  })}
+                  {
+                    data.me.equipmentList
+                      .filter((x: Equipment) => x.type === activity.equipmentName)
+                      .map((equipment: Equipment) => {
+                        return <MenuItem key={equipment.id} value={equipment.id}>{equipment.name}</MenuItem>
+                      })
+                  }
                 </Select>
               </FormControl>
             )}
@@ -307,23 +313,9 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({
               : <></>
             }
           </div>
-        </Modal> : <div title={'Loading Screen'}></div>}
+        </Modal> : <div title={'Loading Screen'}/>}
     </div>
   );
-};
-
-ActivityDetail.propTypes = {
-  activity: PropTypes.object,
-  activityData: PropTypes.array.isRequired,
-  editActivity: PropTypes.bool,
-  editActivityId: PropTypes.string.isRequired,
-  editActivityValues: PropTypes.object,
-  handleClose: PropTypes.func,
-  handleCloseSelect: PropTypes.func,
-  handleEditActivityChange: PropTypes.func,
-  openModal: PropTypes.bool,
-  setActivityData: PropTypes.func,
-  setEditActivityDefaultValues: PropTypes.func
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -352,11 +344,11 @@ const useStyles = makeStyles((theme) => ({
   textField: {
     margin: '16px 0 0 0',
     '& label.Mui-focused': {
-      color: theme.palette.text.main,
+      color: theme.palette.text.primary,
     },
     '& .MuiOutlinedInput-root': {
       '&.Mui-focused fieldset': {
-        borderColor: theme.palette.text.main,
+        borderColor: theme.palette.text.primary,
       },
     },
   },
@@ -367,11 +359,11 @@ const useStyles = makeStyles((theme) => ({
   inputField: {
     marginBottom: 16,
     '& label.Mui-focused': {
-      color: theme.palette.text.main,
+      color: theme.palette.text.primary,
     },
     '& .MuiOutlinedInput-root': {
       '&.Mui-focused fieldset': {
-        borderColor: theme.palette.text.main,
+        borderColor: theme.palette.text.primary,
       },
     },
   },

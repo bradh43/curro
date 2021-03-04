@@ -1,13 +1,4 @@
-export type AllowedActivityType = {
-  id: number;
-  type: string;
-  durationAllowed: boolean;
-  distanceAllowed: boolean;
-  equipmentAllowed: string | boolean;
-  equipmentName?: string;
-  additionalInfoAllowed: boolean;
-  defaultUnit?: string;
-}
+import {AllowedActivityType} from "../../types";
 
 export const AllowedActivity: AllowedActivityType[] = [
   {

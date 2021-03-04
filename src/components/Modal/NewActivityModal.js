@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { AuthContext } from '../../auth';
-import { useMutation, gql } from '@apollo/client';
-import { ActivityTile } from '../Activity/ActivityTile';
-import { ActivityDetail } from '../Activity/ActivityDetail';
-import { AllowedActivity } from '../Activity/AllowedActivity';
-import { AddActivityButton } from '../Activity/AddActivityButton';
-import { makeStyles } from '@material-ui/core/styles';
-import { SelectActivity } from '../Activity/SelectActivity';
-import { ConfirmDelete } from './ConfirmDelete';
+import React, {useContext, useEffect, useState} from 'react';
+import {AuthContext} from '../../auth';
+import {gql, useMutation} from '@apollo/client';
+import {ActivityTile} from '../Activity/ActivityTile';
+import {ActivityDetail} from '../Activity/ActivityDetail';
+import {AllowedActivity} from '../Activity/AllowedActivity';
+import {AddActivityButton} from '../Activity/AddActivityButton';
+import {makeStyles} from '@material-ui/core/styles';
+import {SelectActivity} from '../Activity/SelectActivity';
+import {ConfirmDelete} from './ConfirmDelete';
 import Modal from '@material-ui/core/Modal';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -19,10 +19,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import { GET_POST_QUERY } from '../../utils/graphql';
-import { UPDATE_POST_MUTATION } from '../../utils/graphql';
-import { CREATE_POST_MUTATION } from '../../utils/graphql';
-import { USER_CALENDAR_QUERY } from '../../utils/graphql';
+import {CREATE_POST_MUTATION, GET_POST_QUERY, UPDATE_POST_MUTATION} from '../../utils/graphql';
 import Moment from 'moment';
 
 
@@ -93,31 +90,31 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-var _previousPostId = ''
+let _previousPostId = '';
 
 
 export const NewActivityModal = (props) => {
   const classes = useStyles();
   const [selectedDate, setSelectedDate] = React.useState(props.modalDate ? props.modalDate : Moment());
   const [activityData, setActivityData] = React.useState([]);
-  const [openSelectActivityModal, setOpenSelectActivityModal] = useState(false)
-  const [openActivityDetailModal, setOpenActivityDetailModal] = useState(false)
-  const [editActivityId, setEditActivityId] = useState(0)
-  const [selectedActivity, setSelectedActivity] = useState(AllowedActivity[0])
-  const [editActivity, setEditActivity] = useState(false)
+  const [openSelectActivityModal, setOpenSelectActivityModal] = useState(false);
+  const [openActivityDetailModal, setOpenActivityDetailModal] = useState(false);
+  const [editActivityId, setEditActivityId] = useState(0);
+  const [selectedActivity, setSelectedActivity] = useState(AllowedActivity[0]);
+  const [editActivity, setEditActivity] = useState(false);
   const [openConfirmDelete, setOpenConfirmDelete] = React.useState(false);
 
-  const { user } = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
 
-  const getUserCalendarDateFormat = () => {
-    return Moment(selectedDate).format('YYYY-MM-DD')
-  }
+  // const getUserCalendarDateFormat = () => {
+  //   return Moment(selectedDate).format('YYYY-MM-DD')
+  // };
 
   useEffect(() => {
     if(props.modalDate){
       setSelectedDate(props.modalDate)
     }
-  })
+  }, [props.modalDate]);
 
   const handleConfirmDeleteOpen = () => {
     setOpenConfirmDelete(true);
@@ -133,7 +130,7 @@ export const NewActivityModal = (props) => {
     titleError: false,
     titleErrorMessage: '',
     errorMessage: ''
-  }
+  };
   const [post, setPost] = React.useState(defaultPost);
 
   const handlePostChange = (prop) => (event) => {
@@ -141,7 +138,7 @@ export const NewActivityModal = (props) => {
     if(prop ==='title'){
 
       if(post.titleError && event.target.value.length > 0){
-        setPost({...post, titleError: false, [prop]: String(event.target.value)})
+        setPost({...post, titleError: false, [prop]: String(event.target.value)});
         return
       } 
     } 
@@ -158,35 +155,34 @@ export const NewActivityModal = (props) => {
     heartRate: '',
     elevationGain: '',
     calories: '',
-  }
+  };
 
   const [editActivityValues, setEditActivityValues] = React.useState(defaultActivityValues);
 
-  const editPost = props.editPost ? true : false
+  const editPost = !!props.editPost;
   
   if(editPost && _previousPostId !== props.editPost.id){
-    _previousPostId = props.editPost.id
+    _previousPostId = props.editPost.id;
     setPost({
       ...post,
       id: props.editPost.id,
       title: props.editPost.title,
       note: props.editPost.note,
-    })
-    setSelectedDate(Moment(props.editPost.postDate))
-    var activityList = props.editPost.activityList.map((activity)=>{
-      var formatActivity = {
+    });
+    setSelectedDate(Moment(props.editPost.postDate));
+    const activityList = props.editPost.activityList.map((activity)=>{
+      return {
         ...activity,
         activityId: 1
       }
-      return formatActivity
-    })
+    });
     setActivityData(activityList)
   }
 
 
   const handleEditActivityChange = (prop) => (event) => {
     if(prop === 'duration'){
-      var onlyNumbersRegex = /[^\.\d\:]/g
+      const onlyNumbersRegex = /[^\.\d\:]/g;
       event.target.value = event.target.value.replace(onlyNumbersRegex, '')
     }
     setEditActivityValues({ ...editActivityValues, [prop]: event.target.value });
@@ -195,33 +191,33 @@ export const NewActivityModal = (props) => {
 
   const setEditActivityDefaultValues = () => {
     setEditActivityValues(defaultActivityValues)
-  }
+  };
 
   const clearState = () => {
     if(editPost){
       props.setEditPost(null)
     }
-    setActivityData([])
-    setSelectedDate(Moment())
-    setPost(defaultPost)
+    setActivityData([]);
+    setSelectedDate(Moment());
+    setPost(defaultPost);
     _previousPostId = ''
-  }
+  };
   const cancelPost = () => {
-    clearState()
+    clearState();
     props.handleClose()
     
-  }
+  };
 
   const formatDate = () => {
-    var options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'};
-    var date = props.editPost ? Moment(props.editPost.postDate) : Moment(selectedDate)
+    // const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'};
+    const date = props.editPost ? Moment(props.editPost.postDate) : Moment(selectedDate);
     return date.format('dddd, LL')
-  }
+  };
 
   const [createPostMutation, {loading}] = useMutation(CREATE_POST_MUTATION, {
     update(store, result) {
 
-      const cacheId = store.identify(result.data.createPost)
+      const cacheId = store.identify(result.data.createPost);
 
       store.modify({
         fields: {
@@ -249,32 +245,32 @@ export const NewActivityModal = (props) => {
             })
           },
         }
-      })
+      });
 
-      clearState()
+      clearState();
       props.handleClose()
     },
     onError(error) {
-      console.log(error)
-      console.log(error.message)
+      console.log(error);
+      console.log(error.message);
       // TODO, don't close and tell user what happened
       props.handleClose()
     }
-  })
+  });
 
 const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUTATION, {
   update(store, result) {
     try {
       const data = store.readQuery({
         query: GET_POST_QUERY
-      })
+      });
 
       const updatedPosts = data.postList.posts.filter((post) => {
         if(post.id === props.editPost.id){
           return result.data.updatePost
         }
         return post
-      })
+      });
       
       // TODO update using immer look at Comment.js
       store.writeQuery({
@@ -292,17 +288,17 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
       // newsfeed Cache isn't populated yet
     }
 
-    clearState()
+    clearState();
     props.handleClose()
 
   },
   onError(error) {
-    console.log(error)
-    console.log(error.message)
+    console.log(error);
+    console.log(error.message);
     // TODO, don't close and tell user what happened
-    props.handleClose()
+    props.handleClose();
   }
-})
+});
 
   const DELETE_POST_MUTATION = gql`
     mutation deletePost($postId: ID!) {
@@ -316,7 +312,7 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
   const [deletePostMutation, {loading: deleteLoading}] = useMutation(DELETE_POST_MUTATION, {
     update(store, _) {
       
-      const cacheId = store.identify(props.editPost)
+      const cacheId = store.identify(props.editPost);
 
       store.modify({
         fields: {
@@ -350,26 +346,26 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
             })
           },
         }
-      })
+      });
 
-      clearState()
+      clearState();
       props.handleClose()
     },
     onError(error) {
-      console.log(error)
-      console.log(error.message)
+      console.log(error);
+      console.log(error.message);
       // TODO, don't close and tell user what happened
       props.handleClose()
     }
-  })
+  });
 
   const validatePost = (callback) => {
-    var postDate = Moment(selectedDate).format("YYYY-MM-DD")
+    // const postDate = Moment(selectedDate).format("YYYY-MM-DD");
 
-    const postTitleValid = post.title.length > 0
-    const selectedDateValid = selectedDate !== null
+    const postTitleValid = post.title.length > 0;
+    const selectedDateValid = selectedDate !== null;
 
-    var titleErrorMessage = 'Title is required'
+    const titleErrorMessage = 'Title is required';
 
     setPost({ ...post, 
       titleError: !postTitleValid, titleErrorMessage: titleErrorMessage,
@@ -378,11 +374,11 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
     if(postTitleValid && selectedDateValid) {
       callback()
     } 
-  }
+  };
   const postActivity = () => {
     validatePost(() => {
-      var activityList = activityData.map((activity)=>{
-        var formatActivity = {
+      const activityList = activityData.map((activity)=>{
+        let formatActivity = {
           type: activity.type.replace(/\s+/g, '_').toUpperCase(),
           duration: activity.duration,
           distance: {
@@ -395,7 +391,7 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
             elevationGain: activity.elevationGain,
             calories: activity.calories
           }
-        }
+        };
         // Check if the activity already has an existing mongodb id
         if(editPost && String(activity.id).match(/^[0-9a-fA-F]{24}$/)){
           // add the existing id so API can update activty
@@ -405,7 +401,7 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
           }
         }
         return formatActivity
-      })
+      });
 
       const postInput = {
         input: {
@@ -415,7 +411,7 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
           // TODO change this to tagList of users
           tagIdList: []  
         }
-      }
+      };
       
       if(editPost){
         const editPostInput = {
@@ -424,7 +420,7 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
             ...postInput.input,
             postId: props.editPost.id,
           }
-        }
+        };
         updatePostMutation({ variables: editPostInput })
       } else {
         const creatPostInput = {
@@ -433,21 +429,21 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
             ...postInput.input,
             postDate: selectedDate.format("YYYY-MM-DD"),
           }
-        }
-        console.log(selectedDate.format("YYYY-MM-DD"))
+        };
+        console.log(selectedDate.format("YYYY-MM-DD"));
         createPostMutation({ variables: creatPostInput })
       }
       
     })
-  }
+  };
 
   const deletePost = () => {
     const deleteInput = {
       postId: props.editPost.id
-    }
-    deletePostMutation({variables: deleteInput})
+    };
+    deletePostMutation({variables: deleteInput});
     handleConfirmDeleteClose()
-  }
+  };
 
   return (
     <div>
@@ -545,9 +541,10 @@ const [updatePostMutation, {loading: editLoading}] = useMutation(UPDATE_POST_MUT
         editActivityId={editActivityId}
         handleCloseSelect={() => setOpenSelectActivityModal(false)}
         handleEditActivityChange={handleEditActivityChange}
+        handleEditActivityChangeSelect={handleEditActivityChange}
         editActivityValues={editActivityValues}
         setEditActivityDefaultValues={setEditActivityDefaultValues}
       />
     </div>
   );
-}
+};
