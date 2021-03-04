@@ -36,12 +36,12 @@ export type AllowedActivityType = {
 }
 
 export type EditActivityValues = {
-    duration: number;
-    distanceValue: number;
     distanceUnit: string;
-    equipmentId: string;
-    averageHeartRate: string;
-    elevationGain: string;
-    calories: string;
+    duration?: number;
+    distanceValue?: number;
+    equipmentId?: string;
+    heartRate?: string;
+    elevationGain?: string;
+    calories?: string;
 }
 

@@ -19,20 +19,35 @@ import Select from '@material-ui/core/Select';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import PropTypes from 'prop-types';
 import {ME_EQUIPMENT_QUERY} from "../../utils/graphql";
+import {Activity, EditActivityValues} from "../../types";
 
-export const ActivityDetail = ({
-                                 activity,
-                                 activityData,
-                                 editActivity,
-                                 editActivityId,
-                                 editActivityValues,
-                                 handleClose,
-                                 handleCloseSelect,
-                                 handleEditActivityChange,
-                                 openModal,
-                                 setActivityData,
-                                 setEditActivityDefaultValues
-                               }) => {
+type ActivityDetailProps = {
+  activity: Activity;
+  activityData: Activity[];
+  editActivity: boolean;
+  editActivityId: unknown;
+  editActivityValues: EditActivityValues;
+  handleClose: () => void;
+  handleCloseSelect: () => void;
+  handleEditActivityChange: unknown;
+  openModal: unknown;
+  setActivityData: (x: Activity[]) => void;
+  setEditActivityDefaultValues: () => void;
+}
+
+export const ActivityDetail: React.FC<ActivityDetailProps> = ({
+                                                                activity,
+                                                                activityData,
+                                                                editActivity,
+                                                                editActivityId,
+                                                                editActivityValues,
+                                                                handleClose,
+                                                                handleCloseSelect,
+                                                                handleEditActivityChange,
+                                                                openModal,
+                                                                setActivityData,
+                                                                setEditActivityDefaultValues
+                                                              }) => {
   const classes = useStyles();
   const activityIndex = activityData.findIndex(activity => activity.id === editActivityId);
   
@@ -52,34 +67,37 @@ export const ActivityDetail = ({
   };
   
   const saveActivity = () => {
+    const {duration, distanceUnit, distanceValue, equipmentId, elevationGain, calories, heartRate} = editActivityValues;
     if (editActivity) {
       // make a copy of the activities array
-      const activitiesCopy = [...activityData];
+      const activitiesCopy: Activity[] = [...activityData];
       // update the element
       activitiesCopy[activityIndex] = {
         ...activityData[activityIndex],
-        duration: editActivityValues.duration ? TimeHelper.getTotalMs(editActivityValues.duration) : 0,
+        duration: duration ? TimeHelper.getTotalMs(duration) : 0,
         distance: {
-          value: editActivityValues.distanceValue ? parseFloat(Math.abs(editActivityValues.distanceValue))
-            .toFixed((editActivityValues.distanceUnit === 'yds' | editActivityValues.distanceUnit === 'm') ? 0 : 2) : 0,
-          unit: editActivityValues.distanceUnit.toUpperCase()
+          value: distanceValue
+            ? Number(Math.abs(distanceValue).toFixed((distanceUnit === 'yds' || distanceUnit === 'm') ? 0 : 2))
+            : 0,
+          unit: distanceUnit.toUpperCase()
         },
         equipment: {
-          id: editActivityValues.equipmentId ? editActivityValues.equipmentId : '',
+          id: equipmentId || '',
         },
         additionalInfo: {
-          averageHeartRate: editActivityValues.averageHeartRate ? parseInt(editActivityValues.heartRate) : 0,
-          elevationGain: editActivityValues.elevationGain ? parseInt(editActivityValues.elevationGain) : 0,
-          calories: editActivityValues.calories ? parseInt(editActivityValues.calories) : 0
+          averageHeartRate: heartRate ? parseInt(heartRate) : 0,
+          elevationGain: elevationGain ? parseInt(elevationGain) : 0,
+          calories: calories ? parseInt(calories) : 0
         }
-      }
+      };
+      
       //update the state
       setActivityData(activitiesCopy)
       
     } else {
       // generate a unique ID for the new activity
       const date = new Date();
-      const id = date.getTime();
+      const id = String(date.getTime());
       
       // add new activity to the activities 
       setActivityData(
@@ -89,17 +107,18 @@ export const ActivityDetail = ({
             id: id,
             activityId: activity.id,
             type: activity.type.toUpperCase(),
-            duration: TimeHelper.getTotalMs(editActivityValues.duration),
+            duration: TimeHelper.getTotalMs(duration),
             distance: {
-              value: editActivityValues.distanceValue ? parseFloat(Math.abs(editActivityValues.distanceValue))
-                .toFixed((editActivityValues.distanceUnit === 'yds' || editActivityValues.distanceUnit === 'm') ? 0 : 2) : 0,
-              unit: editActivityValues.distanceUnit.toUpperCase()
+              value: distanceValue
+                ? Number(Math.abs(distanceValue).toFixed((distanceUnit === 'yds' || distanceUnit === 'm') ? 0 : 2))
+                : 0,
+              unit: distanceUnit.toUpperCase()
             },
-            equipmentId: editActivityValues.equipmentId,
+            equipmentId: equipmentId,
             additionalInfo: {
-              averageHeartRate: editActivityValues.heartRate ? parseInt(editActivityValues.heartRate) : 0,
-              elevationGain: editActivityValues.elevationGain ? parseInt(editActivityValues.elevationGain) : 0,
-              calories: editActivityValues.calories ? parseInt(editActivityValues.calories) : 0
+              averageHeartRate: heartRate ? parseInt(heartRate) : 0,
+              elevationGain: elevationGain ? parseInt(elevationGain) : 0,
+              calories: calories ? parseInt(calories) : 0
             }
           }]
       );
