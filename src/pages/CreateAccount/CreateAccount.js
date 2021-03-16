@@ -204,9 +204,6 @@ export const CreateAccount = props => {
     withoutLabel: {
       marginTop: theme.spacing(3),
     },
-    container: {
-      
-    },
     textField: {
       margin: '16px 0 0 0',
       '& label.Mui-focused': {

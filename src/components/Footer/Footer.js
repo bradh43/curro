@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../auth';
 import { Link } from "react-router-dom";
 import { useMutation, gql, useApolloClient } from '@apollo/client';
+import { withRouter } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -26,8 +27,11 @@ import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 
 
-export const Footer = (props) => {
+const Footer = props => {
   const useStyles = makeStyles((theme) => ({
+    footer: {
+      display: 'block',
+    },
     logo: {
       marginTop: 32,
     },
@@ -57,6 +61,7 @@ export const Footer = (props) => {
   const classes = useStyles();
 
   const { history } = props;
+
   const { user, logout } = useContext(AuthContext)
 
   const client = useApolloClient();
@@ -157,3 +162,5 @@ export const Footer = (props) => {
 
   </div>);
 }
+
+export default withRouter(Footer);

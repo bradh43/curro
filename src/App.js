@@ -26,6 +26,7 @@ import jwtDecode from 'jwt-decode'
 import { setContext } from '@apollo/client/link/context';
 import { cache } from './cache';
 import { theme } from './theme';
+import Footer from './components/Footer/Footer';
 
 
 let uri = 'http://localhost:4000/graphql';
@@ -154,6 +155,7 @@ function App() {
               <Route exact path='/404' component={ PageNotFound }/>
               <Route exact path='*' component={ PageNotFound }/>
             </Switch>
+            <Footer/>
           </BrowserRouter>
         </ThemeProvider>
       </ApolloProvider>

@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../auth';
-import { Footer } from '../../components/Footer/Footer';
 import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -164,6 +163,5 @@ export const About = (props) => {
           </div>
         </div>
       </div>
-      <Footer history={history}/>
     </div>);
 }

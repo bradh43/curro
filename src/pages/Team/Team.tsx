@@ -5,21 +5,17 @@ import { TeamCard } from './TeamCard';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 
+type TeamProps = {
+  history: any;
+  teamid: string; 
+}
 
-export const Team = (props) => {
-  const useStyles = makeStyles((theme) => ({
-    root: {
-      overflow: 'hidden',
-    },
-  }));
-
-  const teamid = props.teamid
+export const Team: React.FC<TeamProps> = ({history, teamid}) => {
 
   const { loading, error, data } = useQuery(TEAM_QUERY, {variables: {id: teamid}});
 
- 
+
   const classes = useStyles();
-  const { history } = props;
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -34,5 +30,10 @@ export const Team = (props) => {
       </Grid>
     </div>
   );
-    
 }
+
+const useStyles = makeStyles(() => ({
+  root: {
+    overflow: 'hidden',
+  },
+}));

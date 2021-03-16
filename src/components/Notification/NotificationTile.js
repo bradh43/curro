@@ -51,7 +51,10 @@ const useStyles = makeStyles((theme) => ({
   } ,
   actionButton: {
     flex: 1,
-  }
+  },
+  clickableItem: {
+    cursor: 'pointer',
+  },
 }));
 
 export const NotificationTile = (props) => {
@@ -128,10 +131,26 @@ export const NotificationTile = (props) => {
         navigateToUserProfile()
     }
   }    
+  const showPost = () => {
+    if(props.notification && props.notification.post && props.notification.post.id){
+      props.openModalPost(props.notification.post)
+      if(props.handleDrawerClose){
+        props.handleDrawerClose()
+      }  
+    }
+  }    
+
+  const getResultClass = () => {
+    var cellClass = `${classes.resultItem}`
+    if(props.notification && props.notification.post && props.notification.post.id){
+      cellClass = `${cellClass} ${classes.clickableItem}`
+    }
+    return cellClass
+  }
 
   const classes = useStyles();
   return (
-    <ListItem alignItems="flex-start" className={classes.resultItem} style={{backgroundColor: props.notification.read ? '#ffffff' : '#fffafc'}}divider>
+    <ListItem alignItems="flex-start" className={getResultClass()} style={{backgroundColor: props.notification.read ? '#ffffff' : '#fffafc'}} divider onClick={() => showPost()}> 
         <ListItemAvatar>
           <Avatar 
             alt="Profile Picture" 

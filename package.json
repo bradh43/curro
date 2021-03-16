@@ -53,7 +53,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "introspect": "apollo-codegen introspect-schema http://localhost:4000/graphql --output schema.json",
+    "generate": "apollo-codegen generate src/**/*.tsx --schema schema.json --target typescript --tag-name gql --output src/operation-result-types.ts",
+    "gen-types": "npm run introspect && npm run generate"
   },
   "eslintConfig": {
     "extends": "react-app"

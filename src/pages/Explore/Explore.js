@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useLazyQuery, gql } from '@apollo/client';
-import { Footer } from '../../components/Footer/Footer';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
@@ -18,6 +17,12 @@ import { NoResults } from '../../components/Search/NoResults';
 
 
 const useStyles = makeStyles((theme) => ({
+  rootContainer: {
+    minHeight: '60vh',
+    [theme.breakpoints.down('xs')]: {
+      minHeight: '45vh'
+    },
+  },
   root: {
     padding: '2px 4px',
     display: 'flex',
@@ -168,7 +173,7 @@ export const Explore = (props) => {
   const classes = useStyles();
 
   return (
-    <div>
+    <div className={classes.rootContainer}>
       <Paper className={classes.root} type="form" onSubmit={submitSearch} noValidate autoComplete="off">
         <InputBase
           className={classes.input}
@@ -215,6 +220,5 @@ export const Explore = (props) => {
       {/* <div className={classes.pagination}>
         <Pagination count={10} color="secondary" className={classes.paginationControl}/>
       </div> */}
-      <Footer history={history}/>
     </div>);
 }

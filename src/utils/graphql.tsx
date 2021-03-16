@@ -198,7 +198,7 @@ const PROFILE_FRAGMENT = gql`
 `;
 
 export const ME_QUERY = gql`
-  query {
+  query ME {
     me {
       ...ProfileData
     }
@@ -282,7 +282,7 @@ export const UPDATE_NOTIFICATION = gql`
 `;
 
 export const NOTIFICATION_QUERY = gql`
-  query {
+  query MY_NOTIFICATION_LIST {
     me {
       id
       notificationList {
@@ -359,7 +359,7 @@ export const TEAM_CALENDAR_QUERY = gql`
 `;
 
 export const ME_EQUIPMENT_QUERY = gql`
-    query {
+    query ME_EQUIPMENT {
       me {
         id
         equipmentList{

@@ -55,7 +55,7 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({
   const classes = useStyles();
   const activityIndex = activityData.findIndex(activity => activity.id === editActivityId);
   
-  const deleteActivity = () => {
+  const deleteActivity = (): void => {
     // remove activity from activities
     const activityDataCopy = [...activityData];
     if (activityIndex !== -1) {

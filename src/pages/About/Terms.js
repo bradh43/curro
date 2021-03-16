@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Footer } from '../../components/Footer/Footer';
 import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -83,6 +82,5 @@ export const Terms = (props) => {
           <p>B. No Joint Venture, No Derogation of Rights. You agree that no joint venture, partnership, employment, or agency relationship exists between you and us as a result of these Terms and Conditions or your use of the Site. Our performance of these Terms and Conditions is subject to existing laws and legal process, and nothing contained herein is in derogation of our right to comply with governmental, court and law enforcement requests or requirements relating to your use of the Site or information provided to or gathered by us with respect to such use.</p>
         </div>
       </div>
-      <Footer history={history}/>
     </div>);
 }

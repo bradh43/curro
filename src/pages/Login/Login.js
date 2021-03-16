@@ -22,7 +22,6 @@ import Link from '@material-ui/core/Link';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
-import { Footer } from '../../components/Footer/Footer';
 
 export const Login = props => {
 
@@ -111,6 +110,10 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
 
   const textColor = '#8AA0BD'
   const useStyles = makeStyles((theme) => ({
+    container: {
+      display: 'block',
+      height: 'calc(100vh - 64px)',
+    },
     root: {
       margin: 32,
       marginTop: -64,
@@ -122,9 +125,6 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
         margin: '-56px 0 0 0',
         padding: '2px 4px 2px 4px',
       },
-      
-    },
-    container: {
       
     },
     cardContent: {
@@ -139,6 +139,7 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
     },
     content: {
       position: 'absolute',
+      display: 'block',
       zIndex: 1,
       width: '100vw',
     },
@@ -197,12 +198,6 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
       margin: '16px 0 16px 0',
       color: theme.palette.text.main,
     },
-    footerContainer: {
-      position: 'absolute',
-      top: 'calc(100vh - 64px)',
-      width: '100vw',
-      zIndex: 1000,
-    },
     textColor: {
       color: theme.palette.text.main,
     },
@@ -260,97 +255,96 @@ const [signinUserMutation, {loading }] = useMutation(SIGNIN_USER_MUTATION, {
   }
 
   return (
-    <div className={classes.content}>
-      <div className={classes.wrapper}>
-        <div className={classes.image}></div>
-      </div>
-      { props.location.state ?
-        <Snackbar className={classes.snackBar} open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-          <Alert onClose={handleClose} severity="warning">
-            Login to view {location} page
-        </Alert>
-        </Snackbar> : <></>}
-      <Container maxWidth="sm" className={classes.container}>
-        <Card className={classes.root}>
-          <CardContent className={classes.cardContent}>
-            <div>
-              {/* {TODO add bigger logo here} */}
-              <Avatar alt="Logo" src={process.env.PUBLIC_URL + '/assets/logo/logoPink192.png'} className={classes.logo}/>
-              <Typography variant="h4" className={classes.welcome}>Welcome to Curro</Typography>
-            </div>
-            <form noValidate autoComplete="off" onSubmit={submitForm}>
-              <TextField 
-                id="login-email" 
-                className={classes.textField} 
-                label="Email" 
-                fullWidth
-                size="small" 
-                required
-                helperText={values.emailError ? values.emailErrorMessage : ''}
-                onChange={handleChange('email')}
-                error={values.emailError}
-                variant="outlined" 
-                InputLabelProps={{
-                  style: { color: textColor },
-                }}
-              />
-              <FormControl 
-                variant="outlined" 
-                fullWidth 
-                size="small" 
-                required 
-                error={values.passwordError} 
-                className={classes.textField} 
-              >
-                <InputLabel htmlFor="login-password" className={classes.textColor}>Password</InputLabel>
-                <OutlinedInput
-                  id="login-password"
-                  type={values.showPassword ? 'text' : 'password'}
-                  value={values.password}
-                  label="Password"
-                  variant="outlined"
-                  onChange={handleChange('password')}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        edge="end"
-                      >
-                        {values.showPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                  labelwidth={70}
-                />
-                <FormHelperText id="login-password-error-message">{values.passwordError ? values.passwordErrorMessage : ''}</FormHelperText>
-              </FormControl>
+    <div className={classes.container}>
+      <div className={classes.content}>
+        <div className={classes.wrapper}>
+          <div className={classes.image}></div>
+        </div>
+        { props.location.state ?
+          <Snackbar className={classes.snackBar} open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+            <Alert onClose={handleClose} severity="warning">
+              Login to view {location} page
+          </Alert>
+          </Snackbar> : <></>}
+        <Container maxWidth="sm" className={classes.container}>
+          <Card className={classes.root}>
+            <CardContent className={classes.cardContent}>
               <div>
-                <Typography variant="subtitle1" className={classes.errorMessage}>{values.errorMessage}</Typography>
-                <Button variant="contained" className={classes.textField} style={{borderRadius:'21px'}} color="primary" fullWidth size="large" onClick={loginUser} disabled={loading} type="submit">
-                  {loading ? <CircularProgress color="inherit" size={26}/> : <>Login</> } 
-                </Button>
-                <div className={classes.forgotPassword}>
-                  <Link
-                      component="button"
-                      variant="body2"
-                      color="textSecondary"
-                      onClick={forgotPassword}
-                    >
-                      <span className={classes.textColor}>Forgot Password?</span>
-                  </Link>  
-                </div> 
-                <Divider variant="middle" />
-                <Button className={classes.signUp} variant="contained" color="inherit" size="medium" onClick={newUser}>Sign Up</Button>
-
+                {/* {TODO add bigger logo here} */}
+                <Avatar alt="Logo" src={process.env.PUBLIC_URL + '/assets/logo/logoPink192.png'} className={classes.logo}/>
+                <Typography variant="h4" className={classes.welcome}>Welcome to Curro</Typography>
               </div>
-            </form>
-          </CardContent>
-        </Card>
-      </Container>
-      <div className={classes.footerContainer}>
-        <Footer history={history}/>
+              <form noValidate autoComplete="off" onSubmit={submitForm}>
+                <TextField 
+                  id="login-email" 
+                  className={classes.textField} 
+                  label="Email" 
+                  fullWidth
+                  size="small" 
+                  required
+                  helperText={values.emailError ? values.emailErrorMessage : ''}
+                  onChange={handleChange('email')}
+                  error={values.emailError}
+                  variant="outlined" 
+                  InputLabelProps={{
+                    style: { color: textColor },
+                  }}
+                />
+                <FormControl 
+                  variant="outlined" 
+                  fullWidth 
+                  size="small" 
+                  required 
+                  error={values.passwordError} 
+                  className={classes.textField} 
+                >
+                  <InputLabel htmlFor="login-password" className={classes.textColor}>Password</InputLabel>
+                  <OutlinedInput
+                    id="login-password"
+                    type={values.showPassword ? 'text' : 'password'}
+                    value={values.password}
+                    label="Password"
+                    variant="outlined"
+                    onChange={handleChange('password')}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    labelwidth={70}
+                  />
+                  <FormHelperText id="login-password-error-message">{values.passwordError ? values.passwordErrorMessage : ''}</FormHelperText>
+                </FormControl>
+                <div>
+                  <Typography variant="subtitle1" className={classes.errorMessage}>{values.errorMessage}</Typography>
+                  <Button variant="contained" className={classes.textField} style={{borderRadius:'21px'}} color="primary" fullWidth size="large" onClick={loginUser} disabled={loading} type="submit">
+                    {loading ? <CircularProgress color="inherit" size={26}/> : <>Login</> } 
+                  </Button>
+                  <div className={classes.forgotPassword}>
+                    <Link
+                        component="button"
+                        variant="body2"
+                        color="textSecondary"
+                        onClick={forgotPassword}
+                      >
+                        <span className={classes.textColor}>Forgot Password?</span>
+                    </Link>  
+                  </div> 
+                  <Divider variant="middle" />
+                  <Button className={classes.signUp} variant="contained" color="inherit" size="medium" onClick={newUser}>Sign Up</Button>
+
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </Container>
       </div>
     </div>);
 }

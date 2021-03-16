@@ -233,7 +233,7 @@ export const UserNavBar = props => {
       </Hidden>
       <div className={classes.spacer}></div>
       <span className={classes.navbarSide}>
-        {props.viewValue === CALENDAR_VIEW_VALUE && 
+        {props.viewValue === CALENDAR_VIEW_VALUE && props.me && 
           <Hidden xsDown>
             <span className={classes.addFab}>
               <Tooltip title="Post Today" enterDelay={400}>
