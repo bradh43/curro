@@ -189,7 +189,6 @@ export const UserNavBar = props => {
     
   }
 
-  
   return (
     <div className={classes.root} >
       <span className={classes.navbarSide}>
